@@ -323,8 +323,8 @@ const STATUS = {
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {WHY_CARDS.map((card, i) => (
-        <div class="lf-animate" style={`transition-delay:${i * 80}ms`}>
-          <div class="flex items-start gap-4 p-5 rounded-xl border border-border bg-card hover:border-primary/40 transition-colors">
+        <div class="lf-animate h-full" style={`transition-delay:${i * 80}ms`}>
+          <div class="h-full flex items-start gap-4 p-5 rounded-xl border border-border bg-card hover:border-primary/40 transition-colors">
             <div class="p-2.5 rounded-lg bg-muted flex-shrink-0">
               <svg class={`w-6 h-6 ${card.color}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <Fragment set:html={card.icon} />
