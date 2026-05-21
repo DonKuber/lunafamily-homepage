@@ -1,0 +1,170 @@
+---
+import Base from '../layouts/Base.astro';
+
+const features = [
+  {
+    icon: '📅',
+    title: 'Familienkalender',
+    desc: 'Gemeinsame Termine verwalten, Einladungen versenden und Erinnerungen einrichten.',
+  },
+  {
+    icon: '✅',
+    title: 'Aufgaben & To-dos',
+    desc: 'Aufgaben erstellen, delegieren und mit Unteraufgaben strukturieren.',
+  },
+  {
+    icon: '📄',
+    title: 'Dokumente',
+    desc: 'Alle wichtigen Dokumente sicher hochladen, kategorisieren und jederzeit abrufen.',
+  },
+  {
+    icon: '💰',
+    title: 'Gemeinsame Finanzen',
+    desc: 'Ausgaben teilen, Schulden verwalten und Haushaltskasse im Blick behalten.',
+  },
+  {
+    icon: '📱',
+    title: 'Mobile App',
+    desc: 'Offline-fähige App für iOS und Android. Daten synchronisieren im Hintergrund.',
+  },
+  {
+    icon: '🔐',
+    title: 'Sicher verschlüsselt',
+    desc: 'Alle persönlichen Daten werden AES-256-GCM verschlüsselt. Nur du hast Zugriff.',
+  },
+];
+
+const security = [
+  { label: 'DSGVO-konform', sub: 'Datenhaltung in Deutschland' },
+  { label: 'TLS 1.3', sub: 'BSI TR-02102-2 konform' },
+  { label: 'AES-256 Verschlüsselung', sub: 'Alle PII-Daten verschlüsselt' },
+  { label: 'Mandanten-Isolation', sub: 'Eigene Datenbank pro Familie' },
+  { label: 'Keine Werbung', sub: 'Keine Weitergabe an Dritte' },
+  { label: '2FA-Unterstützung', sub: 'Zwei-Faktor-Authentifizierung' },
+];
+---
+
+<Base title="LunaFamily – Familien-Management-Plattform">
+
+  <!-- Hero -->
+  <section
+    class="bg-gradient-to-b from-brand-50 to-white px-6 pt-20 pb-16 text-center"
+    aria-labelledby="hero-title"
+  >
+    <span class="inline-block bg-brand-50 text-brand-500 text-xs font-semibold px-3 py-1 rounded-full mb-6 tracking-wide uppercase">
+      DSGVO-konform · Made in Germany
+    </span>
+    <h1
+      id="hero-title"
+      class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight max-w-3xl mx-auto mb-5"
+    >
+      Alles für deine Familie –<br />
+      <em class="not-italic text-brand-500">sicher an einem Ort</em>
+    </h1>
+    <p class="text-lg text-gray-500 max-w-xl mx-auto mb-10">
+      Termine, Aufgaben, Dokumente, Finanzen und mehr – organisiert,
+      verschlüsselt und jederzeit verfügbar.
+    </p>
+    <div class="flex flex-wrap gap-4 justify-center">
+      <a
+        href="https://app.lunafamily.online/register"
+        class="px-7 py-3 text-base font-semibold text-white bg-brand-500 rounded-xl hover:bg-brand-600 transition-colors focus-visible:outline-2 focus-visible:outline-brand-500"
+        rel="noopener"
+      >
+        Jetzt kostenlos starten
+      </a>
+      <a
+        href="https://app.lunafamily.online/login"
+        class="px-7 py-3 text-base font-semibold text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors focus-visible:outline-2 focus-visible:outline-brand-500"
+        rel="noopener"
+      >
+        Anmelden
+      </a>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="px-6 py-20" aria-labelledby="features-title">
+    <div class="max-w-6xl mx-auto">
+      <p class="text-center text-xs font-semibold uppercase tracking-widest text-brand-500 mb-3">
+        Funktionen
+      </p>
+      <h2
+        id="features-title"
+        class="text-3xl sm:text-4xl font-bold text-center mb-4"
+      >
+        Alles, was deine Familie braucht
+      </h2>
+      <p class="text-center text-gray-500 max-w-lg mx-auto mb-12">
+        LunaFamily vereint alle wichtigen Organisations-Tools in einer sicheren Plattform.
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {features.map((f) => (
+          <article class="bg-white border border-gray-200 rounded-2xl p-7 hover:shadow-md transition-shadow">
+            <div
+              class="w-11 h-11 bg-brand-50 rounded-xl flex items-center justify-center text-2xl mb-4"
+              aria-hidden="true"
+            >
+              {f.icon}
+            </div>
+            <h3 class="font-semibold text-base mb-1">{f.title}</h3>
+            <p class="text-sm text-gray-500">{f.desc}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Security -->
+  <section
+    class="bg-gray-50 px-6 py-20"
+    aria-labelledby="security-title"
+  >
+    <div class="max-w-6xl mx-auto">
+      <p class="text-center text-xs font-semibold uppercase tracking-widest text-brand-500 mb-3">
+        Sicherheit & Datenschutz
+      </p>
+      <h2
+        id="security-title"
+        class="text-3xl sm:text-4xl font-bold text-center mb-4"
+      >
+        Datenschutz ist kein Feature, sondern Standard
+      </h2>
+      <p class="text-center text-gray-500 max-w-lg mx-auto mb-12">
+        LunaFamily wurde nach deutschen und europäischen Datenschutzvorgaben entwickelt.
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {security.map((s) => (
+          <div class="flex items-start gap-3 bg-white border border-gray-200 rounded-xl p-5">
+            <span class="text-green-500 text-lg mt-0.5 flex-shrink-0" aria-hidden="true">✓</span>
+            <div>
+              <strong class="text-sm font-semibold block">{s.label}</strong>
+              <span class="text-xs text-gray-500">{s.sub}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section
+    class="bg-brand-500 px-6 py-20 text-white text-center"
+    aria-labelledby="cta-title"
+  >
+    <h2 id="cta-title" class="text-3xl sm:text-4xl font-bold mb-4">
+      Bereit loszulegen?
+    </h2>
+    <p class="text-brand-100 mb-8 text-lg">
+      Erstelle deinen kostenlosen LunaFamily-Account und starte noch heute.
+    </p>
+    <a
+      href="https://app.lunafamily.online/register"
+      class="inline-block px-8 py-3 text-base font-semibold text-brand-600 bg-white rounded-xl hover:bg-gray-50 transition-colors focus-visible:outline-2 focus-visible:outline-white"
+      rel="noopener"
+    >
+      Kostenlos registrieren
+    </a>
+  </section>
+
+</Base>

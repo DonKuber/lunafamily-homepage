@@ -1,0 +1,118 @@
+# ============================================================================
+# LunaFamily Homepage — Continuous Deployment
+# ----------------------------------------------------------------------------
+# Trigger: push to main
+# Flow:
+#   1. Astro build (static HTML)
+#   2. rsync → /var/www/lunafamily-home/ auf dem Server
+#      ├── Legal pages (impressum.html, datenschutz.html) werden NICHT
+#      │   überschrieben — diese verwaltet der Backend-Webhook.
+#      └── Neue Placeholder-Dateien werden nur angelegt wenn noch nicht vorhanden.
+# ============================================================================
+
+name: Deploy Homepage
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-homepage
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Astro check (TypeScript)
+        run: npm run check
+
+      - name: Build
+        run: npm run build
+        # Output → ./dist/
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Deploy via rsync
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          set -eu
+          DEST="/var/www/lunafamily-home"
+
+          # Astro-Build syncen — Legal-Pages NICHT überschreiben (Backend-Webhook verwaltet diese)
+          rsync -az --delete \
+            --exclude 'impressum.html' \
+            --exclude 'datenschutz.html' \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
+            ./dist/ \
+            "${DEPLOY_USER}@${DEPLOY_HOST}:${DEST}/"
+
+          # Placeholder Legal-Pages nur anlegen wenn Webhook noch nicht gefeuert hat
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
+            "${DEPLOY_USER}@${DEPLOY_HOST}" bash << 'REMOTE'
+          set -eu
+          DEST="/var/www/lunafamily-home"
+
+          if [ ! -f "$DEST/impressum.html" ]; then
+            echo "::warning:: impressum.html fehlt — Placeholder wird angelegt"
+            cat > "$DEST/impressum.html" << 'HTML'
+          <!DOCTYPE html>
+          <html lang="de">
+          <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+          <title>Impressum – LunaFamily</title>
+          <link rel="stylesheet" href="/assets/style.css" onerror="this.remove()">
+          <style>body{font-family:system-ui,sans-serif;max-width:720px;margin:3rem auto;padding:0 1.5rem}h1{color:#6366f1}</style>
+          </head><body>
+          <p><a href="/">← Zurück</a></p>
+          <h1>Impressum</h1>
+          <p><em>Diese Seite wird automatisch vom ControlPanel befüllt. Bitte Webhook auslösen.</em></p>
+          </body></html>
+          HTML
+          fi
+
+          if [ ! -f "$DEST/datenschutz.html" ]; then
+            echo "::warning:: datenschutz.html fehlt — Placeholder wird angelegt"
+            cat > "$DEST/datenschutz.html" << 'HTML'
+          <!DOCTYPE html>
+          <html lang="de">
+          <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+          <title>Datenschutz – LunaFamily</title>
+          <link rel="stylesheet" href="/assets/style.css" onerror="this.remove()">
+          <style>body{font-family:system-ui,sans-serif;max-width:720px;margin:3rem auto;padding:0 1.5rem}h1{color:#6366f1}</style>
+          </head><body>
+          <p><a href="/">← Zurück</a></p>
+          <h1>Datenschutzerklärung</h1>
+          <p><em>Diese Seite wird automatisch vom ControlPanel befüllt. Bitte Webhook auslösen.</em></p>
+          </body></html>
+          HTML
+          fi
+
+          echo "✅ Homepage deployed to $DEST"
+          ls -lh "$DEST"
+          REMOTE
+
+      - name: Cleanup SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key

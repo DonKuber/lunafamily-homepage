@@ -1,0 +1,91 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = 'LunaFamily – Die sichere Familien-Management-Plattform. Termine, Aufgaben, Dokumente und mehr – datenschutzkonform nach DSGVO.',
+  noindex = false,
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    {noindex && <meta name="robots" content="noindex" />}
+
+    <title>{title}</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="de_DE" />
+  </head>
+  <body class="bg-white text-gray-900 font-sans antialiased">
+
+    <!-- Navigation -->
+    <nav
+      class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-200"
+      role="navigation"
+      aria-label="Hauptnavigation"
+    >
+      <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        <a href="/" class="text-xl font-bold text-brand-500 hover:text-brand-600 transition-colors" aria-label="LunaFamily Startseite">
+          Luna<span class="text-gray-900">Family</span>
+        </a>
+        <div class="flex items-center gap-3">
+          <a
+            href="https://app.lunafamily.online/login"
+            class="hidden sm:inline-block px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors focus-visible:outline-2 focus-visible:outline-brand-500"
+            rel="noopener"
+          >
+            Anmelden
+          </a>
+          <a
+            href="https://app.lunafamily.online/register"
+            class="px-4 py-2 text-sm font-medium text-white bg-brand-500 rounded-lg hover:bg-brand-600 transition-colors focus-visible:outline-2 focus-visible:outline-brand-500"
+            rel="noopener"
+          >
+            Kostenlos starten
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <slot />
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400" role="contentinfo">
+      <div class="max-w-6xl mx-auto px-6 py-10">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+          <a href="/" class="text-white font-bold text-lg">LunaFamily</a>
+          <nav class="flex flex-wrap gap-6 text-sm" aria-label="Footer-Navigation">
+            <a href="https://app.lunafamily.online/login" class="hover:text-white transition-colors" rel="noopener">Anmelden</a>
+            <a href="https://app.lunafamily.online/register" class="hover:text-white transition-colors" rel="noopener">Registrieren</a>
+            <a href="/datenschutz" class="hover:text-white transition-colors">Datenschutz</a>
+            <a href="/impressum" class="hover:text-white transition-colors">Impressum</a>
+          </nav>
+        </div>
+        <p class="text-center text-xs text-gray-500">
+          &copy; {new Date().getFullYear()} LunaFamily. Alle Rechte vorbehalten.
+          &nbsp;·&nbsp; DSGVO-konform &nbsp;·&nbsp; Hosting in Deutschland
+        </p>
+      </div>
+    </footer>
+
+  </body>
+</html>

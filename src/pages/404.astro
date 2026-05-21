@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Seite nicht gefunden – LunaFamily" noindex={true}>
+  <section class="flex flex-col items-center justify-center min-h-[60vh] px-6 text-center">
+    <p class="text-7xl font-extrabold text-brand-500 mb-4">404</p>
+    <h1 class="text-2xl font-bold mb-3">Seite nicht gefunden</h1>
+    <p class="text-gray-500 mb-8 max-w-sm">
+      Die gesuchte Seite existiert nicht oder wurde verschoben.
+    </p>
+    <div class="flex flex-wrap gap-3 justify-center">
+      <a
+        href="/"
+        class="px-6 py-2.5 text-sm font-semibold text-white bg-brand-500 rounded-lg hover:bg-brand-600 transition-colors"
+      >
+        Zur Startseite
+      </a>
+      <a
+        href="https://app.lunafamily.online"
+        class="px-6 py-2.5 text-sm font-semibold text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+        rel="noopener"
+      >
+        Zur App
+      </a>
+    </div>
+  </section>
+</Base>
