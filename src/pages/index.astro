@@ -1,170 +1,521 @@
 ---
 import Base from '../layouts/Base.astro';
 
-const features = [
-  {
-    icon: '📅',
-    title: 'Familienkalender',
-    desc: 'Gemeinsame Termine verwalten, Einladungen versenden und Erinnerungen einrichten.',
-  },
-  {
-    icon: '✅',
-    title: 'Aufgaben & To-dos',
-    desc: 'Aufgaben erstellen, delegieren und mit Unteraufgaben strukturieren.',
-  },
-  {
-    icon: '📄',
-    title: 'Dokumente',
-    desc: 'Alle wichtigen Dokumente sicher hochladen, kategorisieren und jederzeit abrufen.',
-  },
-  {
-    icon: '💰',
-    title: 'Gemeinsame Finanzen',
-    desc: 'Ausgaben teilen, Schulden verwalten und Haushaltskasse im Blick behalten.',
-  },
-  {
-    icon: '📱',
-    title: 'Mobile App',
-    desc: 'Offline-fähige App für iOS und Android. Daten synchronisieren im Hintergrund.',
-  },
-  {
-    icon: '🔐',
-    title: 'Sicher verschlüsselt',
-    desc: 'Alle persönlichen Daten werden AES-256-GCM verschlüsselt. Nur du hast Zugriff.',
-  },
+// ─── Icon SVG path strings (inner content only, Lucide-compatible) ─────────────
+const IC = {
+  heart:       `<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>`,
+  shield:      `<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>`,
+  lock:        `<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>`,
+  smartphone:  `<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>`,
+  globe:       `<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>`,
+  arrowRight:  `<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>`,
+  chevronRight:`<path d="m9 18 6-6-6-6"/>`,
+  flask:       `<path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/>`,
+  sparkles:    `<path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>`,
+  checkCheck:  `<path d="M18 6 7 17l-5-5"/><path d="m22 10-7.5 7.5L13 16"/>`,
+  star:        `<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>`,
+  construction:`<rect x="2" y="6" width="20" height="8" rx="1"/><path d="M17 14v7"/><path d="M7 14v7"/><path d="M17 3v3"/><path d="M7 3v3"/><path d="M10 14 2.3 6.3"/><path d="m14 6 7.7 7.7"/><path d="m8 6 8 8"/>`,
+  zap:         `<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>`,
+  clock:       `<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>`,
+  users:       `<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>`,
+  // category icons
+  calendar:    `<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>`,
+  checkCircle: `<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>`,
+  fileText:    `<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>`,
+  utensils:    `<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3v7"/>`,
+  home:        `<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>`,
+  wallet:      `<path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>`,
+  mail:        `<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>`,
+  graduationCap:`<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>`,
+  barChart:    `<path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>`,
+};
+
+interface Category {
+  icon: string;
+  gradient: string;
+  status: 'available' | 'partial' | 'coming';
+  title: string;
+  subtitle: string;
+  features: string[];
+}
+
+const CATEGORIES: Category[] = [
+  { icon: IC.calendar,     gradient: 'from-blue-500 to-cyan-500',    status: 'available', title: 'Kalender & Planung',        subtitle: 'Nie wieder einen Termin verpassen',         features: ['Familien-Kalender', 'Wiederkehrende Termine', 'Event-Planung & Abstimmungen', 'Erinnerungen & Push-Benachrichtigungen'] },
+  { icon: IC.checkCircle,  gradient: 'from-green-500 to-emerald-500',status: 'available', title: 'Aufgaben & Todos',            subtitle: 'Gemeinsam mehr erledigen',                   features: ['Aufgabenlisten für alle', 'Subtasks & Prioritäten', 'Kategorien & Tags', 'Fälligkeitsdaten & Zuweisung'] },
+  { icon: IC.fileText,     gradient: 'from-orange-500 to-amber-500', status: 'available', title: 'Dokumente (Paperless)',       subtitle: 'Papierkram endlich digital',                 features: ['Rechnungen & Verträge', 'Automatische OCR-Erkennung', 'Intelligente Kategorisierung', 'Schnelle Volltextsuche'] },
+  { icon: IC.utensils,     gradient: 'from-rose-500 to-pink-500',    status: 'available', title: 'Küche & Ernährung',           subtitle: 'Kochen wird wieder Freude',                  features: ['Rezeptsammlung', 'Mahlzeitenplanung', 'Auto-Einkaufslisten', 'Kalorientracking'] },
+  { icon: IC.users,        gradient: 'from-violet-500 to-purple-500',status: 'available', title: 'Familie & Kontakte',          subtitle: 'Alle Verbindungen an einem Ort',             features: ['Familienmitglieder verwalten', 'Stammbaum visualisieren', 'Kontaktbuch mit CRM', 'Firmen & Verträge'] },
+  { icon: IC.home,         gradient: 'from-teal-500 to-green-500',   status: 'available', title: 'Haushalt',                    subtitle: 'Der Haushalt läuft sich fast von selbst',    features: ['Haushaltsaufgaben & Gamification', 'Inventar verwalten', 'Bedienungsanleitungen', 'Haushaltsplaner'] },
+  { icon: IC.wallet,       gradient: 'from-yellow-500 to-orange-500',status: 'partial',   title: 'Finanzen',                    subtitle: 'Volle Kontrolle über das Familienbudget',    features: ['Open Banking (GoCardless)', 'Ausgaben & Budgets', 'Kredite & Investments', 'Steuerübersicht'] },
+  { icon: IC.mail,         gradient: 'from-sky-500 to-blue-500',     status: 'partial',   title: 'Kommunikation',               subtitle: 'Immer verbunden, egal wo',                   features: ['Familien-Nachrichten', 'Integrierter E-Mail-Client', 'Ankündigungen', 'Anrufverlauf'] },
+  { icon: IC.graduationCap,gradient: 'from-indigo-500 to-violet-500',status: 'partial',   title: 'Schule & Bildung',            subtitle: 'Lernfortschritt im Blick',                   features: ['Schultermine & Hausaufgaben', 'Noten & Zeugnisse', 'Lernpläne', 'Studienmanagement'] },
+  { icon: IC.sparkles,     gradient: 'from-pink-500 to-rose-500',    status: 'coming',    title: 'KI-Assistent',                subtitle: 'Intelligente Unterstützung im Alltag',       features: ['Automatische Kategorisierung', 'Smarte Vorschläge', 'E-Mail-Review & Zusammenfassungen', 'Multi-Provider KI'] },
+  { icon: IC.smartphone,   gradient: 'from-slate-500 to-gray-600',   status: 'coming',    title: 'Mobile App (Offline)',         subtitle: 'Immer dabei, auch ohne Internet',             features: ['iOS & Android App', 'Offline-First Architektur', 'Automatische Synchronisation', 'Biometrische Absicherung'] },
+  { icon: IC.barChart,     gradient: 'from-cyan-500 to-teal-500',    status: 'partial',   title: 'Statistiken & Insights',      subtitle: 'Daten, die wirklich helfen',                 features: ['Familien-Dashboard', 'Aktivitätsberichte', 'Ausgaben-Trends', 'Produktivitäts-Insights'] },
 ];
 
-const security = [
-  { label: 'DSGVO-konform', sub: 'Datenhaltung in Deutschland' },
-  { label: 'TLS 1.3', sub: 'BSI TR-02102-2 konform' },
-  { label: 'AES-256 Verschlüsselung', sub: 'Alle PII-Daten verschlüsselt' },
-  { label: 'Mandanten-Isolation', sub: 'Eigene Datenbank pro Familie' },
-  { label: 'Keine Werbung', sub: 'Keine Weitergabe an Dritte' },
-  { label: '2FA-Unterstützung', sub: 'Zwei-Faktor-Authentifizierung' },
+const WHY_CARDS = [
+  { icon: IC.shield,      color: 'text-green-500', title: 'DSGVO-konform',            text: 'Entwickelt nach EU-Datenschutzrecht. Deine Familiendaten gehören dir — nicht uns.' },
+  { icon: IC.lock,        color: 'text-blue-500',  title: 'Hosting in Deutschland',   text: 'Server in Deutschland. Kein Transfer in Drittländer. AES-256-GCM Verschlüsselung für alle persönlichen Daten.' },
+  { icon: IC.users,       color: 'text-primary',   title: 'Für die ganze Familie',    text: 'Jedes Familienmitglied hat sein eigenes Profil. Geteilte Inhalte, private Bereiche — du entscheidest.' },
+  { icon: IC.globe,       color: 'text-sky-500',   title: 'Multi-Tenant Architektur', text: 'Jede Familie bekommt eine völlig isolierte Datenbankinstanz. Cross-Tenant-Zugriff ist technisch unmöglich.' },
+  { icon: IC.zap,         color: 'text-amber-500', title: 'Blitzschnell',             text: 'Optimierte Datenbankabfragen, Redis-Cache und ein modernes React 19 Frontend für eine App, die sich gut anfühlt.' },
+  { icon: IC.flask,       color: 'text-primary',   title: 'Du gestaltest mit',        text: 'Als Beta-Nutzer hast du direkten Einfluss. Wir bauen, was echte Familien wirklich brauchen.' },
 ];
+
+const BETA_CARDS = [
+  { icon: IC.flask,       color: 'text-primary',   title: 'Aktive Entwicklung',                    text: 'LunaFamily wird täglich weiterentwickelt. Jede Woche kommen neue Features und Verbesserungen.' },
+  { icon: IC.star,        color: 'text-amber-500', title: 'Dein Feedback formt das Produkt',       text: 'Als Early Adopter hast du direkten Einfluss. Was dir fehlt, bauen wir als nächstes.' },
+  { icon: IC.heart,       color: 'text-rose-500',  title: 'Kostenlos während der Beta',            text: 'Alle Features sind in der Beta-Phase vollständig kostenlos nutzbar. Keine Kreditkarte nötig.' },
+  { icon: IC.shield,      color: 'text-green-500', title: 'Sicherheit ist keine Beta-Funktion',    text: 'DSGVO, Verschlüsselung, Malware-Schutz — Sicherheit ist von Anfang an eingebaut, nicht nachträglich.' },
+  { icon: IC.clock,       color: 'text-blue-500',  title: 'Module rollen schrittweise aus',        text: 'Nicht alle Module sind sofort verfügbar. Wir schalten sie frei, sobald sie stabil und getestet sind.' },
+  { icon: IC.zap,         color: 'text-primary',   title: 'Schnelle Bug-Fixes',                    text: 'Wenn etwas nicht stimmt, beheben wir es schnell. Transparente Kommunikation ist uns wichtig.' },
+];
+
+const ROADMAP_DONE = [
+  'Kalender & Termine', 'Aufgaben & Todos mit Subtasks', 'Dokumente (Paperless-ngx)',
+  'Rezepte, Einkauf & Mahlzeiten', 'Familienmitglieder & Kontakte', 'Haushalt & Inventar',
+  'Familien-Nachrichten', 'Push-Benachrichtigungen', 'Tagebuch & Erfolgsjournal',
+];
+const ROADMAP_WIP = [
+  'Open Banking (GoCardless)', 'E-Mail-Client Integration', 'Schul- & Studienmanagement',
+  'Crypto-Portfolio', 'Statistiken & Reports', 'Event-Planung & Abstimmungen',
+];
+const ROADMAP_PLANNED = [
+  'Mobile App (iOS & Android)', 'KI-Assistent (Multi-Provider)', 'Familien-Foto-Galerie',
+  'Mehrsprachigkeit (EN, FR)', 'Apple/Google Calendar Sync', 'Offline-First Sync Engine',
+];
+
+const STATUS = {
+  available: { label: 'Verfügbar',      cls: 'bg-green-100 text-green-700 border-green-200' },
+  partial:   { label: 'In Entwicklung', cls: 'bg-amber-100 text-amber-700 border-amber-200' },
+  coming:    { label: 'Demnächst',      cls: 'bg-slate-100 text-slate-600 border-slate-200' },
+};
 ---
 
-<Base title="LunaFamily – Familien-Management-Plattform">
+<Base
+  title="LunaFamily – Das digitale Zuhause für deine Familie"
+  description="Kalender, Aufgaben, Dokumente, Finanzen, Rezepte und vieles mehr — alles an einem Ort, für die ganze Familie. Sicher. In Deutschland gehostet. DSGVO-konform."
+>
 
-  <!-- Hero -->
-  <section
-    class="bg-gradient-to-b from-brand-50 to-white px-6 pt-20 pb-16 text-center"
-    aria-labelledby="hero-title"
-  >
-    <span class="inline-block bg-brand-50 text-brand-500 text-xs font-semibold px-3 py-1 rounded-full mb-6 tracking-wide uppercase">
-      DSGVO-konform · Made in Germany
-    </span>
-    <h1
-      id="hero-title"
-      class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight max-w-3xl mx-auto mb-5"
-    >
-      Alles für deine Familie –<br />
-      <em class="not-italic text-brand-500">sicher an einem Ort</em>
-    </h1>
-    <p class="text-lg text-gray-500 max-w-xl mx-auto mb-10">
-      Termine, Aufgaben, Dokumente, Finanzen und mehr – organisiert,
-      verschlüsselt und jederzeit verfügbar.
-    </p>
-    <div class="flex flex-wrap gap-4 justify-center">
-      <a
-        href="https://app.lunafamily.online/register"
-        class="px-7 py-3 text-base font-semibold text-white bg-brand-500 rounded-xl hover:bg-brand-600 transition-colors focus-visible:outline-2 focus-visible:outline-brand-500"
-        rel="noopener"
-      >
-        Jetzt kostenlos starten
-      </a>
-      <a
-        href="https://app.lunafamily.online/login"
-        class="px-7 py-3 text-base font-semibold text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors focus-visible:outline-2 focus-visible:outline-brand-500"
-        rel="noopener"
-      >
+<style is:global>
+  @keyframes lf-float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(40px,-50px)} }
+  @keyframes lf-float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-30px,40px)} }
+  @keyframes lf-float3 { 0%,100%{transform:translate(-50%,-50%)} 50%{transform:translate(-50%,calc(-50% - 25px))} }
+  @keyframes lf-fadein  { from{opacity:0;transform:translateY(2.5rem)} to{opacity:1;transform:translateY(0)} }
+
+  .lf-hero { animation: lf-fadein 1s ease forwards; }
+
+  .lf-animate {
+    opacity: 0;
+    transform: translateY(2rem);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .lf-animate.lf-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #lf-nav.lf-scrolled {
+    background-color: rgba(249,245,239,.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid #e8e0d5;
+    box-shadow: 0 1px 3px rgba(0,0,0,.05);
+  }
+</style>
+
+<!-- ─── Navbar ─────────────────────────────────────────────────────────────── -->
+<nav id="lf-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+           style="background:linear-gradient(135deg,#c4a265,#c09556);box-shadow:0 4px 12px rgba(196,162,101,.3)">
+        <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <Fragment set:html={IC.heart} />
+        </svg>
+      </div>
+      <span class="font-bold text-lg text-foreground">LunaFamily</span>
+      <span class="ml-1 px-2 py-0.5 text-xs font-semibold bg-amber-100 text-amber-700 rounded-full border border-amber-200">BETA</span>
+    </div>
+    <div class="flex items-center gap-1.5 sm:gap-3">
+      <a href="https://app.lunafamily.online/login" class="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors" rel="noopener">
         Anmelden
       </a>
+      <a href="https://app.lunafamily.online/register"
+         class="bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-lg transition-colors"
+         style="box-shadow:0 4px 12px rgba(196,162,101,.2)" rel="noopener">
+        Registrieren
+      </a>
     </div>
-  </section>
+  </div>
+</nav>
 
-  <!-- Features -->
-  <section class="px-6 py-20" aria-labelledby="features-title">
-    <div class="max-w-6xl mx-auto">
-      <p class="text-center text-xs font-semibold uppercase tracking-widest text-brand-500 mb-3">
-        Funktionen
-      </p>
-      <h2
-        id="features-title"
-        class="text-3xl sm:text-4xl font-bold text-center mb-4"
-      >
+<!-- ─── Beta Banner ───────────────────────────────────────────────────────── -->
+<div class="bg-amber-50 border-b border-amber-200 py-2.5 px-4 text-center mt-16">
+  <p class="text-sm text-amber-800 flex items-center justify-center gap-2 flex-wrap">
+    <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <Fragment set:html={IC.flask} />
+    </svg>
+    <span>
+      <strong>Öffentliche Beta:</strong> LunaFamily wird aktiv weiterentwickelt. Module werden schrittweise freigeschaltet.
+    </span>
+    <a href="mailto:feedback@lunafamily.de" class="underline font-medium hover:text-amber-900 transition-colors">
+      Feedback geben →
+    </a>
+  </p>
+</div>
+
+<!-- ─── Hero ──────────────────────────────────────────────────────────────── -->
+<section class="relative min-h-[92vh] flex items-center justify-center overflow-hidden" aria-labelledby="hero-heading">
+  <div class="absolute inset-0 -z-10">
+    <div class="absolute inset-0 bg-background"></div>
+    <div class="absolute top-1/3 -left-40 w-[600px] h-[600px] rounded-full opacity-[0.18]"
+         style="background:radial-gradient(circle,#c4a265 0%,transparent 65%);animation:lf-float1 9s ease-in-out infinite" aria-hidden="true"></div>
+    <div class="absolute bottom-1/4 -right-40 w-[500px] h-[500px] rounded-full opacity-[0.14]"
+         style="background:radial-gradient(circle,#d4b378 0%,transparent 65%);animation:lf-float2 12s ease-in-out infinite" aria-hidden="true"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full opacity-[0.10]"
+         style="background:radial-gradient(circle,#8fae6b 0%,transparent 65%);animation:lf-float3 15s ease-in-out infinite" aria-hidden="true"></div>
+  </div>
+
+  <div class="lf-hero max-w-4xl mx-auto px-4 sm:px-6 text-center">
+    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium mb-8"
+         style="background:rgba(196,162,101,.1);border-color:rgba(196,162,101,.3);color:#c4a265">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <Fragment set:html={IC.flask} />
+      </svg>
+      Early Access Beta — Jetzt kostenlos mitmachen
+    </div>
+
+    <h1 id="hero-heading" class="text-4xl sm:text-5xl lg:text-7xl font-bold text-foreground mb-6 leading-[1.1] tracking-tight">
+      Das digitale{' '}
+      <span style="background:linear-gradient(90deg,#c4a265,#c09556,#c4a265);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">
+        Zuhause
+      </span>{' '}
+      für deine Familie.
+    </h1>
+
+    <p class="text-lg sm:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
+      Kalender, Aufgaben, Dokumente, Finanzen, Rezepte und vieles mehr — alles an einem Ort, für die ganze Familie. Sicher. In Deutschland gehostet. DSGVO-konform.
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-14">
+      <a href="https://app.lunafamily.online/register"
+         class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-10 py-4 text-base rounded-xl transition-colors"
+         style="box-shadow:0 20px 40px rgba(196,162,101,.25)" rel="noopener">
+        Jetzt kostenlos registrieren
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <Fragment set:html={IC.arrowRight} />
+        </svg>
+      </a>
+      <a href="https://app.lunafamily.online/login"
+         class="w-full sm:w-auto inline-flex items-center justify-center border border-border bg-card text-foreground font-semibold px-10 py-4 text-base rounded-xl hover:bg-muted transition-colors"
+         rel="noopener">
+        Bereits registriert? Anmelden
+      </a>
+    </div>
+
+    <div class="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
+      <span class="flex items-center gap-1.5">
+        <svg class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={IC.shield} /></svg>
+        DSGVO-konform
+      </span>
+      <span class="flex items-center gap-1.5">
+        <svg class="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={IC.lock} /></svg>
+        Server in Deutschland
+      </span>
+      <span class="flex items-center gap-1.5">
+        <svg class="w-4 h-4 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={IC.heart} /></svg>
+        Kostenlos in der Beta
+      </span>
+      <span class="flex items-center gap-1.5" style="color:#7d7060">
+        <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="#c4a265" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={IC.smartphone} /></svg>
+        Web & Mobile
+      </span>
+      <span class="flex items-center gap-1.5">
+        <svg class="w-4 h-4 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={IC.globe} /></svg>
+        Multi-Tenant
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Features ─────────────────────────────────────────────────────────── -->
+<section class="py-24 px-4 sm:px-6 bg-muted/20" aria-labelledby="features-heading">
+  <div class="max-w-6xl mx-auto">
+    <div class="lf-animate text-center mb-16">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm font-medium mb-5"
+           style="background:rgba(196,162,101,.1);border-color:rgba(196,162,101,.3);color:#c4a265">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <Fragment set:html={IC.sparkles} />
+        </svg>
+        12 Module, ein System
+      </div>
+      <h2 id="features-heading" class="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-5">
         Alles, was deine Familie braucht
       </h2>
-      <p class="text-center text-gray-500 max-w-lg mx-auto mb-12">
-        LunaFamily vereint alle wichtigen Organisations-Tools in einer sicheren Plattform.
+      <p class="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
+        LunaFamily vereint alle wichtigen Funktionen für den Familienalltag in einer einzigen, sicheren Plattform — statt 12 verschiedene Apps.
       </p>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {features.map((f) => (
-          <article class="bg-white border border-gray-200 rounded-2xl p-7 hover:shadow-md transition-shadow">
-            <div
-              class="w-11 h-11 bg-brand-50 rounded-xl flex items-center justify-center text-2xl mb-4"
-              aria-hidden="true"
-            >
-              {f.icon}
-            </div>
-            <h3 class="font-semibold text-base mb-1">{f.title}</h3>
-            <p class="text-sm text-gray-500">{f.desc}</p>
-          </article>
-        ))}
-      </div>
     </div>
-  </section>
 
-  <!-- Security -->
-  <section
-    class="bg-gray-50 px-6 py-20"
-    aria-labelledby="security-title"
-  >
-    <div class="max-w-6xl mx-auto">
-      <p class="text-center text-xs font-semibold uppercase tracking-widest text-brand-500 mb-3">
-        Sicherheit & Datenschutz
-      </p>
-      <h2
-        id="security-title"
-        class="text-3xl sm:text-4xl font-bold text-center mb-4"
-      >
-        Datenschutz ist kein Feature, sondern Standard
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {CATEGORIES.map((cat, i) => {
+        const st = STATUS[cat.status];
+        const isComingSoon = cat.status === 'coming';
+        return (
+          <div class="lf-animate" style={`transition-delay:${Math.min(i * 50, 300)}ms`}>
+            <div class={`h-full border border-border bg-card rounded-2xl p-6 transition-all duration-300 ${isComingSoon ? 'opacity-75' : 'hover:shadow-md hover:-translate-y-0.5'}`}>
+              <div class="flex items-start justify-between mb-4">
+                <div class={`p-3 rounded-xl bg-gradient-to-br ${cat.gradient} text-white shadow-sm`}>
+                  <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <Fragment set:html={cat.icon} />
+                  </svg>
+                </div>
+                <span class={`px-2.5 py-1 rounded-full text-xs font-semibold border ${st.cls}`}>
+                  {st.label}
+                </span>
+              </div>
+              <h3 class="font-bold text-foreground text-lg mb-1">{cat.title}</h3>
+              <p class="text-muted-foreground text-sm mb-4 leading-relaxed">{cat.subtitle}</p>
+              <ul class="space-y-2">
+                {cat.features.map(f => (
+                  <li class="flex items-center gap-2.5 text-sm text-muted-foreground">
+                    <svg class={`w-3.5 h-3.5 flex-shrink-0 ${isComingSoon ? 'opacity-50' : 'text-primary'}`}
+                         viewBox="0 0 24 24" fill="none" stroke={isComingSoon ? 'currentColor' : '#c4a265'}
+                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <Fragment set:html={IC.checkCheck} />
+                    </svg>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-5 text-sm">
+      <span class="flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium bg-green-100 text-green-700 border-green-200">
+        <span class="w-2 h-2 rounded-full bg-current" aria-hidden="true"></span>Verfügbar
+      </span>
+      <span class="flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium bg-amber-100 text-amber-700 border-amber-200">
+        <span class="w-2 h-2 rounded-full bg-current" aria-hidden="true"></span>In Entwicklung
+      </span>
+      <span class="flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium bg-slate-100 text-slate-600 border-slate-200">
+        <span class="w-2 h-2 rounded-full bg-current" aria-hidden="true"></span>Demnächst
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Why LunaFamily ────────────────────────────────────────────────────── -->
+<section class="py-24 px-4 sm:px-6" aria-labelledby="why-heading">
+  <div class="max-w-5xl mx-auto">
+    <div class="lf-animate text-center mb-14">
+      <h2 id="why-heading" class="text-3xl sm:text-4xl font-bold text-foreground mb-4">
+        Warum LunaFamily?
       </h2>
-      <p class="text-center text-gray-500 max-w-lg mx-auto mb-12">
-        LunaFamily wurde nach deutschen und europäischen Datenschutzvorgaben entwickelt.
+      <p class="text-muted-foreground text-lg max-w-2xl mx-auto">
+        Statt 12 Apps, 12 Passwörter und 12 Abos — alles in einer sicheren, deutschen Plattform.
       </p>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {security.map((s) => (
-          <div class="flex items-start gap-3 bg-white border border-gray-200 rounded-xl p-5">
-            <span class="text-green-500 text-lg mt-0.5 flex-shrink-0" aria-hidden="true">✓</span>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {WHY_CARDS.map((card, i) => (
+        <div class="lf-animate" style={`transition-delay:${i * 80}ms`}>
+          <div class="flex items-start gap-4 p-5 rounded-xl border border-border bg-card hover:border-primary/40 transition-colors">
+            <div class="p-2.5 rounded-lg bg-muted flex-shrink-0">
+              <svg class={`w-6 h-6 ${card.color}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <Fragment set:html={card.icon} />
+              </svg>
+            </div>
             <div>
-              <strong class="text-sm font-semibold block">{s.label}</strong>
-              <span class="text-xs text-gray-500">{s.sub}</span>
+              <h3 class="font-semibold text-foreground mb-1.5">{card.title}</h3>
+              <p class="text-muted-foreground text-sm leading-relaxed">{card.text}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- ─── Beta Transparency ──────────────────────────────────────────────────── -->
+<section class="py-20 px-4 sm:px-6 bg-muted/30" aria-labelledby="beta-heading">
+  <div class="max-w-4xl mx-auto">
+    <div class="lf-animate">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="p-2.5 rounded-xl bg-amber-100 text-amber-600">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <Fragment set:html={IC.construction} />
+          </svg>
+        </div>
+        <div>
+          <h2 id="beta-heading" class="text-2xl sm:text-3xl font-bold text-foreground">Ehrlich: Wir sind Beta</h2>
+          <p class="text-muted-foreground text-sm">Und das ist kein Fehler — sondern ein Feature.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {BETA_CARDS.map((card, i) => (
+          <div class="lf-animate flex items-start gap-3 p-4 rounded-xl bg-background border border-border" style={`transition-delay:${i * 60}ms`}>
+            <div class="mt-0.5 flex-shrink-0">
+              <svg class={`w-5 h-5 ${card.color}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <Fragment set:html={card.icon} />
+              </svg>
+            </div>
+            <div>
+              <p class="font-semibold text-foreground text-sm mb-1">{card.title}</p>
+              <p class="text-muted-foreground text-sm leading-relaxed">{card.text}</p>
             </div>
           </div>
         ))}
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- CTA -->
-  <section
-    class="bg-brand-500 px-6 py-20 text-white text-center"
-    aria-labelledby="cta-title"
-  >
-    <h2 id="cta-title" class="text-3xl sm:text-4xl font-bold mb-4">
-      Bereit loszulegen?
-    </h2>
-    <p class="text-brand-100 mb-8 text-lg">
-      Erstelle deinen kostenlosen LunaFamily-Account und starte noch heute.
-    </p>
-    <a
-      href="https://app.lunafamily.online/register"
-      class="inline-block px-8 py-3 text-base font-semibold text-brand-600 bg-white rounded-xl hover:bg-gray-50 transition-colors focus-visible:outline-2 focus-visible:outline-white"
-      rel="noopener"
-    >
-      Kostenlos registrieren
-    </a>
-  </section>
+<!-- ─── Roadmap ───────────────────────────────────────────────────────────── -->
+<section class="py-24 px-4 sm:px-6" aria-labelledby="roadmap-heading">
+  <div class="max-w-5xl mx-auto">
+    <div class="lf-animate text-center mb-14">
+      <h2 id="roadmap-heading" class="text-3xl sm:text-4xl font-bold text-foreground mb-4">Unsere Roadmap</h2>
+      <p class="text-muted-foreground text-lg">Transparent. Ehrlich. Immer aktuell.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="lf-animate" style="transition-delay:0ms">
+        <div class="h-full rounded-xl border border-green-200 bg-green-50/50 p-6">
+          <h3 class="font-bold text-foreground mb-4 text-base">✅ Jetzt verfügbar</h3>
+          <ul class="space-y-2.5">
+            {ROADMAP_DONE.map(item => (
+              <li class="flex items-center gap-2.5 text-sm text-foreground/80">
+                <span class="w-2 h-2 rounded-full bg-green-500 flex-shrink-0" aria-hidden="true"></span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <div class="lf-animate" style="transition-delay:100ms">
+        <div class="h-full rounded-xl border border-primary/30 bg-primary/5 p-6">
+          <h3 class="font-bold text-foreground mb-4 text-base">🔨 In Entwicklung</h3>
+          <ul class="space-y-2.5">
+            {ROADMAP_WIP.map(item => (
+              <li class="flex items-center gap-2.5 text-sm text-foreground/80">
+                <span class="w-2 h-2 rounded-full bg-primary flex-shrink-0" aria-hidden="true"></span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <div class="lf-animate" style="transition-delay:200ms">
+        <div class="h-full rounded-xl border border-border bg-card p-6">
+          <h3 class="font-bold text-foreground mb-4 text-base">🗺 Geplant</h3>
+          <ul class="space-y-2.5">
+            {ROADMAP_PLANNED.map(item => (
+              <li class="flex items-center gap-2.5 text-sm text-foreground/80">
+                <span class="w-2 h-2 rounded-full bg-muted-foreground/50 flex-shrink-0" aria-hidden="true"></span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ───────────────────────────────────────────────────────────────── -->
+<section class="py-24 px-4 sm:px-6 bg-muted/20" aria-labelledby="cta-heading">
+  <div class="max-w-3xl mx-auto text-center">
+    <div class="lf-animate">
+      <div class="relative rounded-3xl p-10 sm:p-16 overflow-hidden border border-primary/30"
+           style="background:linear-gradient(135deg,rgba(196,162,101,.10),rgba(192,149,86,.05),#f9f5ef)">
+        <div class="absolute inset-0 -z-10 opacity-25"
+             style="background:radial-gradient(ellipse at 50% 0%,#c4a265 0%,transparent 60%)" aria-hidden="true"></div>
+
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/30 text-sm font-medium mb-6"
+             style="background:rgba(249,245,239,.7);color:#c4a265">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <Fragment set:html={IC.flask} />
+          </svg>
+          Kostenloser Beta-Zugang
+        </div>
+
+        <h2 id="cta-heading" class="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-5 leading-tight">
+          Bring Ordnung in deinen Familienalltag.
+        </h2>
+        <p class="text-muted-foreground text-lg mb-10 max-w-xl mx-auto leading-relaxed">
+          Registriere dich jetzt kostenlos und erlebe, wie LunaFamily deinen Alltag einfacher macht — noch heute. Keine Kreditkarte, kein Abo, kein Risiko.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="https://app.lunafamily.online/register"
+             class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-12 py-4 text-base rounded-xl transition-colors"
+             style="box-shadow:0 20px 40px rgba(196,162,101,.30)" rel="noopener">
+            Jetzt kostenlos starten
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <Fragment set:html={IC.chevronRight} />
+            </svg>
+          </a>
+          <a href="https://app.lunafamily.online/login"
+             class="inline-flex items-center justify-center border border-border bg-card/60 text-foreground font-semibold px-12 py-4 text-base rounded-xl hover:bg-muted transition-colors"
+             rel="noopener">
+            Bereits dabei? Anmelden
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Footer ────────────────────────────────────────────────────────────── -->
+<footer class="border-t border-border py-10 px-4 sm:px-6" role="contentinfo">
+  <div class="max-w-6xl mx-auto">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-3">
+        <div class="w-7 h-7 rounded-lg flex items-center justify-center"
+             style="background:linear-gradient(135deg,#c4a265,#c09556)">
+          <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <Fragment set:html={IC.heart} />
+          </svg>
+        </div>
+        <span class="font-semibold text-foreground">LunaFamily</span>
+        <span class="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">Beta v0.1</span>
+      </div>
+      <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2" aria-label="Footer-Navigation">
+        <a href="/impressum"   class="text-sm text-muted-foreground hover:text-foreground transition-colors">Impressum</a>
+        <a href="/datenschutz" class="text-sm text-muted-foreground hover:text-foreground transition-colors">Datenschutz</a>
+        <a href="https://app.lunafamily.online/login"    class="text-sm text-muted-foreground hover:text-foreground transition-colors" rel="noopener">Anmelden</a>
+        <a href="https://app.lunafamily.online/register" class="text-sm text-muted-foreground hover:text-foreground transition-colors" rel="noopener">Registrieren</a>
+      </nav>
+      <p class="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} LunaFamily</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Navbar scroll effect
+  const nav = document.getElementById('lf-nav');
+  if (nav) {
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('lf-scrolled', window.scrollY > 20);
+    }, { passive: true });
+  }
+
+  // Scroll-triggered fade-in animations
+  const io = new IntersectionObserver(
+    (entries) => entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('lf-visible');
+        io.unobserve(e.target);
+      }
+    }),
+    { threshold: 0.08 }
+  );
+  document.querySelectorAll('.lf-animate').forEach(el => io.observe(el));
+</script>
 
 </Base>

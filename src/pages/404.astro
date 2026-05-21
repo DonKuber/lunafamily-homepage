@@ -3,26 +3,35 @@ import Base from '../layouts/Base.astro';
 ---
 
 <Base title="Seite nicht gefunden – LunaFamily" noindex={true}>
-  <section class="flex flex-col items-center justify-center min-h-[60vh] px-6 text-center">
-    <p class="text-7xl font-extrabold text-brand-500 mb-4">404</p>
-    <h1 class="text-2xl font-bold mb-3">Seite nicht gefunden</h1>
-    <p class="text-gray-500 mb-8 max-w-sm">
+
+  <nav class="border-b border-border bg-background/95">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="/" class="font-bold text-lg text-foreground hover:text-primary transition-colors" aria-label="LunaFamily Startseite">
+        LunaFamily
+      </a>
+      <a href="https://app.lunafamily.online/login" class="text-sm text-muted-foreground hover:text-foreground transition-colors" rel="noopener">
+        Anmelden
+      </a>
+    </div>
+  </nav>
+
+  <section class="flex flex-col items-center justify-center min-h-[70vh] px-6 text-center">
+    <p class="text-7xl font-extrabold text-primary mb-4">404</p>
+    <h1 class="text-2xl font-bold text-foreground mb-3">Seite nicht gefunden</h1>
+    <p class="text-muted-foreground mb-8 max-w-sm">
       Die gesuchte Seite existiert nicht oder wurde verschoben.
     </p>
     <div class="flex flex-wrap gap-3 justify-center">
-      <a
-        href="/"
-        class="px-6 py-2.5 text-sm font-semibold text-white bg-brand-500 rounded-lg hover:bg-brand-600 transition-colors"
-      >
+      <a href="/"
+         class="px-6 py-2.5 text-sm font-semibold text-primary-foreground bg-primary rounded-lg hover:bg-primary/90 transition-colors">
         Zur Startseite
       </a>
-      <a
-        href="https://app.lunafamily.online"
-        class="px-6 py-2.5 text-sm font-semibold text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-        rel="noopener"
-      >
+      <a href="https://app.lunafamily.online"
+         class="px-6 py-2.5 text-sm font-semibold text-foreground border border-border rounded-lg hover:bg-muted transition-colors"
+         rel="noopener">
         Zur App
       </a>
     </div>
   </section>
+
 </Base>
