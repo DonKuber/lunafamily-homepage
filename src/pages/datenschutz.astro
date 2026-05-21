@@ -1,5 +1,12 @@
 ---
 import Base from '../layouts/Base.astro';
+import { fetchLegalPages } from '../lib/fetchLegal';
+
+const legal = await fetchLegalPages();
+const html = legal?.privacyPolicyText ?? null;
+const lastUpdated = legal?.lastUpdatedAt
+  ? new Date(legal.lastUpdatedAt).toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })
+  : null;
 ---
 
 <Base
@@ -31,12 +38,17 @@ import Base from '../layouts/Base.astro';
   <h1 class="text-3xl sm:text-4xl font-bold text-foreground mb-2">Datenschutzerklärung</h1>
   <p class="text-muted-foreground mb-10">Informationspflichten gemäß DSGVO Art. 13</p>
 
-  <div id="lf-legal-content" class="prose prose-stone max-w-none">
-    <!-- Wird vom ControlPanel-Webhook befüllt -->
+  {html ? (
+    <div class="prose prose-stone max-w-none" set:html={html} />
+  ) : (
     <div class="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
-      Der Inhalt dieser Seite wird automatisch vom ControlPanel aktualisiert.
+      Die Datenschutzerklärung wird in Kürze veröffentlicht.
     </div>
-  </div>
+  )}
+
+  {lastUpdated && (
+    <p class="mt-10 text-xs text-muted-foreground">Stand: {lastUpdated}</p>
+  )}
 </main>
 
 <!-- Footer -->
@@ -46,6 +58,7 @@ import Base from '../layouts/Base.astro';
     <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2" aria-label="Footer-Navigation">
       <a href="/impressum"   class="text-sm text-muted-foreground hover:text-foreground transition-colors">Impressum</a>
       <a href="/datenschutz" class="text-sm text-primary font-medium">Datenschutz</a>
+      <a href="/agb"         class="text-sm text-muted-foreground hover:text-foreground transition-colors">AGB</a>
       <a href="https://app.lunafamily.online/login"    class="text-sm text-muted-foreground hover:text-foreground transition-colors" rel="noopener">Anmelden</a>
       <a href="https://app.lunafamily.online/register" class="text-sm text-muted-foreground hover:text-foreground transition-colors" rel="noopener">Registrieren</a>
     </nav>

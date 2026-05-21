@@ -3,15 +3,15 @@ import Base from '../layouts/Base.astro';
 import { fetchLegalPages } from '../lib/fetchLegal';
 
 const legal = await fetchLegalPages();
-const html = legal?.impressumText ?? null;
+const html = legal?.agbText ?? null;
 const lastUpdated = legal?.lastUpdatedAt
   ? new Date(legal.lastUpdatedAt).toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })
   : null;
 ---
 
 <Base
-  title="Impressum – LunaFamily"
-  description="Impressum der LunaFamily GmbH gemäß § 18 MStV."
+  title="Allgemeine Geschäftsbedingungen – LunaFamily"
+  description="AGB der LunaFamily GmbH."
 >
 
 <!-- Nav -->
@@ -35,14 +35,14 @@ const lastUpdated = legal?.lastUpdatedAt
     Zurück zur Startseite
   </a>
 
-  <h1 class="text-3xl sm:text-4xl font-bold text-foreground mb-2">Impressum</h1>
-  <p class="text-muted-foreground mb-10">Angaben gemäß § 18 MStV</p>
+  <h1 class="text-3xl sm:text-4xl font-bold text-foreground mb-2">Allgemeine Geschäftsbedingungen</h1>
+  <p class="text-muted-foreground mb-10">AGB der LunaFamily GmbH</p>
 
   {html ? (
     <div class="prose prose-stone max-w-none" set:html={html} />
   ) : (
     <div class="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
-      Das Impressum wird in Kürze veröffentlicht.
+      Die AGB werden in Kürze veröffentlicht.
     </div>
   )}
 
@@ -56,9 +56,9 @@ const lastUpdated = legal?.lastUpdatedAt
   <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
     <a href="/" class="font-semibold text-foreground hover:text-primary transition-colors">LunaFamily</a>
     <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2" aria-label="Footer-Navigation">
-      <a href="/impressum"   class="text-sm text-primary font-medium">Impressum</a>
+      <a href="/impressum"   class="text-sm text-muted-foreground hover:text-foreground transition-colors">Impressum</a>
       <a href="/datenschutz" class="text-sm text-muted-foreground hover:text-foreground transition-colors">Datenschutz</a>
-      <a href="/agb"         class="text-sm text-muted-foreground hover:text-foreground transition-colors">AGB</a>
+      <a href="/agb"         class="text-sm text-primary font-medium">AGB</a>
       <a href="https://app.lunafamily.online/login"    class="text-sm text-muted-foreground hover:text-foreground transition-colors" rel="noopener">Anmelden</a>
       <a href="https://app.lunafamily.online/register" class="text-sm text-muted-foreground hover:text-foreground transition-colors" rel="noopener">Registrieren</a>
     </nav>

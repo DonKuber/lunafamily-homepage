@@ -1,13 +1,17 @@
 # ============================================================================
 # LunaFamily Homepage — Continuous Deployment
 # ----------------------------------------------------------------------------
-# Trigger: push to main
+# Trigger:
+#   - push to main
+#   - workflow_dispatch (manuell)
+#   - repository_dispatch: legal-content-updated (vom ControlPanel ausgelöst)
+#
 # Flow:
 #   1. Astro build (static HTML)
+#      Beim Build werden Rechtstexte vom ControlPanel API gefetcht und
+#      statisch eingebacken (CP_API_BASE_URL + LUNAFAMILY_PROGRAM_ID).
+#      Fällt die API aus: Fallback-Platzhalter, Build läuft trotzdem durch.
 #   2. rsync → /var/www/lunafamily-home/ auf dem Server
-#      └── Alle Seiten inkl. impressum.html + datenschutz.html werden deployed.
-#          Der ControlPanel-Webhook kann diese Dateien danach mit echtem Inhalt
-#          überschreiben — das Styling kommt dann aus den Backend-Templates.
 # ============================================================================
 
 name: Deploy Homepage
@@ -16,6 +20,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  repository_dispatch:
+    types: [legal-content-updated]
 
 concurrency:
   group: deploy-homepage
@@ -44,14 +50,17 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          CP_API_BASE_URL: ${{ secrets.CP_API_BASE_URL }}
+          LUNAFAMILY_PROGRAM_ID: ${{ secrets.LUNAFAMILY_PROGRAM_ID }}
         # Output → ./dist/
 
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          echo ${{ secrets.DEPLOY_SSH_KEY }} > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null || true
+          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
 
       - name: Deploy via rsync
         env:
@@ -59,14 +68,11 @@ jobs:
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
         run: |
           set -eu
-          DEST="/var/www/lunafamily-home"
+          DEST=/var/www/lunafamily-home
 
-          rsync -az --delete \
-            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
-            ./dist/ \
-            "${DEPLOY_USER}@${DEPLOY_HOST}:${DEST}/"
+          rsync -az --delete             -e ssh -i /home/kuba/.ssh/deploy_key -o StrictHostKeyChecking=no             ./dist/             ${DEPLOY_USER}@${DEPLOY_HOST}:${DEST}/
 
-          echo "✅ Homepage deployed to $DEST"
+          echo ✅ Homepage deployed to $DEST
 
       - name: Cleanup SSH key
         if: always()
