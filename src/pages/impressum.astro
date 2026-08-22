@@ -32,36 +32,67 @@ const lastUpdated = legal?.lastUpdatedAt
 
   {html ? (
     <div class="prose prose-stone max-w-none" set:html={html} />
-  ) : (
+  ) : legal?.companyName ? (
     <div class="prose prose-stone max-w-none">
       <h2>Angaben gemäß § 18 Abs. 2 MStV</h2>
 
       <p>
-        <strong>Northletic</strong><br />
-        Inhaber: Clemens Orué<br />
-        Igelweg 5<br />
-        24539 Neumünster<br />
+        <strong>{legal.companyName}</strong><br />
+        {legal.managingDirector && <>Geschäftsführer: {legal.managingDirector}<br /></>}
+        {legal.street && <>{legal.street}<br /></>}
+        {(legal.postalCode || legal.city) && (
+          <>{legal.postalCode} {legal.city}<br /></>
+        )}
         Deutschland
       </p>
 
-      <h3>Kontakt</h3>
-      <p>
-        Telefon: <a href="tel:+4943219648001">04321 96 48 001</a><br />
-        E-Mail: <a href="mailto:info@northletic.net">info@northletic.net</a>
-      </p>
+      {(legal.phone || legal.email) && (
+        <>
+          <h3>Kontakt</h3>
+          <p>
+            {legal.phone && <>Telefon: <a href={`tel:${legal.phone.replace(/\s+/g, '')}`}>{legal.phone}</a><br /></>}
+            {legal.email && <>E-Mail: <a href={`mailto:${legal.email}`}>{legal.email}</a></>}
+          </p>
+        </>
+      )}
 
-      <h3>Umsatzsteuer-Identifikationsnummer</h3>
-      <p>
-        Gemäß § 27 a Umsatzsteuergesetz:<br />
-        DE358938293
-      </p>
+      {(legal.registryCourt || legal.registryNumber) && (
+        <>
+          <h3>Registereintrag</h3>
+          <p>
+            {legal.registryCourt && <>Registergericht: {legal.registryCourt}<br /></>}
+            {legal.registryNumber && <>Registernummer: {legal.registryNumber}</>}
+          </p>
+        </>
+      )}
 
-      <h3>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h3>
-      <p>
-        Clemens Orué<br />
-        Igelweg 5<br />
-        24539 Neumünster
-      </p>
+      {legal.vatId && (
+        <>
+          <h3>Umsatzsteuer-Identifikationsnummer</h3>
+          <p>
+            Gemäß § 27 a Umsatzsteuergesetz:<br />
+            {legal.vatId}
+          </p>
+        </>
+      )}
+
+      {legal.wirtschaftsIdNr && (
+        <>
+          <h3>Wirtschafts-Identifikationsnummer</h3>
+          <p>Gemäß § 139c AO: {legal.wirtschaftsIdNr}</p>
+        </>
+      )}
+
+      {legal.managingDirector && (
+        <>
+          <h3>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h3>
+          <p>
+            {legal.managingDirector}<br />
+            {legal.street && <>{legal.street}<br /></>}
+            {legal.postalCode} {legal.city}
+          </p>
+        </>
+      )}
 
       <h3>EU-Streitschlichtung</h3>
       <p>
@@ -74,6 +105,12 @@ const lastUpdated = legal?.lastUpdatedAt
       <p>
         Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer
         Verbraucherschlichtungsstelle teilzunehmen.
+      </p>
+    </div>
+  ) : (
+    <div class="prose prose-stone max-w-none">
+      <p class="text-muted-foreground italic">
+        Die Angaben werden aktualisiert. Bitte versuchen Sie es in Kürze erneut.
       </p>
     </div>
   )}

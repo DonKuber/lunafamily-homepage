@@ -1,13 +1,13 @@
 # ============================================================================
 # LunaFamily Homepage — Continuous Deployment
 # ----------------------------------------------------------------------------
-# Trigger: push to main
+# Trigger: push to main, workflow_dispatch, oder repository_dispatch
+#          (legal-content-updated — ausgelöst vom ControlPanel bei Änderung der
+#          Firmen- oder Programm-Rechtsdaten)
 # Flow:
-#   1. Astro build (static HTML)
-#   2. rsync → /var/www/lunafamily-home/ auf dem Server
-#      └── Alle Seiten inkl. impressum.html + datenschutz.html werden deployed.
-#          Der ControlPanel-Webhook kann diese Dateien danach mit echtem Inhalt
-#          überschreiben — das Styling kommt dann aus den Backend-Templates.
+#   1. Astro build (fetcht dabei live impressum/datenschutz/agb-Inhalte aus
+#      ControlPanel, siehe src/lib/fetchLegal.ts) → statisches HTML
+#   2. rsync --delete → /var/www/lunafamily-home/ auf dem Server (alle Seiten)
 # ============================================================================
 
 name: Deploy Homepage

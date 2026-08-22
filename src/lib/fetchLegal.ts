@@ -5,6 +5,21 @@ export interface LegalPages {
   agbText?: string;
   cookiePolicyText?: string;
   lastUpdatedAt?: string;
+
+  // Firmen-Pflichtangaben (aufgelöst über Program.myBusinessId → LegalSettings im
+  // ControlPanel) — Quelle für Impressum + "Verantwortlicher"-Block im Datenschutz.
+  companyName?: string;
+  managingDirector?: string;
+  street?: string;
+  postalCode?: string;
+  city?: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+  registryCourt?: string;
+  registryNumber?: string;
+  vatId?: string;
+  wirtschaftsIdNr?: string;
 }
 
 export async function fetchLegalPages(): Promise<LegalPages | null> {

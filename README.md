@@ -9,18 +9,27 @@ lunafamily.online
 ├── index.html          ← Astro (dieses Repo, bei jedem Push rebuilt)
 ├── 404.html            ← Astro
 ├── assets/             ← Astro (CSS, Fonts)
-├── impressum.html      ← Backend-Webhook (LunaFamily App-Repo)
-└── datenschutz.html    ← Backend-Webhook (LunaFamily App-Repo)
+├── impressum.html      ← Astro (Build-Time-Fetch aus ControlPanel)
+├── datenschutz.html    ← Astro (Build-Time-Fetch aus ControlPanel)
+└── agb.html            ← Astro (Build-Time-Fetch aus ControlPanel)
 ```
 
-**Legal Pages** (`impressum.html`, `datenschutz.html`) werden **nicht** von Astro generiert.
-Sie werden vom ControlPanel über einen S2S-Webhook automatisch aktualisiert:
+**Legal Pages** (`impressum.html`, `datenschutz.html`, `agb.html`) werden von Astro
+generiert, aber die Inhalte kommen zur **Build-Zeit** live aus dem ControlPanel:
 
 ```
-ControlPanel → POST app.lunafamily.online/api/webhooks/controlpanel/legal-update
-                                    → schreibt /var/www/lunafamily-home/impressum.html
-                                    → schreibt /var/www/lunafamily-home/datenschutz.html
+Build (npm run build)
+  → GET {CP_API_BASE_URL}/programs/homepage/{LUNAFAMILY_PROGRAM_ID}/legal-pages
+      → Programm-Rechtstexte (Datenschutz-Fließtext, AGB, Cookie-Richtlinie)
+      → Firmen-Pflichtangaben (Impressum + "Verantwortlicher"-Block), aufgelöst über
+        das im ControlPanel hinterlegte Unternehmen dieses Programms
+  → src/pages/impressum.astro / datenschutz.astro rendern daraus die Seiten
 ```
+
+Ändern sich die Rechtsdaten im ControlPanel (Firma **oder** Programm), löst das Backend
+einen GitHub `repository_dispatch` (`legal-content-updated`) gegen dieses Repo aus, der
+`.github/workflows/deploy.yml` erneut anstößt — kein manueller Push nötig, aber auch kein
+Live-Update ohne Rebuild (Verzögerung typischerweise Sekunden bis wenige Minuten).
 
 ## Entwicklung
 
@@ -33,11 +42,12 @@ npm run build     # Statischer Build → ./dist/
 
 ## Deployment
 
-Automatisch bei jedem Push auf `main` via GitHub Actions:
+Automatisch bei jedem Push auf `main`, `workflow_dispatch` oder eingehendem
+`repository_dispatch` (`legal-content-updated`) via GitHub Actions:
 
-1. Astro Build → `./dist/`
-2. `rsync --exclude impressum.html --exclude datenschutz.html` → Server
-3. Legal-Page-Placeholder anlegen falls noch nicht vorhanden
+1. Astro Build → `./dist/` (fetcht dabei live die aktuellen Rechtsdaten aus ControlPanel)
+2. `rsync --delete` → Server (alle Seiten, inkl. Impressum/Datenschutz/AGB — es gibt keine
+   separate Datei-Quelle mehr, die überschrieben werden müsste)
 
 ## BSI / DE Compliance
 
@@ -45,7 +55,7 @@ Automatisch bei jedem Push auf `main` via GitHub Actions:
 |---|---|
 | TLS 1.3 (BSI TR-02102-2) | ✅ Caddy |
 | HSTS `includeSubDomains` | ✅ Caddy |
-| Impressum § 18 MStV | ✅ Via Webhook |
-| Datenschutz DSGVO Art. 13 | ✅ Via Webhook |
+| Impressum § 18 MStV | ✅ Build-Time-Fetch aus ControlPanel |
+| Datenschutz DSGVO Art. 13 | ✅ Build-Time-Fetch aus ControlPanel |
 | Cookie-Consent TTDSG § 25 | ✅ Nicht nötig (cookielose Analytics) |
 | WCAG 2.1 AA (BFSG) | ✅ Semantisches HTML, Kontrastwerte |
