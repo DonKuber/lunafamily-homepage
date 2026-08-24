@@ -67,7 +67,7 @@ const BETA_CARDS = [
   { icon: IC.flask,       color: 'text-primary',   title: 'Aktive Entwicklung',                    text: 'LunaFamily wird täglich weiterentwickelt. Jede Woche kommen neue Features und Verbesserungen.' },
   { icon: IC.star,        color: 'text-amber-500', title: 'Dein Feedback formt das Produkt',       text: 'Als Early Adopter hast du direkten Einfluss. Was dir fehlt, bauen wir als nächstes.' },
   { icon: IC.heart,       color: 'text-rose-500',  title: 'Free Family bleibt kostenlos',          text: 'Der Free-Plan ist und bleibt dauerhaft kostenlos. Wer jetzt alles nutzen möchte, wird Beta Supporter für 5 €/Monat — und sichert sich nach 3 Zahlungen lebenslangen 15 % Rabatt.' },
-  { icon: IC.shield,      color: 'text-green-500', title: 'Sicherheit ist keine Beta-Funktion',    text: 'DSGVO, Verschlüsselung, Malware-Schutz — Sicherheit ist von Anfang an eingebaut, nicht nachträglich.' },
+  { icon: IC.shield,      color: 'text-green-500', title: 'Sicherheit ist keine Beta-Funktion',    text: 'Verschlüsselung und Malware-Schutz für eure Daten — Sicherheit ist von Anfang an eingebaut, nicht nachträglich.' },
   { icon: IC.clock,       color: 'text-blue-500',  title: 'Module rollen schrittweise aus',        text: 'Nicht alle Module sind sofort verfügbar. Wir schalten sie frei, sobald sie stabil und getestet sind.' },
   { icon: IC.zap,         color: 'text-primary',   title: 'Schnelle Bug-Fixes',                    text: 'Wenn etwas nicht stimmt, beheben wir es schnell. Transparente Kommunikation ist uns wichtig.' },
 ];
@@ -95,7 +95,7 @@ const STATUS = {
 
 <Base
   title="LunaFamily – Das digitale Zuhause für deine Familie"
-  description="Kalender, Aufgaben, Dokumente, Finanzen, Rezepte und vieles mehr — alles an einem Ort, für die ganze Familie. Sicher. In Deutschland gehostet. DSGVO-konform."
+  description="Kalender, Aufgaben, Dokumente, Finanzen, Rezepte und vieles mehr — alles an einem Ort, für die ganze Familie. Endlich Schluss mit Zettel-Chaos und App-Wirrwarr."
 >
 
 <style is:global>
@@ -196,7 +196,7 @@ const STATUS = {
     </h1>
 
     <p class="text-lg sm:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
-      Kalender, Aufgaben, Dokumente, Finanzen, Rezepte und vieles mehr — alles an einem Ort, für die ganze Familie. Sicher. In Deutschland gehostet. DSGVO-konform.
+      Vergessene Termine, verlegte Dokumente, "wer kümmert sich eigentlich um was?" — kennt jede Familie. LunaFamily bringt Kalender, Aufgaben, Dokumente, Finanzen und Rezepte an einen Ort, damit ihr wieder Kopf frei habt für das, was wirklich zählt.
     </p>
 
     <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-14">
@@ -217,12 +217,8 @@ const STATUS = {
 
     <div class="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
       <span class="flex items-center gap-1.5">
-        <svg class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={IC.shield} /></svg>
-        DSGVO-konform
-      </span>
-      <span class="flex items-center gap-1.5">
-        <svg class="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={IC.lock} /></svg>
-        Server in Deutschland
+        <svg class="w-4 h-4 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={IC.zap} /></svg>
+        In wenigen Minuten startklar
       </span>
       <span class="flex items-center gap-1.5">
         <svg class="w-4 h-4 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={IC.heart} /></svg>
@@ -233,8 +229,8 @@ const STATUS = {
         Web & Mobile
       </span>
       <span class="flex items-center gap-1.5">
-        <svg class="w-4 h-4 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={IC.globe} /></svg>
-        Multi-Tenant
+        <svg class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={IC.checkCheck} /></svg>
+        Keine Kreditkarte nötig
       </span>
     </div>
   </div>
@@ -318,7 +314,7 @@ const STATUS = {
         Warum LunaFamily?
       </h2>
       <p class="text-muted-foreground text-lg max-w-2xl mx-auto">
-        Statt 12 Apps, 12 Passwörter und 12 Abos — alles in einer sicheren, deutschen Plattform.
+        Statt 12 Apps, 12 Passwörter und 12 Abos — alles an einem Ort, auf das sich deine Familie verlassen kann.
       </p>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
