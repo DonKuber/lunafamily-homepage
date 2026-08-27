@@ -27,6 +27,8 @@ export default {
       },
       fontFamily: {
         sans: ['"IBM Plex Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['"Fredoka"', '"IBM Plex Sans"', 'system-ui', 'sans-serif'],
+        script: ['"Yellowtail"', 'cursive'],
       },
     },
   },

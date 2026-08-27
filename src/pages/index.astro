@@ -130,12 +130,19 @@ const STATUS = {
 <!-- ─── Navbar ─────────────────────────────────────────────────────────────── -->
 <nav id="lf-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-    <div class="flex items-center gap-2">
-      <img src="/brand/logo-wordmark.png" alt="LunaFamily" width="1229" height="231" class="h-11 sm:h-12 w-auto flex-shrink-0 dark:hidden" />
-      <img src="/brand/logo-wordmark-dark.png" alt="LunaFamily" width="1222" height="231" class="h-11 sm:h-12 w-auto flex-shrink-0 hidden dark:block" />
-      <span class="ml-1 px-2 py-0.5 text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 rounded-full border border-amber-200 dark:border-amber-700/60">BETA</span>
+    <div class="flex items-center gap-2 min-w-0">
+      <!-- Mobile: kompaktes Icon-Lockup (Wortmarke ist bei <sm zu breit fuer die Navbar) -->
+      <a href="/" class="flex sm:hidden items-center gap-2 min-w-0" aria-label="LunaFamily Startseite">
+        <img src="/brand/logo-icon.png" alt="" width="401" height="408" class="w-9 h-9 flex-shrink-0 dark:hidden" />
+        <img src="/brand/logo-icon-dark.png" alt="" width="226" height="230" class="w-9 h-9 flex-shrink-0 hidden dark:block" />
+        <span class="font-display font-semibold text-foreground truncate">LunaFamily</span>
+      </a>
+      <!-- Ab sm: volle Wortmarke -->
+      <img src="/brand/logo-wordmark.png" alt="LunaFamily" width="1229" height="231" class="hidden sm:block sm:dark:hidden h-12 w-auto flex-shrink-0" />
+      <img src="/brand/logo-wordmark-dark.png" alt="LunaFamily" width="1222" height="231" class="hidden sm:dark:block h-12 w-auto flex-shrink-0" />
+      <span class="hidden sm:inline-block ml-1 px-2 py-0.5 text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 rounded-full border border-amber-200 dark:border-amber-700/60">BETA</span>
     </div>
-    <div class="flex items-center gap-1 sm:gap-3">
+    <div class="flex items-center gap-0.5 sm:gap-3 flex-shrink-0">
       <button id="lf-theme-toggle" type="button" aria-label="Farbschema umschalten"
               class="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
         <svg class="w-5 h-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -193,9 +200,9 @@ const STATUS = {
       Early Access Beta — Jetzt kostenlos mitmachen
     </div>
 
-    <h1 id="hero-heading" class="text-4xl sm:text-5xl lg:text-7xl font-bold text-foreground mb-6 leading-[1.1] tracking-tight">
+    <h1 id="hero-heading" class="font-display text-4xl sm:text-5xl lg:text-7xl font-bold text-foreground mb-6 leading-[1.15] tracking-tight">
       Das digitale{' '}
-      <span style="background:linear-gradient(90deg,#c4a265,#c09556,#c4a265);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">
+      <span class="font-script text-[1.2em] inline-block pr-3 pb-1" style="background:linear-gradient(90deg,#c4a265,#c09556,#c4a265);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">
         Zuhause
       </span>{' '}
       für deine Familie.
@@ -253,7 +260,7 @@ const STATUS = {
         </svg>
         12 Module, ein System
       </div>
-      <h2 id="features-heading" class="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-5">
+      <h2 id="features-heading" class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-5">
         Alles, was deine Familie braucht
       </h2>
       <p class="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
@@ -278,7 +285,7 @@ const STATUS = {
                   {st.label}
                 </span>
               </div>
-              <h3 class="font-bold text-foreground text-lg mb-1">{cat.title}</h3>
+              <h3 class="font-display font-semibold text-foreground text-lg mb-1">{cat.title}</h3>
               <p class="text-muted-foreground text-sm mb-4 leading-relaxed">{cat.subtitle}</p>
               <ul class="space-y-2">
                 {cat.features.map(f => (
@@ -316,8 +323,8 @@ const STATUS = {
 <section class="py-24 px-4 sm:px-6" aria-labelledby="why-heading">
   <div class="max-w-5xl mx-auto">
     <div class="lf-animate text-center mb-14">
-      <h2 id="why-heading" class="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-        Warum LunaFamily?
+      <h2 id="why-heading" class="font-display text-3xl sm:text-4xl font-bold text-foreground mb-4">
+        Warum <span class="font-semibold">Luna</span><span class="font-script text-accent text-[1.15em]">Family</span>?
       </h2>
       <p class="text-muted-foreground text-lg max-w-2xl mx-auto">
         Statt 12 Apps, 12 Passwörter und 12 Abos — alles an einem Ort, auf das sich deine Familie verlassen kann.
@@ -333,7 +340,7 @@ const STATUS = {
               </svg>
             </div>
             <div>
-              <h3 class="font-semibold text-foreground mb-1.5">{card.title}</h3>
+              <h3 class="font-display font-semibold text-foreground mb-1.5">{card.title}</h3>
               <p class="text-muted-foreground text-sm leading-relaxed">{card.text}</p>
             </div>
           </div>
@@ -354,7 +361,7 @@ const STATUS = {
           </svg>
         </div>
         <div>
-          <h2 id="beta-heading" class="text-2xl sm:text-3xl font-bold text-foreground">Ehrlich: Wir sind Beta</h2>
+          <h2 id="beta-heading" class="font-display text-2xl sm:text-3xl font-bold text-foreground">Ehrlich: Wir sind Beta</h2>
           <p class="text-muted-foreground text-sm">Und das ist kein Fehler — sondern ein Feature.</p>
         </div>
       </div>
@@ -382,13 +389,13 @@ const STATUS = {
 <section class="py-24 px-4 sm:px-6" aria-labelledby="roadmap-heading">
   <div class="max-w-5xl mx-auto">
     <div class="lf-animate text-center mb-14">
-      <h2 id="roadmap-heading" class="text-3xl sm:text-4xl font-bold text-foreground mb-4">Unsere Roadmap</h2>
+      <h2 id="roadmap-heading" class="font-display text-3xl sm:text-4xl font-bold text-foreground mb-4">Unsere Roadmap</h2>
       <p class="text-muted-foreground text-lg">Transparent. Ehrlich. Immer aktuell.</p>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div class="lf-animate" style="transition-delay:0ms">
         <div class="h-full rounded-xl border border-green-200 dark:border-green-800/40 bg-green-50/50 dark:bg-green-950/20 p-6">
-          <h3 class="font-bold text-foreground mb-4 text-base">✅ Jetzt verfügbar</h3>
+          <h3 class="font-display font-bold text-foreground mb-4 text-base">✅ Jetzt verfügbar</h3>
           <ul class="space-y-2.5">
             {ROADMAP_DONE.map(item => (
               <li class="flex items-center gap-2.5 text-sm text-foreground/80">
@@ -401,7 +408,7 @@ const STATUS = {
       </div>
       <div class="lf-animate" style="transition-delay:100ms">
         <div class="h-full rounded-xl border border-primary/30 bg-primary/5 p-6">
-          <h3 class="font-bold text-foreground mb-4 text-base">🔨 In Entwicklung</h3>
+          <h3 class="font-display font-bold text-foreground mb-4 text-base">🔨 In Entwicklung</h3>
           <ul class="space-y-2.5">
             {ROADMAP_WIP.map(item => (
               <li class="flex items-center gap-2.5 text-sm text-foreground/80">
@@ -414,7 +421,7 @@ const STATUS = {
       </div>
       <div class="lf-animate" style="transition-delay:200ms">
         <div class="h-full rounded-xl border border-border bg-card p-6">
-          <h3 class="font-bold text-foreground mb-4 text-base">🗺 Geplant</h3>
+          <h3 class="font-display font-bold text-foreground mb-4 text-base">🗺 Geplant</h3>
           <ul class="space-y-2.5">
             {ROADMAP_PLANNED.map(item => (
               <li class="flex items-center gap-2.5 text-sm text-foreground/80">
@@ -446,7 +453,7 @@ const STATUS = {
           Kostenloser Beta-Zugang
         </div>
 
-        <h2 id="cta-heading" class="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-5 leading-tight">
+        <h2 id="cta-heading" class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-5 leading-tight">
           Bring Ordnung in deinen Familienalltag.
         </h2>
         <p class="text-muted-foreground text-lg mb-10 max-w-xl mx-auto leading-relaxed">
