@@ -28,6 +28,8 @@ const IC = {
   mail:        `<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>`,
   graduationCap:`<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>`,
   barChart:    `<path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>`,
+  sun:         `<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>`,
+  moon:        `<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>`,
 };
 
 interface Category {
@@ -87,9 +89,9 @@ const ROADMAP_PLANNED = [
 ];
 
 const STATUS = {
-  available: { label: 'Verfügbar',      cls: 'bg-green-100 text-green-700 border-green-200' },
-  partial:   { label: 'In Entwicklung', cls: 'bg-amber-100 text-amber-700 border-amber-200' },
-  coming:    { label: 'Demnächst',      cls: 'bg-slate-100 text-slate-600 border-slate-200' },
+  available: { label: 'Verfügbar',      cls: 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800/50' },
+  partial:   { label: 'In Entwicklung', cls: 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800/50' },
+  coming:    { label: 'Demnächst',      cls: 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800/40 dark:text-slate-300 dark:border-slate-700/50' },
 };
 ---
 
@@ -117,10 +119,10 @@ const STATUS = {
   }
 
   #lf-nav.lf-scrolled {
-    background-color: rgba(249,245,239,.95);
+    background-color: rgb(var(--color-background) / .95);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid #e8e0d5;
+    border-bottom: 1px solid rgb(var(--color-border));
     box-shadow: 0 1px 3px rgba(0,0,0,.05);
   }
 </style>
@@ -129,11 +131,20 @@ const STATUS = {
 <nav id="lf-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
     <div class="flex items-center gap-2">
-      <img src="/brand/logo-icon.png" alt="" width="32" height="32" class="w-8 h-8 flex-shrink-0" />
-      <span class="font-bold text-lg text-foreground">LunaFamily</span>
-      <span class="ml-1 px-2 py-0.5 text-xs font-semibold bg-amber-100 text-amber-700 rounded-full border border-amber-200">BETA</span>
+      <img src="/brand/logo-wordmark.png" alt="LunaFamily" width="196" height="67" class="h-9 w-auto flex-shrink-0 dark:hidden" />
+      <img src="/brand/logo-wordmark-dark.png" alt="LunaFamily" width="196" height="67" class="h-9 w-auto flex-shrink-0 hidden dark:block" />
+      <span class="ml-1 px-2 py-0.5 text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 rounded-full border border-amber-200 dark:border-amber-700/60">BETA</span>
     </div>
-    <div class="flex items-center gap-1.5 sm:gap-3">
+    <div class="flex items-center gap-1 sm:gap-3">
+      <button id="lf-theme-toggle" type="button" aria-label="Farbschema umschalten"
+              class="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
+        <svg class="w-5 h-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <Fragment set:html={IC.moon} />
+        </svg>
+        <svg class="w-5 h-5 hidden dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <Fragment set:html={IC.sun} />
+        </svg>
+      </button>
       <a href="https://app.lunafamily.online/login" class="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors" rel="noopener">
         Anmelden
       </a>
@@ -147,15 +158,15 @@ const STATUS = {
 </nav>
 
 <!-- ─── Beta Banner ───────────────────────────────────────────────────────── -->
-<div class="bg-amber-50 border-b border-amber-200 py-2.5 px-4 text-center mt-16">
-  <p class="text-sm text-amber-800 flex items-center justify-center gap-2 flex-wrap">
+<div class="bg-amber-50 dark:bg-amber-950/30 border-b border-amber-200 dark:border-amber-800/50 py-2.5 px-4 text-center mt-16">
+  <p class="text-sm text-amber-800 dark:text-amber-200 flex items-center justify-center gap-2 flex-wrap">
     <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <Fragment set:html={IC.flask} />
     </svg>
     <span>
       <strong>Öffentliche Beta:</strong> LunaFamily wird aktiv weiterentwickelt. Module werden schrittweise freigeschaltet.
     </span>
-    <a href="mailto:feedback@lunafamily.de" class="underline font-medium hover:text-amber-900 transition-colors">
+    <a href="mailto:feedback@lunafamily.de" class="underline font-medium hover:text-amber-900 dark:hover:text-amber-100 transition-colors">
       Feedback geben →
     </a>
   </p>
@@ -288,13 +299,13 @@ const STATUS = {
     </div>
 
     <div class="mt-10 flex flex-wrap items-center justify-center gap-5 text-sm">
-      <span class="flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium bg-green-100 text-green-700 border-green-200">
+      <span class="flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800/50">
         <span class="w-2 h-2 rounded-full bg-current" aria-hidden="true"></span>Verfügbar
       </span>
-      <span class="flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium bg-amber-100 text-amber-700 border-amber-200">
+      <span class="flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800/50">
         <span class="w-2 h-2 rounded-full bg-current" aria-hidden="true"></span>In Entwicklung
       </span>
-      <span class="flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium bg-slate-100 text-slate-600 border-slate-200">
+      <span class="flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800/40 dark:text-slate-300 dark:border-slate-700/50">
         <span class="w-2 h-2 rounded-full bg-current" aria-hidden="true"></span>Demnächst
       </span>
     </div>
@@ -337,7 +348,7 @@ const STATUS = {
   <div class="max-w-4xl mx-auto">
     <div class="lf-animate">
       <div class="flex items-center gap-3 mb-8">
-        <div class="p-2.5 rounded-xl bg-amber-100 text-amber-600">
+        <div class="p-2.5 rounded-xl bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
           <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <Fragment set:html={IC.construction} />
           </svg>
@@ -376,7 +387,7 @@ const STATUS = {
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div class="lf-animate" style="transition-delay:0ms">
-        <div class="h-full rounded-xl border border-green-200 bg-green-50/50 p-6">
+        <div class="h-full rounded-xl border border-green-200 dark:border-green-800/40 bg-green-50/50 dark:bg-green-950/20 p-6">
           <h3 class="font-bold text-foreground mb-4 text-base">✅ Jetzt verfügbar</h3>
           <ul class="space-y-2.5">
             {ROADMAP_DONE.map(item => (
@@ -423,7 +434,7 @@ const STATUS = {
   <div class="max-w-3xl mx-auto text-center">
     <div class="lf-animate">
       <div class="relative rounded-3xl p-10 sm:p-16 overflow-hidden border border-primary/30"
-           style="background:linear-gradient(135deg,rgba(196,162,101,.10),rgba(192,149,86,.05),#f9f5ef)">
+           style="background:linear-gradient(135deg,rgba(196,162,101,.10),rgba(192,149,86,.05),rgb(var(--color-background)))">
         <div class="absolute inset-0 -z-10 opacity-25"
              style="background:radial-gradient(ellipse at 50% 0%,#c4a265 0%,transparent 60%)" aria-hidden="true"></div>
 
@@ -467,7 +478,8 @@ const STATUS = {
   <div class="max-w-6xl mx-auto">
     <div class="flex flex-col md:flex-row items-center justify-between gap-6">
       <div class="flex items-center gap-3">
-        <img src="/brand/logo-icon.png" alt="" width="28" height="28" class="w-7 h-7 flex-shrink-0" />
+        <img src="/brand/logo-icon.png" alt="" width="28" height="28" class="w-7 h-7 flex-shrink-0 dark:hidden" />
+        <img src="/brand/logo-icon-dark.png" alt="" width="28" height="28" class="w-7 h-7 flex-shrink-0 hidden dark:block" />
         <span class="font-semibold text-foreground">LunaFamily</span>
         <span class="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">Beta v0.1</span>
       </div>
@@ -483,6 +495,15 @@ const STATUS = {
 </footer>
 
 <script>
+  // Theme toggle
+  const themeToggle = document.getElementById('lf-theme-toggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const isDark = !document.documentElement.classList.contains('dark');
+      window.__lfSetTheme?.(isDark);
+    });
+  }
+
   // Navbar scroll effect
   const nav = document.getElementById('lf-nav');
   if (nav) {

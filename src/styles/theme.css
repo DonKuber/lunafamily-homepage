@@ -1,0 +1,34 @@
+/* ============================================================================
+   LunaFamily Farb-Tokens (Light + Dark)
+   ============================================================================
+   RGB-Tripel (ohne Funktion), damit Tailwind Opacity-Modifier (z.B. bg-card/50)
+   über rgb(var(--x) / <alpha-value>) funktionieren.
+   ============================================================================ */
+
+:root {
+  --color-background: 249 245 239;
+  --color-foreground: 58 49 41;
+  --color-muted: 240 236 228;
+  --color-muted-foreground: 125 112 96;
+  --color-card: 254 252 250;
+  --color-card-foreground: 58 49 41;
+  --color-border: 232 224 213;
+  --color-primary: 196 162 101;
+  --color-primary-foreground: 254 252 250;
+  --color-accent: 192 149 86;
+  --color-accent-foreground: 254 252 250;
+}
+
+:root.dark {
+  --color-background: 26 22 17;
+  --color-foreground: 243 237 226;
+  --color-muted: 42 35 27;
+  --color-muted-foreground: 179 166 144;
+  --color-card: 34 29 23;
+  --color-card-foreground: 243 237 226;
+  --color-border: 58 49 41;
+  --color-primary: 196 162 101;
+  --color-primary-foreground: 254 252 250;
+  --color-accent: 192 149 86;
+  --color-accent-foreground: 254 252 250;
+}
