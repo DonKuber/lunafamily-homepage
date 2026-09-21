@@ -1,9 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
 import { fetchLegalPages } from '../lib/fetchLegal';
+import { formatLegalText } from '../lib/legalText';
 
 const legal = await fetchLegalPages();
-const html = legal?.privacyPolicyText ?? null;
+const html = legal?.privacyPolicyText ? formatLegalText(legal.privacyPolicyText) : null;
 const lastUpdated = legal?.lastUpdatedAt
   ? new Date(legal.lastUpdatedAt).toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })
   : null;
@@ -30,24 +31,21 @@ const lastUpdated = legal?.lastUpdatedAt
   <h1 class="font-display text-3xl sm:text-4xl font-bold text-foreground mb-2">Datenschutzerklärung</h1>
   <p class="text-muted-foreground mb-10">Informationspflichten gemäß DSGVO Art. 13</p>
 
-  <div class="prose prose-stone max-w-none">
-    <h2>1. Verantwortlicher</h2>
-    {legal?.companyName ? (
-      <p>
-        {legal.companyName}{legal.managingDirector && <>, Inhaber {legal.managingDirector}</>}<br />
-        {legal.street && <>{legal.street}, </>}{legal.postalCode} {legal.city}<br />
-        {legal.email && <>E-Mail: <a href={`mailto:${legal.email}`}>{legal.email}</a><br /></>}
-        {legal.phone && <>Telefon: {legal.phone}</>}
-      </p>
-    ) : (
-      <p class="text-muted-foreground italic">Die Angaben werden aktualisiert.</p>
-    )}
-  </div>
-
   {html ? (
     <div class="prose prose-stone max-w-none" set:html={html} />
   ) : (
     <div class="prose prose-stone max-w-none">
+      <h2>1. Verantwortlicher</h2>
+      {legal?.companyName ? (
+        <p>
+          {legal.companyName}{legal.managingDirector && <>, Inhaber {legal.managingDirector}</>}<br />
+          {legal.street && <>{legal.street}, </>}{legal.postalCode} {legal.city}<br />
+          {legal.email && <>E-Mail: <a href={`mailto:${legal.email}`}>{legal.email}</a><br /></>}
+          {legal.phone && <>Telefon: {legal.phone}</>}
+        </p>
+      ) : (
+        <p class="text-muted-foreground italic">Die Angaben werden aktualisiert.</p>
+      )}
 
       <h2>2. Welche Daten wir verarbeiten</h2>
       <p>Bei der Nutzung von LunaFamily verarbeiten wir folgende personenbezogene Daten:</p>

@@ -1,9 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
 import { fetchLegalPages } from '../lib/fetchLegal';
+import { formatLegalText } from '../lib/legalText';
 
 const legal = await fetchLegalPages();
-const html = legal?.agbText ?? null;
+const html = legal?.agbText ? formatLegalText(legal.agbText) : null;
 const lastUpdated = legal?.lastUpdatedAt
   ? new Date(legal.lastUpdatedAt).toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })
   : null;
