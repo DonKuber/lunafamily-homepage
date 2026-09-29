@@ -1,0 +1,167 @@
+---
+import Base from '../../layouts/Base.astro';
+import SiteNav from '../../components/SiteNav.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import SiteScripts from '../../components/SiteScripts.astro';
+import ScreenshotFrame from '../../components/ScreenshotFrame.astro';
+import FeatureVideo from '../../components/FeatureVideo.astro';
+import { IC } from '../../data/icons';
+import { CATEGORIES, STATUS, screenshotsFor, videoFor, type Category } from '../../data/features';
+
+export function getStaticPaths() {
+  return CATEGORIES.map((cat) => ({ params: { slug: cat.slug }, props: { cat } }));
+}
+
+const { cat } = Astro.props as { cat: Category };
+const st = STATUS[cat.status];
+const shots = screenshotsFor(cat.slug);
+const [leadShot, ...moreShots] = shots;
+const video = videoFor(cat.slug);
+const idx = CATEGORIES.findIndex((c) => c.slug === cat.slug);
+const prev = CATEGORIES[(idx - 1 + CATEGORIES.length) % CATEGORIES.length];
+const next = CATEGORIES[(idx + 1) % CATEGORIES.length];
+const others = CATEGORIES.filter((c) => c.slug !== cat.slug);
+---
+
+<Base title={`${cat.title} – LunaFamily`} description={`${cat.subtitle}. ${cat.intro}`}>
+
+<SiteNav />
+
+<main class="pt-16">
+  <!-- ─── Kopf ──────────────────────────────────────────────────────────── -->
+  <section class="relative overflow-hidden px-4 sm:px-6 pt-12 sm:pt-16 pb-12" aria-labelledby="feature-heading">
+    <div class="absolute -top-40 -right-40 w-[520px] h-[520px] rounded-full opacity-[0.14] -z-10"
+         style="background:radial-gradient(circle,#c4a265 0%,transparent 65%)" aria-hidden="true"></div>
+    <div class="max-w-6xl mx-auto">
+      <nav class="text-sm text-muted-foreground mb-8 flex items-center gap-1.5 flex-wrap" aria-label="Brotkrumen">
+        <a href="/" class="hover:text-foreground transition-colors">Start</a>
+        <span aria-hidden="true">/</span>
+        <a href="/funktionen" class="hover:text-foreground transition-colors">Funktionen</a>
+        <span aria-hidden="true">/</span>
+        <span class="text-foreground">{cat.title}</span>
+      </nav>
+
+      <div class={`grid gap-10 items-center ${leadShot ? 'lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]' : ''}`}>
+        <div class={leadShot ? '' : 'max-w-3xl'}>
+          <div class="flex items-center gap-3 mb-6">
+            <div class={`p-3 rounded-xl bg-gradient-to-br ${cat.gradient} text-white shadow-sm`}>
+              <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <Fragment set:html={cat.icon} />
+              </svg>
+            </div>
+            <span class={`px-2.5 py-1 rounded-full text-xs font-semibold border ${st.cls}`}>{st.label}</span>
+          </div>
+          <h1 id="feature-heading" class="font-display text-4xl sm:text-5xl font-bold text-foreground mb-4 leading-tight">{cat.title}</h1>
+          <p class="text-xl text-primary font-medium mb-5">{cat.subtitle}</p>
+          <p class="text-lg text-muted-foreground leading-relaxed mb-8">{cat.intro}</p>
+          <ul class="grid sm:grid-cols-2 gap-x-6 gap-y-2.5">
+            {cat.features.map((f) => (
+              <li class="flex items-center gap-2.5 text-sm text-foreground">
+                <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="#c4a265" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <Fragment set:html={IC.checkCheck} />
+                </svg>
+                {f}
+              </li>
+            ))}
+          </ul>
+        </div>
+        {leadShot && <ScreenshotFrame shot={leadShot} eager />}
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Highlights ────────────────────────────────────────────────────── -->
+  <section class="py-16 px-4 sm:px-6 bg-muted/20" aria-labelledby="highlights-heading">
+    <div class="max-w-6xl mx-auto">
+      <h2 id="highlights-heading" class="sr-only">Was {cat.title} kann</h2>
+      <div class={`grid gap-5 sm:grid-cols-2 ${cat.highlights.length >= 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'}`}>
+        {cat.highlights.map((h, i) => (
+          <div class="lf-animate h-full border border-border bg-card rounded-2xl p-6" style={`transition-delay:${i * 60}ms`}>
+            <h3 class="font-display font-semibold text-foreground mb-2">{h.title}</h3>
+            <p class="text-sm text-muted-foreground leading-relaxed">{h.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── So sieht's aus ────────────────────────────────────────────────── -->
+  {(video || moreShots.length > 0) && (
+    <section class="py-20 px-4 sm:px-6" aria-labelledby="screens-heading">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 id="screens-heading" class="font-display text-3xl sm:text-4xl font-bold text-foreground mb-3">
+            So sieht's <span class="font-script text-accent text-[1.15em]">aus</span>
+          </h2>
+          <p class="text-muted-foreground">Aufnahmen aus der echten App, mit einer erfundenen Beispielfamilie.</p>
+        </div>
+        <div class="space-y-16">
+          {video && <div class="lf-animate"><FeatureVideo src={video} caption={`${cat.title} in Aktion`} /></div>}
+          {moreShots.map((shot) => (
+            <div class="lf-animate"><ScreenshotFrame shot={shot} /></div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {cat.status !== 'available' && (
+    <section class="px-4 sm:px-6 pb-4">
+      <div class="max-w-3xl mx-auto border border-amber-200 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-950/30 rounded-2xl p-6 text-center">
+        <p class="text-amber-800 dark:text-amber-200 text-sm leading-relaxed">
+          {cat.status === 'partial'
+            ? 'Dieser Bereich ist in Entwicklung. Einige Funktionen sind schon nutzbar, weitere folgen Schritt für Schritt.'
+            : 'Dieser Bereich ist in Planung. Als Beta-Nutzer kannst du mitbestimmen, was zuerst kommt.'}
+          {' '}<a href="mailto:feedback@lunafamily.de" class="underline font-medium">Feedback geben →</a>
+        </p>
+      </div>
+    </section>
+  )}
+
+  <!-- ─── CTA ───────────────────────────────────────────────────────────── -->
+  <section class="py-20 px-4 sm:px-6" aria-labelledby="cta-heading">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 id="cta-heading" class="font-display text-3xl sm:text-4xl font-bold text-foreground mb-4">Probier es mit deiner Familie aus</h2>
+      <p class="text-muted-foreground text-lg mb-8">Kostenlos in der Beta, ohne Kreditkarte, in wenigen Minuten startklar.</p>
+      <a href="https://app.lunafamily.online/register"
+         class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-10 py-4 rounded-xl transition-colors"
+         style="box-shadow:0 20px 40px rgba(196,162,101,.25)" rel="noopener">
+        Jetzt kostenlos registrieren
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={IC.arrowRight} /></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ─── Weitere Bereiche ──────────────────────────────────────────────── -->
+  <section class="py-16 px-4 sm:px-6 bg-muted/20 border-t border-border" aria-labelledby="more-heading">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex items-center justify-between gap-4 mb-8">
+        <h2 id="more-heading" class="font-display text-2xl font-bold text-foreground">Weitere Bereiche</h2>
+        <div class="flex gap-2">
+          <a href={`/funktionen/${prev.slug}`} class="p-2 rounded-lg border border-border bg-card hover:bg-muted transition-colors" aria-label={`Vorheriger Bereich: ${prev.title}`}>
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={IC.chevronLeft} /></svg>
+          </a>
+          <a href={`/funktionen/${next.slug}`} class="p-2 rounded-lg border border-border bg-card hover:bg-muted transition-colors" aria-label={`Nächster Bereich: ${next.title}`}>
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={IC.chevronRight} /></svg>
+          </a>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        {others.map((c) => (
+          <a href={`/funktionen/${c.slug}`} class="flex items-center gap-3 border border-border bg-card rounded-xl p-3 hover:shadow-md hover:-translate-y-0.5 transition-all">
+            <span class={`p-2 rounded-lg bg-gradient-to-br ${c.gradient} text-white flex-shrink-0`}>
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={c.icon} /></svg>
+            </span>
+            <span class="text-sm font-medium text-foreground leading-tight">{c.title}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</main>
+
+<SiteFooter />
+
+<SiteScripts />
+
+</Base>

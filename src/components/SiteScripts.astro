@@ -1,0 +1,48 @@
+<script>
+  // Theme toggle
+  const themeToggle = document.getElementById('lf-theme-toggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const isDark = !document.documentElement.classList.contains('dark');
+      window.__lfSetTheme?.(isDark);
+    });
+  }
+
+  // Navbar scroll effect
+  const nav = document.getElementById('lf-nav');
+  if (nav) {
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('lf-scrolled', window.scrollY > 20);
+    }, { passive: true });
+  }
+
+  // Scroll-triggered fade-in animations
+  const io = new IntersectionObserver(
+    (entries) => entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('lf-visible');
+        io.unobserve(e.target);
+      }
+    }),
+    { threshold: 0.08 }
+  );
+  document.querySelectorAll('.lf-animate').forEach(el => io.observe(el));
+
+  // Feature-Videos nur abspielen, solange sie sichtbar sind — und gar nicht,
+  // wenn im System „Bewegung reduzieren" eingestellt ist.
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const videos = document.querySelectorAll<HTMLVideoElement>('video[data-lf-autoplay]');
+  if (reduceMotion) {
+    videos.forEach(v => { v.controls = true; });
+  } else {
+    const vio = new IntersectionObserver(
+      (entries) => entries.forEach(e => {
+        const v = e.target as HTMLVideoElement;
+        if (e.isIntersecting) v.play().catch(() => { v.controls = true; });
+        else v.pause();
+      }),
+      { threshold: 0.4 }
+    );
+    videos.forEach(v => vio.observe(v));
+  }
+</script>

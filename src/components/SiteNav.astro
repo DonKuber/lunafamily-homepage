@@ -1,0 +1,43 @@
+---
+import { IC } from '../data/icons';
+---
+
+<!-- ─── Navbar ─────────────────────────────────────────────────────────────── -->
+<nav id="lf-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-2 min-w-0">
+      <!-- Mobile: kompaktes Icon-Lockup (Wortmarke ist bei <sm zu breit fuer die Navbar) -->
+      <a href="/" class="flex sm:hidden items-center gap-2 min-w-0" aria-label="LunaFamily Startseite">
+        <img src="/brand/logo-icon.png" alt="" width="401" height="408" class="w-9 h-9 flex-shrink-0 dark:hidden" />
+        <img src="/brand/logo-icon-dark.png" alt="" width="226" height="230" class="w-9 h-9 flex-shrink-0 hidden dark:block" />
+        <span class="font-display font-semibold text-foreground truncate">LunaFamily</span>
+      </a>
+      <!-- Ab sm: volle Wortmarke -->
+      <a href="/" class="hidden sm:flex items-center" aria-label="LunaFamily Startseite">
+      <img src="/brand/logo-wordmark.png" alt="LunaFamily" width="1229" height="231" class="hidden sm:block sm:dark:hidden h-12 w-auto flex-shrink-0" />
+      <img src="/brand/logo-wordmark-dark.png" alt="LunaFamily" width="1222" height="231" class="hidden sm:dark:block h-12 w-auto flex-shrink-0" />
+      </a>
+      <span class="hidden sm:inline-block ml-1 px-2 py-0.5 text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 rounded-full border border-amber-200 dark:border-amber-700/60">BETA</span>
+    </div>
+    <div class="flex items-center gap-0.5 sm:gap-3 flex-shrink-0">
+      <a href="/funktionen" class="hidden md:inline text-sm text-muted-foreground hover:text-foreground transition-colors mr-2">Funktionen</a>
+      <button id="lf-theme-toggle" type="button" aria-label="Farbschema umschalten"
+              class="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
+        <svg class="w-5 h-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <Fragment set:html={IC.moon} />
+        </svg>
+        <svg class="w-5 h-5 hidden dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <Fragment set:html={IC.sun} />
+        </svg>
+      </button>
+      <a href="https://app.lunafamily.online/login" class="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors" rel="noopener">
+        Anmelden
+      </a>
+      <a href="https://app.lunafamily.online/register"
+         class="bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-lg transition-colors"
+         style="box-shadow:0 4px 12px rgba(196,162,101,.2)" rel="noopener">
+        Registrieren
+      </a>
+    </div>
+  </div>
+</nav>

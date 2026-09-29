@@ -40,6 +40,28 @@ npm run check     # TypeScript-Check
 npm run build     # Statischer Build → ./dist/
 ```
 
+## Funktionsseiten & App-Screenshots
+
+Unter `/funktionen` gibt es eine Übersicht und je Bereich eine Unterseite
+(`/funktionen/kalender`, `/funktionen/kueche`, …). Texte und Status stehen in
+`src/data/features.ts` und gelten zugleich für die Karten auf der Startseite.
+
+Welche App-Ansicht auf welcher Seite gezeigt wird, steht in
+`src/data/screenshots.json`. Die Bilder liegen als
+`public/screenshots/<datei>-light.webp` und `-dark.webp`. Fehlt eines davon,
+lässt die Seite den Eintrag weg. Ein kurzes Video `public/screenshots/<slug>.mp4`
+erscheint automatisch auf der passenden Unterseite.
+
+Aufgenommen wird **ausschließlich** im fiktiven Demo-Mandanten (Familie Muster,
+`…@lunafamily.invalid`, angelegt mit `backend/scripts/seed-demo-social-tenant-*`
+im LunaFamily-Repo):
+
+```bash
+npm i --no-save playwright
+LF_APP_URL=http://127.0.0.1:6173 LF_DEMO_EMAIL=demo-social@lunafamily.invalid \
+LF_DEMO_PASSWORD=… node scripts/capture-screenshots.mjs
+```
+
 ## Deployment
 
 Automatisch bei jedem Push auf `main`, `workflow_dispatch` oder eingehendem

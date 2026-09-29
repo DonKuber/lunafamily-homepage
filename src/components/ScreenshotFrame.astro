@@ -1,0 +1,35 @@
+---
+// Ein App-Screenshot im Browserfenster-Rahmen. Hell und dunkel liegen als
+// eigene Dateien vor; angezeigt wird die, die zum Farbschema der Seite passt
+// (die jeweils andere ist display:none und wird wegen loading="lazy" nicht
+// geladen).
+import type { Screenshot } from '../data/features';
+
+interface Props {
+  shot: Screenshot;
+  eager?: boolean;
+  showCaption?: boolean;
+}
+
+const { shot, eager = false, showCaption = true } = Astro.props;
+const loading = eager ? 'eager' : 'lazy';
+---
+
+<figure class="group">
+  <div class="rounded-xl sm:rounded-2xl border border-border bg-card overflow-hidden"
+       style="box-shadow:0 24px 60px -20px rgba(60,45,20,.28)">
+    <div class="flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 border-b border-border bg-muted/40" aria-hidden="true">
+      <span class="w-2.5 h-2.5 rounded-full bg-rose-300/80"></span>
+      <span class="w-2.5 h-2.5 rounded-full bg-amber-300/80"></span>
+      <span class="w-2.5 h-2.5 rounded-full bg-green-300/80"></span>
+      <span class="ml-3 flex-1 max-w-xs h-5 rounded-md bg-background/70 text-[10px] leading-5 px-2 text-muted-foreground truncate hidden sm:block">app.lunafamily.online</span>
+    </div>
+    <img src={`/screenshots/${shot.file}-light.webp`} alt={shot.caption} width={shot.width} height={shot.height}
+         loading={loading} decoding="async" class="block w-full h-auto dark:hidden" />
+    <img src={`/screenshots/${shot.file}-dark.webp`} alt={shot.caption} width={shot.width} height={shot.height}
+         loading={loading} decoding="async" class="hidden w-full h-auto dark:block" />
+  </div>
+  {showCaption && (
+    <figcaption class="mt-3 text-sm text-muted-foreground text-center">{shot.caption}</figcaption>
+  )}
+</figure>

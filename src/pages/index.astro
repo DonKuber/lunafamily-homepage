@@ -1,60 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
+import SiteNav from '../components/SiteNav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteScripts from '../components/SiteScripts.astro';
+import ScreenshotFrame from '../components/ScreenshotFrame.astro';
+import { IC } from '../data/icons';
+import { CATEGORIES, STATUS, screenshotsFor } from '../data/features';
 
-// ─── Icon SVG path strings (inner content only, Lucide-compatible) ─────────────
-const IC = {
-  heart:       `<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>`,
-  shield:      `<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>`,
-  lock:        `<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>`,
-  smartphone:  `<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>`,
-  globe:       `<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>`,
-  arrowRight:  `<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>`,
-  chevronRight:`<path d="m9 18 6-6-6-6"/>`,
-  flask:       `<path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/>`,
-  sparkles:    `<path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>`,
-  checkCheck:  `<path d="M18 6 7 17l-5-5"/><path d="m22 10-7.5 7.5L13 16"/>`,
-  star:        `<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>`,
-  construction:`<rect x="2" y="6" width="20" height="8" rx="1"/><path d="M17 14v7"/><path d="M7 14v7"/><path d="M17 3v3"/><path d="M7 3v3"/><path d="M10 14 2.3 6.3"/><path d="m14 6 7.7 7.7"/><path d="m8 6 8 8"/>`,
-  zap:         `<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>`,
-  clock:       `<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>`,
-  users:       `<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>`,
-  // category icons
-  calendar:    `<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>`,
-  checkCircle: `<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>`,
-  fileText:    `<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>`,
-  utensils:    `<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3v7"/>`,
-  home:        `<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>`,
-  wallet:      `<path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>`,
-  mail:        `<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>`,
-  graduationCap:`<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>`,
-  barChart:    `<path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>`,
-  sun:         `<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>`,
-  moon:        `<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>`,
-};
-
-interface Category {
-  icon: string;
-  gradient: string;
-  status: 'available' | 'partial' | 'coming';
-  title: string;
-  subtitle: string;
-  features: string[];
-}
-
-const CATEGORIES: Category[] = [
-  { icon: IC.calendar,     gradient: 'from-blue-500 to-cyan-500',    status: 'available', title: 'Kalender & Planung',        subtitle: 'Nie wieder einen Termin verpassen',         features: ['Familien-Kalender', 'Wiederkehrende Termine', 'Event-Planung & Abstimmungen', 'Erinnerungen & Push-Benachrichtigungen'] },
-  { icon: IC.checkCircle,  gradient: 'from-green-500 to-emerald-500',status: 'available', title: 'Aufgaben & Todos',            subtitle: 'Gemeinsam mehr erledigen',                   features: ['Aufgabenlisten für alle', 'Subtasks & Prioritäten', 'Kategorien & Tags', 'Fälligkeitsdaten & Zuweisung'] },
-  { icon: IC.fileText,     gradient: 'from-orange-500 to-amber-500', status: 'available', title: 'Dokumente (Paperless)',       subtitle: 'Papierkram endlich digital',                 features: ['Rechnungen & Verträge', 'Automatische OCR-Erkennung', 'Intelligente Kategorisierung', 'Schnelle Volltextsuche'] },
-  { icon: IC.utensils,     gradient: 'from-rose-500 to-pink-500',    status: 'available', title: 'Küche & Ernährung',           subtitle: 'Kochen wird wieder Freude',                  features: ['Rezeptsammlung', 'Mahlzeitenplanung', 'Auto-Einkaufslisten', 'Kalorientracking'] },
-  { icon: IC.users,        gradient: 'from-violet-500 to-purple-500',status: 'available', title: 'Familie & Kontakte',          subtitle: 'Alle Verbindungen an einem Ort',             features: ['Familienmitglieder verwalten', 'Stammbaum visualisieren', 'Kontaktbuch mit CRM', 'Firmen & Verträge'] },
-  { icon: IC.home,         gradient: 'from-teal-500 to-green-500',   status: 'available', title: 'Haushalt',                    subtitle: 'Der Haushalt läuft sich fast von selbst',    features: ['Haushaltsaufgaben & Gamification', 'Inventar verwalten', 'Bedienungsanleitungen', 'Haushaltsplaner'] },
-  { icon: IC.wallet,       gradient: 'from-yellow-500 to-orange-500',status: 'partial',   title: 'Finanzen',                    subtitle: 'Volle Kontrolle über das Familienbudget',    features: ['Open Banking (GoCardless)', 'Ausgaben & Budgets', 'Kredite & Investments', 'Steuerübersicht'] },
-  { icon: IC.mail,         gradient: 'from-sky-500 to-blue-500',     status: 'partial',   title: 'Kommunikation',               subtitle: 'Immer verbunden, egal wo',                   features: ['Familien-Nachrichten', 'Integrierter E-Mail-Client', 'Ankündigungen', 'Anrufverlauf'] },
-  { icon: IC.graduationCap,gradient: 'from-indigo-500 to-violet-500',status: 'partial',   title: 'Schule & Bildung',            subtitle: 'Lernfortschritt im Blick',                   features: ['Schultermine & Hausaufgaben', 'Noten & Zeugnisse', 'Lernpläne', 'Studienmanagement'] },
-  { icon: IC.sparkles,     gradient: 'from-pink-500 to-rose-500',    status: 'coming',    title: 'KI-Assistent',                subtitle: 'Intelligente Unterstützung im Alltag',       features: ['Automatische Kategorisierung', 'Smarte Vorschläge', 'E-Mail-Review & Zusammenfassungen', 'Multi-Provider KI'] },
-  { icon: IC.smartphone,   gradient: 'from-slate-500 to-gray-600',   status: 'coming',    title: 'Mobile App (Offline)',         subtitle: 'Immer dabei, auch ohne Internet',             features: ['iOS & Android App', 'Offline-First Architektur', 'Automatische Synchronisation', 'Biometrische Absicherung'] },
-  { icon: IC.barChart,     gradient: 'from-cyan-500 to-teal-500',    status: 'partial',   title: 'Statistiken & Insights',      subtitle: 'Daten, die wirklich helfen',                 features: ['Familien-Dashboard', 'Aktivitätsberichte', 'Ausgaben-Trends', 'Produktivitäts-Insights'] },
-];
+const HERO_SHOT = screenshotsFor('hero')[0];
 
 const WHY_CARDS = [
   { icon: IC.shield, color: 'text-green-500', title: 'Deine Daten. Deine Regeln.',     text: 'Keine Werbeanzeigen, kein Tracking, kein Datenverkauf. Was in deiner Familie passiert, bleibt in deiner Familie.' },
@@ -88,11 +41,6 @@ const ROADMAP_PLANNED = [
   'Mehrsprachigkeit (EN, FR)', 'Apple/Google Calendar Sync', 'Offline-First Sync Engine',
 ];
 
-const STATUS = {
-  available: { label: 'Verfügbar',      cls: 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800/50' },
-  partial:   { label: 'In Entwicklung', cls: 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800/50' },
-  coming:    { label: 'Demnächst',      cls: 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800/40 dark:text-slate-300 dark:border-slate-700/50' },
-};
 ---
 
 <Base
@@ -108,61 +56,9 @@ const STATUS = {
 
   .lf-hero { animation: lf-fadein 1s ease forwards; }
 
-  .lf-animate {
-    opacity: 0;
-    transform: translateY(2rem);
-    transition: opacity .7s ease, transform .7s ease;
-  }
-  .lf-animate.lf-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  #lf-nav.lf-scrolled {
-    background-color: rgb(var(--color-background) / .95);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgb(var(--color-border));
-    box-shadow: 0 1px 3px rgba(0,0,0,.05);
-  }
 </style>
 
-<!-- ─── Navbar ─────────────────────────────────────────────────────────────── -->
-<nav id="lf-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-    <div class="flex items-center gap-2 min-w-0">
-      <!-- Mobile: kompaktes Icon-Lockup (Wortmarke ist bei <sm zu breit fuer die Navbar) -->
-      <a href="/" class="flex sm:hidden items-center gap-2 min-w-0" aria-label="LunaFamily Startseite">
-        <img src="/brand/logo-icon.png" alt="" width="401" height="408" class="w-9 h-9 flex-shrink-0 dark:hidden" />
-        <img src="/brand/logo-icon-dark.png" alt="" width="226" height="230" class="w-9 h-9 flex-shrink-0 hidden dark:block" />
-        <span class="font-display font-semibold text-foreground truncate">LunaFamily</span>
-      </a>
-      <!-- Ab sm: volle Wortmarke -->
-      <img src="/brand/logo-wordmark.png" alt="LunaFamily" width="1229" height="231" class="hidden sm:block sm:dark:hidden h-12 w-auto flex-shrink-0" />
-      <img src="/brand/logo-wordmark-dark.png" alt="LunaFamily" width="1222" height="231" class="hidden sm:dark:block h-12 w-auto flex-shrink-0" />
-      <span class="hidden sm:inline-block ml-1 px-2 py-0.5 text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 rounded-full border border-amber-200 dark:border-amber-700/60">BETA</span>
-    </div>
-    <div class="flex items-center gap-0.5 sm:gap-3 flex-shrink-0">
-      <button id="lf-theme-toggle" type="button" aria-label="Farbschema umschalten"
-              class="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
-        <svg class="w-5 h-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <Fragment set:html={IC.moon} />
-        </svg>
-        <svg class="w-5 h-5 hidden dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <Fragment set:html={IC.sun} />
-        </svg>
-      </button>
-      <a href="https://app.lunafamily.online/login" class="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors" rel="noopener">
-        Anmelden
-      </a>
-      <a href="https://app.lunafamily.online/register"
-         class="bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-lg transition-colors"
-         style="box-shadow:0 4px 12px rgba(196,162,101,.2)" rel="noopener">
-        Registrieren
-      </a>
-    </div>
-  </div>
-</nav>
+<SiteNav />
 
 <!-- ─── Beta Banner ───────────────────────────────────────────────────────── -->
 <div class="bg-amber-50 dark:bg-amber-950/30 border-b border-amber-200 dark:border-amber-800/50 py-2.5 px-4 text-center mt-16">
@@ -249,6 +145,14 @@ const STATUS = {
   </div>
 </section>
 
+{HERO_SHOT && (
+  <section class="px-4 sm:px-6 -mt-6 pb-20" aria-label="Einblick in die App">
+    <div class="lf-animate max-w-6xl mx-auto">
+      <ScreenshotFrame shot={HERO_SHOT} />
+    </div>
+  </section>
+)}
+
 <!-- ─── Features ─────────────────────────────────────────────────────────── -->
 <section class="py-24 px-4 sm:px-6 bg-muted/20" aria-labelledby="features-heading">
   <div class="max-w-6xl mx-auto">
@@ -274,7 +178,7 @@ const STATUS = {
         const isComingSoon = cat.status === 'coming';
         return (
           <div class="lf-animate" style={`transition-delay:${Math.min(i * 50, 300)}ms`}>
-            <div class={`h-full border border-border bg-card rounded-2xl p-6 transition-all duration-300 ${isComingSoon ? 'opacity-75' : 'hover:shadow-md hover:-translate-y-0.5'}`}>
+            <a href={`/funktionen/${cat.slug}`} class={`group flex flex-col h-full border border-border bg-card rounded-2xl p-6 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 ${isComingSoon ? 'opacity-75 hover:opacity-100' : ''}`}>
               <div class="flex items-start justify-between mb-4">
                 <div class={`p-3 rounded-xl bg-gradient-to-br ${cat.gradient} text-white shadow-sm`}>
                   <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -287,7 +191,7 @@ const STATUS = {
               </div>
               <h3 class="font-display font-semibold text-foreground text-lg mb-1">{cat.title}</h3>
               <p class="text-muted-foreground text-sm mb-4 leading-relaxed">{cat.subtitle}</p>
-              <ul class="space-y-2">
+              <ul class="space-y-2 flex-1">
                 {cat.features.map(f => (
                   <li class="flex items-center gap-2.5 text-sm text-muted-foreground">
                     <svg class={`w-3.5 h-3.5 flex-shrink-0 ${isComingSoon ? 'opacity-50' : 'text-primary'}`}
@@ -299,13 +203,24 @@ const STATUS = {
                   </li>
                 ))}
               </ul>
-            </div>
+              <span class="mt-5 pt-4 border-t border-border inline-flex items-center gap-1.5 text-sm font-medium text-primary">
+                Mehr erfahren
+                <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={IC.arrowRight} /></svg>
+              </span>
+            </a>
           </div>
         );
       })}
     </div>
 
-    <div class="mt-10 flex flex-wrap items-center justify-center gap-5 text-sm">
+    <div class="mt-10 text-center">
+      <a href="/funktionen" class="inline-flex items-center gap-2 border border-border bg-card text-foreground font-semibold px-6 py-3 rounded-xl hover:bg-muted transition-colors">
+        Alle Funktionen mit Screenshots ansehen
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={IC.arrowRight} /></svg>
+      </a>
+    </div>
+
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-5 text-sm">
       <span class="flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800/50">
         <span class="w-2 h-2 rounded-full bg-current" aria-hidden="true"></span>Verfügbar
       </span>
@@ -480,56 +395,8 @@ const STATUS = {
   </div>
 </section>
 
-<!-- ─── Footer ────────────────────────────────────────────────────────────── -->
-<footer class="border-t border-border py-10 px-4 sm:px-6" role="contentinfo">
-  <div class="max-w-6xl mx-auto">
-    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-      <div class="flex items-center gap-3">
-        <img src="/brand/logo-icon.png" alt="" width="401" height="408" class="w-16 h-16 flex-shrink-0 dark:hidden" />
-        <img src="/brand/logo-icon-dark.png" alt="" width="226" height="230" class="w-16 h-16 flex-shrink-0 hidden dark:block" />
-        <span class="font-semibold text-foreground">LunaFamily</span>
-        <span class="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">Beta v0.1</span>
-      </div>
-      <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2" aria-label="Footer-Navigation">
-        <a href="/impressum"   class="text-sm text-muted-foreground hover:text-foreground transition-colors">Impressum</a>
-        <a href="/datenschutz" class="text-sm text-muted-foreground hover:text-foreground transition-colors">Datenschutz</a>
-        <a href="https://app.lunafamily.online/login"    class="text-sm text-muted-foreground hover:text-foreground transition-colors" rel="noopener">Anmelden</a>
-        <a href="https://app.lunafamily.online/register" class="text-sm text-muted-foreground hover:text-foreground transition-colors" rel="noopener">Registrieren</a>
-      </nav>
-      <p class="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} LunaFamily</p>
-    </div>
-  </div>
-</footer>
+<SiteFooter />
 
-<script>
-  // Theme toggle
-  const themeToggle = document.getElementById('lf-theme-toggle');
-  if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-      const isDark = !document.documentElement.classList.contains('dark');
-      window.__lfSetTheme?.(isDark);
-    });
-  }
-
-  // Navbar scroll effect
-  const nav = document.getElementById('lf-nav');
-  if (nav) {
-    window.addEventListener('scroll', () => {
-      nav.classList.toggle('lf-scrolled', window.scrollY > 20);
-    }, { passive: true });
-  }
-
-  // Scroll-triggered fade-in animations
-  const io = new IntersectionObserver(
-    (entries) => entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('lf-visible');
-        io.unobserve(e.target);
-      }
-    }),
-    { threshold: 0.08 }
-  );
-  document.querySelectorAll('.lf-animate').forEach(el => io.observe(el));
-</script>
+<SiteScripts />
 
 </Base>

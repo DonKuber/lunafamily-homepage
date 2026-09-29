@@ -32,3 +32,22 @@
   --color-accent: 192 149 86;
   --color-accent-foreground: 254 252 250;
 }
+
+/* Gemeinsam für Startseite und Unterseiten */
+.lf-animate {
+  opacity: 0;
+  transform: translateY(2rem);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.lf-animate.lf-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#lf-nav.lf-scrolled {
+  background-color: rgb(var(--color-background) / .95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgb(var(--color-border));
+  box-shadow: 0 1px 3px rgba(0,0,0,.05);
+}

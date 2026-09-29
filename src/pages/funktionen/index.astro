@@ -1,0 +1,76 @@
+---
+import Base from '../../layouts/Base.astro';
+import SiteNav from '../../components/SiteNav.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import SiteScripts from '../../components/SiteScripts.astro';
+import { IC } from '../../data/icons';
+import { CATEGORIES, STATUS, screenshotsFor } from '../../data/features';
+
+const cards = CATEGORIES.map((cat) => ({ cat, shot: screenshotsFor(cat.slug)[0] }));
+---
+
+<Base
+  title="Funktionen – LunaFamily"
+  description="Kalender, Aufgaben, Dokumente, Küche, Haushalt, Finanzen und mehr: alle Bereiche von LunaFamily im Überblick, mit Einblicken in die App."
+>
+
+<SiteNav />
+
+<main class="pt-16">
+  <section class="px-4 sm:px-6 pt-14 pb-10 text-center" aria-labelledby="overview-heading">
+    <div class="max-w-3xl mx-auto">
+      <h1 id="overview-heading" class="font-display text-4xl sm:text-5xl font-bold text-foreground mb-5">
+        Alle <span class="font-script text-accent text-[1.15em]">Funktionen</span> im Überblick
+      </h1>
+      <p class="text-lg text-muted-foreground leading-relaxed">
+        Zwölf Bereiche, ein System. Jeder Bereich hat eine eigene Seite mit Einblicken in die App.
+        Alle Aufnahmen zeigen eine erfundene Beispielfamilie, keine echten Daten.
+      </p>
+    </div>
+  </section>
+
+  <section class="px-4 sm:px-6 pb-24" aria-label="Bereiche">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {cards.map(({ cat, shot }, i) => {
+        const st = STATUS[cat.status];
+        return (
+          <a href={`/funktionen/${cat.slug}`}
+             class="lf-animate group flex flex-col h-full border border-border bg-card rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+             style={`transition-delay:${Math.min(i * 50, 300)}ms`}>
+            {shot ? (
+              <div class="aspect-[16/10] overflow-hidden border-b border-border bg-muted/40">
+                <img src={`/screenshots/${shot.file}-light.webp`} alt="" width={shot.width} height={shot.height} loading="lazy" decoding="async"
+                     class="w-full h-full object-cover object-left-top dark:hidden group-hover:scale-[1.02] transition-transform duration-500" />
+                <img src={`/screenshots/${shot.file}-dark.webp`} alt="" width={shot.width} height={shot.height} loading="lazy" decoding="async"
+                     class="w-full h-full object-cover object-left-top hidden dark:block group-hover:scale-[1.02] transition-transform duration-500" />
+              </div>
+            ) : (
+              <div class={`aspect-[16/10] flex items-center justify-center bg-gradient-to-br ${cat.gradient} opacity-90`}>
+                <svg class="w-16 h-16 text-white/90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <Fragment set:html={cat.icon} />
+                </svg>
+              </div>
+            )}
+            <div class="p-6 flex-1 flex flex-col">
+              <div class="flex items-center justify-between gap-3 mb-2">
+                <h2 class="font-display font-semibold text-foreground text-lg">{cat.title}</h2>
+                <span class={`px-2.5 py-1 rounded-full text-xs font-semibold border whitespace-nowrap ${st.cls}`}>{st.label}</span>
+              </div>
+              <p class="text-sm text-muted-foreground leading-relaxed mb-4 flex-1">{cat.subtitle}</p>
+              <span class="inline-flex items-center gap-1.5 text-sm font-medium text-primary">
+                Mehr erfahren
+                <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={IC.arrowRight} /></svg>
+              </span>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+</main>
+
+<SiteFooter />
+
+<SiteScripts />
+
+</Base>
