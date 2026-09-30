@@ -1,0 +1,162 @@
+---
+// Vorlagen für Social-Media-Bilder (Instagram, Facebook). Keine eigentliche
+// Seite: scripts/render-social.mjs fotografiert sie in exakter Pixelgröße
+// (hell und dunkel) und legt das Paket unter social-kit/ ab. Deshalb noindex
+// und nirgends verlinkt.
+//
+// Formate: square 1080×1080, portrait 1080×1350 (4:5), story 1080×1920
+// (9:16, mit Sicherheitsabstand für die Story-Bedienelemente), cover
+// 1640×624 (Facebook-Titelbild, Wichtiges mittig).
+import Base from '../../layouts/Base.astro';
+import LaptopFrame from '../../components/LaptopFrame.astro';
+import PhoneFrame from '../../components/PhoneFrame.astro';
+import CalloutChip from '../../components/Callout.astro';
+import { CATEGORIES, screenshotsFor, shotByFile, type Callout } from '../../data/features';
+
+const FORMATS = {
+  square: { w: 1080, h: 1080 },
+  portrait: { w: 1080, h: 1350 },
+  story: { w: 1080, h: 1920 },
+  cover: { w: 1640, h: 624 },
+} as const;
+type Format = keyof typeof FORMATS;
+
+export function getStaticPaths() {
+  const slugs = ['start', ...CATEGORIES.filter((c) => c.visual).map((c) => c.slug)];
+  const paths = slugs.flatMap((slug) =>
+    (['square', 'portrait', 'story'] as const).map((format) => ({ params: { id: `${slug}-${format}` }, props: { slug, format } })),
+  );
+  paths.push({ params: { id: 'start-cover' }, props: { slug: 'start', format: 'cover' } });
+  return paths;
+}
+
+const { slug, format } = Astro.props as { slug: string; format: Format };
+const { w, h } = FORMATS[format];
+const cat = CATEGORIES.find((c) => c.slug === slug);
+const eyebrow = cat ? cat.title : 'Das digitale Zuhause für deine Familie';
+const claim = cat ? cat.claim : 'Kalender, Aufgaben, Essen, Finanzen – alles an einem Ort.';
+const detail = cat?.visual ? shotByFile(cat.visual.detail) : null;
+const laptop = cat ? null : screenshotsFor('hero')[0];
+const phone = cat?.visual?.phone ? shotByFile(cat.visual.phone) : cat ? null : shotByFile('phone-essensplan');
+const callouts: Callout[] = cat?.visual?.callouts ?? [
+  { text: 'Für die ganze Familie', x: 0, y: 0, icon: 'users' },
+  { text: 'Auch unterwegs dabei', x: 0, y: 0, icon: 'heart' },
+];
+const tilt = cat?.visual?.tilt === 'right' ? -8 : 8;
+const portraitDetail = detail ? detail.height > detail.width * 0.9 : false;
+
+// Schriftgröße der Schlagzeile nach Format und Länge
+const claimSize = format === 'story' ? (claim.length > 45 ? 78 : 88) : format === 'cover' ? 56 : format === 'square' ? (claim.length > 45 ? 54 : 62) : (claim.length > 45 ? 62 : 70);
+---
+
+<Base title={`${eyebrow} – Social`} noindex>
+  <div id="social" class={`lf-social lf-${format} relative overflow-hidden text-foreground`} style={`width:${w}px;height:${h}px`}>
+    <div class="absolute inset-0 lf-bg" aria-hidden="true"></div>
+    <div class="absolute -top-48 -right-40 w-[760px] h-[760px] rounded-full lf-glow-a" aria-hidden="true"></div>
+    <div class="absolute -bottom-56 -left-40 w-[700px] h-[700px] rounded-full lf-glow-b" aria-hidden="true"></div>
+
+    {/* Facebook-Titelbild: Text links, Geräte rechts; alles Wesentliche in der Mitte (mobil wird seitlich beschnitten) */}
+    {format === 'cover' ? (
+      <>
+      <div class="absolute inset-y-0 left-[170px] w-[620px] flex flex-col justify-center">
+        <img src="/brand/logo-wordmark.png" alt="LunaFamily" width="1229" height="231" class="h-14 w-auto self-start mb-8 dark:hidden" />
+        <img src="/brand/logo-wordmark-dark.png" alt="LunaFamily" width="1222" height="231" class="h-14 w-auto self-start mb-8 hidden dark:block" />
+        <p class="font-display font-bold leading-[1.08]" style={`font-size:${claimSize}px`}>{claim}</p>
+        <p class="mt-6 text-2xl text-muted-foreground">lunafamily.online · Kostenlos in der Beta</p>
+      </div>
+      {laptop && (
+        <div class="absolute left-[830px] top-[70px] w-[620px]">
+          <LaptopFrame shot={laptop} eager />
+          {phone && <PhoneFrame shot={phone} eager class="absolute -right-[10%] -bottom-[18%] w-[26%]" />}
+        </div>
+      )}
+      </>
+    ) : (
+      <div class={`absolute inset-x-0 flex flex-col ${format === 'story' ? 'top-[250px] bottom-[330px] px-20' : 'inset-y-0 px-[72px] pt-16 pb-14'}`}>
+        {/* Kopf */}
+        <div class="flex items-center justify-between">
+          <img src="/brand/logo-wordmark.png" alt="LunaFamily" width="1229" height="231" class={`${format === 'story' ? 'h-20' : 'h-16'} w-auto dark:hidden`} />
+          <img src="/brand/logo-wordmark-dark.png" alt="LunaFamily" width="1222" height="231" class={`${format === 'story' ? 'h-20' : 'h-16'} w-auto hidden dark:block`} />
+          <span class="px-5 py-2 rounded-full text-xl font-semibold border border-amber-300/70 bg-amber-100/80 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-700/60">Beta</span>
+        </div>
+
+        <p class={`${format === 'square' ? 'mt-10' : 'mt-14'} text-2xl font-semibold uppercase tracking-[0.12em] text-primary`}>{eyebrow}</p>
+        <p class="mt-4 font-display font-bold leading-[1.06]" style={`font-size:${claimSize}px`}>{claim}</p>
+
+        {/* Bild */}
+        {format === 'story' ? (
+          <div class="lf-story-area relative flex-1 min-h-0 mt-10">
+            {laptop ? (
+              <div class="absolute left-0 top-[4%] w-[82%]"><LaptopFrame shot={laptop} eager /></div>
+            ) : detail && (
+              portraitDetail ? (
+                <div class="absolute left-[4%] top-0 h-[96%] lf-shot rounded-3xl overflow-hidden ring-1 ring-black/5 dark:ring-white/10 bg-card" style={`transform:perspective(2200px) rotateY(${tilt}deg)`}>
+                  <img src={`/screenshots/${detail.file}-light.webp`} alt="" width={detail.width} height={detail.height} class="block h-full w-auto dark:hidden" />
+                  <img src={`/screenshots/${detail.file}-dark.webp`} alt="" width={detail.width} height={detail.height} class="hidden h-full w-auto dark:block" />
+                </div>
+              ) : (
+                <div class={`absolute left-0 top-[4%] ${phone ? 'w-[80%]' : 'w-full'} lf-shot rounded-3xl overflow-hidden ring-1 ring-black/5 dark:ring-white/10 bg-card`} style={`transform:perspective(2200px) rotateY(${tilt}deg) rotateX(3deg)`}>
+                  <img src={`/screenshots/${detail.file}-light.webp`} alt="" width={detail.width} height={detail.height} class="block w-full h-auto dark:hidden" />
+                  <img src={`/screenshots/${detail.file}-dark.webp`} alt="" width={detail.width} height={detail.height} class="hidden w-full h-auto dark:block" />
+                </div>
+              )
+            )}
+            {phone && <PhoneFrame shot={phone} eager class="lf-story-phone absolute right-0 bottom-0" />}
+          </div>
+        ) : (
+        <div class="relative flex-1 min-h-0 flex items-center justify-center mt-8">
+          {laptop ? (
+            <div class={`relative ${format === 'square' ? 'w-[74%]' : 'w-[80%]'} -translate-x-[6%]`}>
+              <LaptopFrame shot={laptop} eager />
+              {phone && <PhoneFrame shot={phone} eager class="absolute -right-[16%] -bottom-[14%] w-[30%]" />}
+            </div>
+          ) : detail && (
+            <div class={`relative ${portraitDetail ? (format === 'square' ? 'w-[42%]' : 'w-[52%]') : phone ? 'w-[80%] -translate-x-[8%]' : format === 'square' ? 'w-[84%]' : 'w-[92%]'}`}>
+              <div class="lf-shot rounded-3xl overflow-hidden ring-1 ring-black/5 dark:ring-white/10 bg-card" style={`transform:perspective(2200px) rotateY(${tilt}deg) rotateX(3deg)`}>
+                <img src={`/screenshots/${detail.file}-light.webp`} alt="" width={detail.width} height={detail.height} class="block w-full h-auto dark:hidden" />
+                <img src={`/screenshots/${detail.file}-dark.webp`} alt="" width={detail.width} height={detail.height} class="hidden w-full h-auto dark:block" />
+              </div>
+              {phone && <PhoneFrame shot={phone} eager class={`absolute -right-[22%] ${format === 'square' ? '-bottom-[30%] w-[30%]' : '-bottom-[26%] w-[32%]'}`} />}
+            </div>
+          )}
+        </div>
+        )}
+
+        {/* Hinweise */}
+        <div class={`flex flex-wrap gap-4 ${format === 'story' ? 'mt-14 justify-center' : 'mt-10'}`}>
+          {callouts.slice(0, format === 'square' ? 1 : 2).map((c) => (
+            <span style={`zoom:${format === 'story' ? 2 : 1.7}`}><CalloutChip callout={c} /></span>
+          ))}
+        </div>
+
+        {/* Fuß */}
+        <div class={`flex items-center ${format === 'story' ? 'justify-center mt-10' : 'justify-between mt-8'}`}>
+          {format === 'story' ? (
+            <span class="lf-cta px-10 py-5 rounded-full text-3xl font-semibold text-white">Link in Bio · lunafamily.online</span>
+          ) : (
+            <>
+              <span class="text-2xl font-semibold">lunafamily.online</span>
+              <span class="lf-cta px-7 py-3 rounded-full text-xl font-semibold text-white">Kostenlos in der Beta</span>
+            </>
+          )}
+        </div>
+      </div>
+    )}
+  </div>
+</Base>
+
+<style is:global>
+  html, body { margin: 0; }
+  .lf-bg { background: linear-gradient(150deg, #fbf7f0 0%, #f4ecdf 50%, #eadcc3 100%); }
+  .dark .lf-bg { background: linear-gradient(150deg, #1d1813 0%, #16110d 55%, #221a12 100%); }
+  .lf-glow-a { background: radial-gradient(circle, rgb(196 162 101 / .42), transparent 65%); }
+  .lf-glow-b { background: radial-gradient(circle, rgb(143 174 107 / .26), transparent 65%); }
+  .dark .lf-glow-a { background: radial-gradient(circle, rgb(196 162 101 / .26), transparent 65%); }
+  .dark .lf-glow-b { background: radial-gradient(circle, rgb(143 174 107 / .14), transparent 65%); }
+  .lf-shot { box-shadow: 0 2px 6px rgb(40 30 10 / .1), 0 50px 100px -30px rgb(60 45 20 / .5); }
+  .dark .lf-shot { box-shadow: 0 2px 6px rgb(0 0 0 / .5), 0 50px 100px -30px rgb(0 0 0 / .85); }
+  /* Story: Handy passt sich der verfügbaren Höhe an (≈ 0,43 Breite:Höhe) */
+  .lf-story-area { container-type: size; }
+  .lf-story-phone { width: min(36cqw, 42cqh); }
+  .lf-cta { background: linear-gradient(135deg, #c4a265, #a8844a); box-shadow: 0 16px 40px -12px rgb(168 132 74 / .7); }
+</style>
