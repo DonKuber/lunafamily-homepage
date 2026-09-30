@@ -189,11 +189,11 @@ const others = CATEGORIES.filter((c) => c.slug !== cat.slug);
       </div>
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         {others.map((c) => (
-          <a href={`/funktionen/${c.slug}`} class="flex items-center gap-3 border border-border bg-card rounded-xl p-3 hover:shadow-md hover:-translate-y-0.5 transition-all">
+          <a href={`/funktionen/${c.slug}`} class="min-w-0 flex items-center gap-3 border border-border bg-card rounded-xl p-3 hover:shadow-md hover:-translate-y-0.5 transition-all">
             <span class={`p-2 rounded-lg bg-gradient-to-br ${c.gradient} text-white flex-shrink-0`}>
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={c.icon} /></svg>
             </span>
-            <span class="text-sm font-medium text-foreground leading-tight">{c.title}</span>
+            <span class="min-w-0 text-sm font-medium text-foreground leading-tight hyphens-auto break-words">{c.title}</span>
           </a>
         ))}
       </div>

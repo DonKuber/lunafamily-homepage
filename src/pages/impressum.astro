@@ -28,13 +28,13 @@ const lastUpdated = legal?.lastUpdatedAt
     Zurück zur Startseite
   </a>
 
-  <h1 class="font-display text-3xl sm:text-4xl font-bold text-foreground mb-2">Impressum</h1>
+  <h1 class="font-display text-3xl sm:text-4xl font-bold text-foreground hyphens-auto break-words mb-2">Impressum</h1>
   <p class="text-muted-foreground mb-10">Angaben gemäß § 18 MStV</p>
 
   {html ? (
-    <div class="prose prose-stone max-w-none" set:html={html} />
+    <div class="prose prose-stone max-w-none [overflow-wrap:anywhere]" set:html={html} />
   ) : legal?.companyName ? (
-    <div class="prose prose-stone max-w-none">
+    <div class="prose prose-stone max-w-none [overflow-wrap:anywhere]">
       <h2>Angaben gemäß § 18 Abs. 2 MStV</h2>
 
       <p>
@@ -109,7 +109,7 @@ const lastUpdated = legal?.lastUpdatedAt
       </p>
     </div>
   ) : (
-    <div class="prose prose-stone max-w-none">
+    <div class="prose prose-stone max-w-none [overflow-wrap:anywhere]">
       <p class="text-muted-foreground italic">
         Die Angaben werden aktualisiert. Bitte versuchen Sie es in Kürze erneut.
       </p>
