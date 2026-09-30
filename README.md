@@ -77,6 +77,12 @@ Aufnahme und Hinweis-Chips (`callouts`, Position in Prozent). Daraus baut
 `MarketingVisual.astro` das Aufmacherbild; die Startseite zeigt Laptop und
 Handy (`LaptopFrame`, `PhoneFrame`, neutrale Geräte ohne Herstellerbezug).
 
+**Handy-Aufnahmen austauschen:** Das Handy (`PhoneFrame.astro`) zeigt die
+Mobile-Ansicht der Web-App aus den `phone`-Einträgen in `screenshots.json`
+(390×844, Statusleiste und Home-Balken zeichnet der Rahmen selbst). Echte
+App-Fotos später einfach als `public/screenshots/<datei>-light.webp` und
+`-dark.webp` im Hochformat 390:844 ablegen — gleicher Name, keine Code-Änderung.
+
 **Teilen-Vorschaubilder** (WhatsApp, Facebook, LinkedIn …): Vorlage
 `src/pages/og-vorlage/[slug].astro`, Bilder unter `public/og/`. Nach
 geänderten Texten oder Screenshots: bauen, `npx astro preview`, dann

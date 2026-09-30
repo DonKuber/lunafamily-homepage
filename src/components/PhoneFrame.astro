@@ -1,6 +1,11 @@
 ---
-// Neutrales Smartphone (kein bestimmtes Herstellermodell) mit einer
-// Handy-Aufnahme der App; hell und dunkel passend zum Farbschema der Seite.
+// Ein realistisches, aber herstellerneutrales Smartphone: Metallrahmen mit
+// Seitentasten, schmaler Displayrand, Statusleiste mit Frontkamera, Glasreflex
+// und Home-Balken. Im Display läuft die Mobile-Ansicht der App (hell und dunkel
+// passend zum Farbschema der Seite).
+//
+// Alle Maße hängen an der Breite des Geräts (Container-Einheiten), damit das
+// Handy in jeder Größe gleich aussieht — vom Hero bis zum Teilen-Bild.
 import type { Screenshot } from '../data/features';
 
 interface Props {
@@ -14,21 +19,159 @@ const loading = eager ? 'eager' : 'lazy';
 const position = /\babsolute\b/.test(extra) ? '' : 'relative';
 ---
 
-<div class={`lf-phone ${position} rounded-[2.4rem] p-[3.2%] bg-neutral-900 ${extra}`}>
-  <div class="relative overflow-hidden rounded-[2rem] bg-black aspect-[390/844]">
-    <img src={`/screenshots/${shot.file}-light.webp`} alt={shot.caption} width={shot.width} height={shot.height}
-         loading={loading} decoding="async" class="block w-full h-full object-cover object-top dark:hidden" />
-    <img src={`/screenshots/${shot.file}-dark.webp`} alt={shot.caption} width={shot.width} height={shot.height}
-         loading={loading} decoding="async" class="hidden w-full h-full object-cover object-top dark:block" />
-    <span class="absolute top-[1.4%] left-1/2 -translate-x-1/2 w-[28%] h-[2.6%] rounded-full bg-black" aria-hidden="true"></span>
+<div class={`lf-phone ${position} ${extra}`}>
+  <div class="lf-phone-body">
+    <!-- Seitentasten: links Stummschalter und Lautstärke, rechts Ein/Aus -->
+    <span class="lf-btn lf-btn-l" style="top:17%;height:5%" aria-hidden="true"></span>
+    <span class="lf-btn lf-btn-l" style="top:25%;height:9%" aria-hidden="true"></span>
+    <span class="lf-btn lf-btn-l" style="top:36%;height:9%" aria-hidden="true"></span>
+    <span class="lf-btn lf-btn-r" style="top:27%;height:13%" aria-hidden="true"></span>
+
+    <div class="lf-phone-bezel">
+      <div class="lf-phone-screen">
+        <!-- Statusleiste in der Farbe der App-Kopfzeile -->
+        <div class="lf-status" aria-hidden="true">
+          <span class="lf-time">9:30</span>
+          <span class="lf-camera"></span>
+          <span class="lf-status-icons">
+            <svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.8"/><rect x="5" y="5.5" width="3" height="6.5" rx="0.8"/><rect x="10" y="3" width="3" height="9" rx="0.8"/><rect x="15" y="0" width="3" height="12" rx="0.8"/></svg>
+            <svg viewBox="0 0 16 12" fill="currentColor"><path d="M8 11.5 5.6 9a3.4 3.4 0 0 1 4.8 0Z"/><path d="M3.4 6.8a6.5 6.5 0 0 1 9.2 0l-1.4 1.4a4.5 4.5 0 0 0-6.4 0Z"/><path d="M1.2 4.6a9.6 9.6 0 0 1 13.6 0l-1.4 1.4a7.6 7.6 0 0 0-10.8 0Z"/></svg>
+            <svg viewBox="0 0 27 12" fill="none"><rect x="0.6" y="0.6" width="22.8" height="10.8" rx="3" stroke="currentColor" stroke-opacity=".45" stroke-width="1.2"/><rect x="2.4" y="2.4" width="16" height="7.2" rx="1.6" fill="currentColor"/><rect x="24.6" y="4" width="1.8" height="4" rx="0.9" fill="currentColor" fill-opacity=".45"/></svg>
+          </span>
+        </div>
+
+        <div class="lf-app">
+          <img src={`/screenshots/${shot.file}-light.webp`} alt={shot.caption} width={shot.width} height={shot.height}
+               loading={loading} decoding="async" class="block w-full h-full object-cover object-top dark:hidden" />
+          <img src={`/screenshots/${shot.file}-dark.webp`} alt={shot.caption} width={shot.width} height={shot.height}
+               loading={loading} decoding="async" class="hidden w-full h-full object-cover object-top dark:block" />
+        </div>
+
+        <!-- Eigener Streifen für den Home-Balken, wie der sichere Bereich echter Geräte -->
+        <div class="lf-home-area" aria-hidden="true"><span class="lf-home"></span></div>
+        <span class="lf-glare" aria-hidden="true"></span>
+      </div>
+    </div>
   </div>
 </div>
 
 <style>
   .lf-phone {
+    container-type: inline-size;
+    --lf-status-bg: #fffefa;
+    --lf-status-fg: #1c1917;
+    --lf-home: rgb(28 25 23 / .75);
+  }
+  :global(.dark) .lf-phone {
+    --lf-status-bg: #140e09;
+    --lf-status-fg: #f5f0e8;
+    --lf-home: rgb(245 240 232 / .8);
+  }
+
+  /* Rahmen aus gebürstetem Metall (warmes Titan, passend zur Markenfarbe) */
+  .lf-phone-body {
+    position: relative;
+    border-radius: 15.5cqw;
+    padding: 1.6cqw;
+    background:
+      linear-gradient(135deg, #e9e2d6 0%, #b9ae9c 18%, #8d8373 38%, #d6cfc3 55%, #9b917f 75%, #cfc6b7 100%);
     box-shadow:
-      inset 0 0 0 1.5px rgb(255 255 255 / .12),
-      0 2px 4px rgb(0 0 0 / .15),
-      0 40px 70px -20px rgb(40 30 10 / .55);
+      inset 0 0 0 0.5cqw rgb(255 255 255 / .35),
+      inset 0 0 0 1cqw rgb(0 0 0 / .12),
+      0 1cqw 2cqw rgb(0 0 0 / .18),
+      0 16cqw 30cqw -8cqw rgb(40 30 10 / .55);
+  }
+  :global(.dark) .lf-phone-body {
+    background:
+      linear-gradient(135deg, #6b645a 0%, #3b3630 20%, #2a2622 40%, #5a534a 58%, #2f2b27 78%, #4d473f 100%);
+    box-shadow:
+      inset 0 0 0 0.5cqw rgb(255 255 255 / .14),
+      inset 0 0 0 1cqw rgb(0 0 0 / .3),
+      0 1cqw 2cqw rgb(0 0 0 / .5),
+      0 16cqw 30cqw -8cqw rgb(0 0 0 / .85);
+  }
+
+  .lf-btn {
+    position: absolute;
+    width: 1.1cqw;
+    border-radius: 1cqw;
+    background: linear-gradient(90deg, #7d7466, #d8d0c3 50%, #8b8273);
+  }
+  :global(.dark) .lf-btn { background: linear-gradient(90deg, #26221e, #5d564d 50%, #2b2723); }
+  .lf-btn-l { left: -0.9cqw; }
+  .lf-btn-r { right: -0.9cqw; }
+
+  /* Schmaler schwarzer Displayrand */
+  .lf-phone-bezel {
+    border-radius: 14cqw;
+    padding: 2.6cqw;
+    background: #050505;
+  }
+
+  .lf-phone-screen {
+    position: relative;
+    border-radius: 11.6cqw;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: var(--lf-status-bg);
+  }
+
+  .lf-status {
+    position: relative;
+    flex: none;
+    height: 11cqw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5cqw 7cqw 0;
+    background: var(--lf-status-bg);
+    color: var(--lf-status-fg);
+    font: 600 4.1cqw/1 'IBM Plex Sans', system-ui, sans-serif;
+    letter-spacing: -0.01em;
+  }
+  .lf-status-icons { display: flex; align-items: center; gap: 1.4cqw; }
+  .lf-status-icons svg:nth-child(1) { width: 4.6cqw; }
+  .lf-status-icons svg:nth-child(2) { width: 4.2cqw; }
+  .lf-status-icons svg:nth-child(3) { width: 6.6cqw; }
+
+  /* Frontkamera als Punch-Hole */
+  .lf-camera {
+    position: absolute;
+    left: 50%;
+    top: 3.2cqw;
+    width: 4.4cqw;
+    height: 4.4cqw;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #3a4a6a 0%, #0c0f18 45%, #000 70%);
+    box-shadow: 0 0 0 0.6cqw #0a0a0a;
+  }
+
+  /* Die App-Aufnahme (390×844) steht vollständig unter der Statusleiste. */
+  .lf-app { position: relative; aspect-ratio: 390 / 844; overflow: hidden; }
+
+  .lf-home-area {
+    flex: none;
+    height: 6cqw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--lf-status-bg);
+  }
+  .lf-home {
+    width: 34%;
+    height: 1.25cqw;
+    border-radius: 1cqw;
+    background: var(--lf-home);
+  }
+
+  /* Glasreflex quer über das Display */
+  .lf-glare {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(115deg, rgb(255 255 255 / .16) 0%, rgb(255 255 255 / .05) 28%, transparent 42%, transparent 100%);
+    mix-blend-mode: screen;
   }
 </style>

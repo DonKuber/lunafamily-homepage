@@ -60,7 +60,7 @@ export const CATEGORIES: Category[] = [
   {
     slug: 'kalender',
     claim: 'Alle Termine der Familie – auf einen Blick.',
-    visual: { detail: 'kalender-raster', tilt: 'left', callouts: [{ text: 'Jede Person in ihrer Farbe', x: 68, y: -5, icon: 'users' }, { text: 'Training jeden Dienstag – einmal angelegt', x: -5, y: 93, icon: 'check' }] }, icon: IC.calendar, gradient: 'from-blue-500 to-cyan-500', status: 'available',
+    visual: { detail: 'kalender-raster', phone: 'phone-kalender', tilt: 'left', callouts: [{ text: 'Jede Person in ihrer Farbe', x: 26, y: -8, icon: 'users' }, { text: 'Training jeden Dienstag – einmal angelegt', x: -5, y: 93, icon: 'check' }] }, icon: IC.calendar, gradient: 'from-blue-500 to-cyan-500', status: 'available',
     title: 'Kalender & Planung', subtitle: 'Nie wieder einen Termin verpassen',
     features: ['Familien-Kalender', 'Wiederkehrende Termine', 'Event-Planung & Abstimmungen', 'Erinnerungen & Push-Benachrichtigungen'],
     intro: 'Fußballtraining, Elternabend, Zahnarzt, Omas Geburtstag: Im Familienkalender stehen alle Termine an einem Ort. Jeder sieht, wer wann wo sein muss, und niemand muss mehr fragen, ob der Termin am Dienstag oder am Mittwoch war.',
@@ -74,7 +74,7 @@ export const CATEGORIES: Category[] = [
   {
     slug: 'aufgaben',
     claim: 'Nichts rutscht mehr durch.',
-    visual: { detail: 'wiedervorlagen-liste', tilt: 'right', callouts: [{ text: 'Erinnert rechtzeitig an Fristen', x: 62, y: -5, icon: 'bell' }, { text: 'Wichtiges zuerst', x: -5, y: 94, icon: 'star' }] }, icon: IC.checkCircle, gradient: 'from-green-500 to-emerald-500', status: 'available',
+    visual: { detail: 'wiedervorlagen-liste', phone: 'phone-aufgaben', tilt: 'right', callouts: [{ text: 'Erinnert rechtzeitig an Fristen', x: 24, y: -9, icon: 'bell' }, { text: 'Wichtiges zuerst', x: -5, y: 94, icon: 'star' }] }, icon: IC.checkCircle, gradient: 'from-green-500 to-emerald-500', status: 'available',
     title: 'Aufgaben & Todos', subtitle: 'Gemeinsam mehr erledigen',
     features: ['Aufgabenlisten für alle', 'Subtasks & Prioritäten', 'Kategorien & Tags', 'Fälligkeitsdaten & Zuweisung'],
     intro: '„Wer kümmert sich eigentlich um …?" Diese Frage stellt sich nicht mehr. Aufgaben bekommen einen Zuständigen, eine Frist und eine Priorität, und große Vorhaben lassen sich in kleine Schritte zerlegen.',

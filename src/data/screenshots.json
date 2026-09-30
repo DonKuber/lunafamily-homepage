@@ -298,6 +298,11 @@
       "file": "phone-kalender",
       "route": "/app/calendar",
       "caption": "Der Kalender auf dem Handy"
+    },
+    {
+      "file": "phone-aufgaben",
+      "route": "/app/tasks",
+      "caption": "Die Aufgaben auf dem Handy"
     }
   ]
 }
