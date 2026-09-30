@@ -4,9 +4,14 @@ import SiteNav from '../../components/SiteNav.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
 import SiteScripts from '../../components/SiteScripts.astro';
 import { IC } from '../../data/icons';
-import { CATEGORIES, STATUS, screenshotsFor } from '../../data/features';
+import { CATEGORIES, STATUS, detailsFor, screenshotsFor } from '../../data/features';
 
-const cards = CATEGORIES.map((cat) => ({ cat, shot: screenshotsFor(cat.slug)[0] }));
+// Für die Kartenvorschau (16:10) ein Ausschnitt, der nicht zu flach ist —
+// sonst das Vollbild.
+const cards = CATEGORIES.map((cat) => ({
+  cat,
+  shot: detailsFor(cat.slug).find((d) => d.width / d.height <= 2.2) ?? screenshotsFor(cat.slug)[0],
+}));
 ---
 
 <Base

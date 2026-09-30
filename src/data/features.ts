@@ -191,11 +191,52 @@ function available(file: string): boolean {
   return existsSync(join(publicDir, `${file}-light.webp`)) && existsSync(join(publicDir, `${file}-dark.webp`));
 }
 
+interface ManifestCrop {
+  file: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  caption: string;
+}
+interface ManifestShot {
+  file: string;
+  caption: string;
+  crops?: ManifestCrop[];
+}
+
+const manifest = screenshots as unknown as Record<string, ManifestShot[]>;
+
+/** Eine App-Ansicht: das Vollbild und die daraus geschnittenen Ausschnitte. */
+export interface View {
+  full: Screenshot | null;
+  details: Screenshot[];
+}
+
+// Ausschnitte entstehen in doppelter Auflösung, höchstens 1800 px breit
+// (siehe capture-screenshots.mjs) — daraus folgen Breite und Höhe fürs <img>.
+function cropSize(c: ManifestCrop): { width: number; height: number } {
+  const width = Math.min(c.w * 2, 1800);
+  return { width, height: Math.round((width * c.h) / c.w) };
+}
+
+export function viewsFor(key: string): View[] {
+  return (manifest[key] ?? [])
+    .map((s) => ({
+      full: available(s.file) ? { file: s.file, caption: s.caption, width: SCREEN_W, height: SCREEN_H } : null,
+      details: (s.crops ?? [])
+        .filter((c) => available(c.file))
+        .map((c) => ({ file: c.file, caption: c.caption, ...cropSize(c) })),
+    }))
+    .filter((v) => v.full || v.details.length > 0);
+}
+
 export function screenshotsFor(key: string): Screenshot[] {
-  const list = (screenshots as unknown as Record<string, { file: string; caption: string }[]>)[key] ?? [];
-  return list
-    .filter((s) => available(s.file))
-    .map((s) => ({ file: s.file, caption: s.caption, width: SCREEN_W, height: SCREEN_H }));
+  return viewsFor(key).flatMap((v) => (v.full ? [v.full] : []));
+}
+
+export function detailsFor(key: string): Screenshot[] {
+  return viewsFor(key).flatMap((v) => v.details);
 }
 
 export interface Video {

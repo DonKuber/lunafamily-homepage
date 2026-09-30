@@ -43,7 +43,8 @@ const shots = Object.entries(manifest)
 const themes = process.env.ONLY_THEME ? [process.env.ONLY_THEME] : ['light', 'dark'];
 
 // Hinweise, die in der Demo-Umgebung stören, auf echten Konten aber nicht
-// erscheinen (Dev-Badge, Aktivierungsbanner) — per CSS ausgeblendet.
+// erscheinen (Dev-Badge, Aktivierungsbanner), und das schwebende CRA-Siegel,
+// das sonst in jedem Ausschnitt unten rechts im Bild steht — ausgeblendet.
 const HIDE_CSS = `
   [data-dev-badge], .dev-mode-badge { display: none !important; }
   *, *::before, *::after { transition: none !important; animation: none !important; caret-color: transparent !important; }
@@ -54,7 +55,7 @@ async function hideNoise(page) {
   await page.evaluate(() => {
     for (const el of document.querySelectorAll('body *')) {
       const t = el.textContent?.trim() ?? '';
-      if (el.children.length < 4 && (t.startsWith('Dev Mode') || t.startsWith('Fast fertig'))) {
+      if (el.children.length < 4 && (t.startsWith('Dev Mode') || t.startsWith('Fast fertig') || t === 'EU CRA Secure')) {
         const box = el.closest('[class*="fixed"], [role="alert"], [class*="banner"], div');
         (box ?? el).style.display = 'none';
       }
@@ -109,10 +110,18 @@ for (const theme of themes) {
       await page.waitForTimeout(600);
     }
     await hideNoise(page);
+    // Eine Aufnahme in doppelter Auflösung (2880×1800); daraus entstehen das
+    // Vollbild und die Ausschnitte, die dadurch auch vergrößert scharf bleiben.
     const png = await page.screenshot({ type: 'png' });
     const file = join(outDir, `${s.file}-${theme}.webp`);
     await sharp(png).resize(1600, 1000, { fit: 'cover', position: 'top' }).webp({ quality: 82 }).toFile(file);
     console.log(`✓ ${s.file}-${theme}.webp  (${s.route} → ${new URL(page.url()).pathname})`);
+    for (const c of s.crops ?? []) {
+      const region = { left: c.x * 2, top: c.y * 2, width: c.w * 2, height: c.h * 2 };
+      await sharp(png).extract(region).resize({ width: Math.min(region.width, 1800), withoutEnlargement: true })
+        .webp({ quality: 84 }).toFile(join(outDir, `${c.file}-${theme}.webp`));
+      console.log(`  ↳ ${c.file}-${theme}.webp`);
+    }
   }
   await ctx.close();
 }

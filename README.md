@@ -59,9 +59,17 @@ im LunaFamily-Repo):
 ```bash
 npm i --no-save playwright ffmpeg-static
 export LF_APP_URL=http://127.0.0.1:6173 LF_DEMO_EMAIL=demo-social@lunafamily.invalid LF_DEMO_PASSWORD=…
-node scripts/capture-screenshots.mjs   # 17 Ansichten, hell + dunkel → WebP
-node scripts/capture-videos.mjs        # kurze MP4-Loops + Vorschaubild
+node scripts/capture-screenshots.mjs   # Vollbilder + Ausschnitte, hell + dunkel → WebP
+node scripts/capture-videos.mjs        # MP4-Loops mit Kamera-Zoom + Vorschaubild
 ```
+
+Gestaltung (Recherche SaaS-Produktbilder): Die Seiten zeigen vor allem
+**Ausschnitte** — je Aussage nur den Bereich, um den es geht (`crops` in
+`screenshots.json`, Koordinaten in CSS-Pixeln der 1440×900-Ansicht). Sie
+werden aus derselben Aufnahme in doppelter Auflösung geschnitten und stehen
+auf einer „Bühne" (`ShotStage.astro`: Verlauf in Markenfarben, Rand, Schatten).
+Die Vollbilder folgen darunter als Gesamtansicht. Die Videos zoomen beim
+Klick auf die Aktion und führen den Zeiger weich (ease-in-out).
 
 Am saubersten wird es mit dem Produktions-Build des Frontends
 (`npx vite build && npx vite preview`), weil dann kein Dev-Hinweis im Bild

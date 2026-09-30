@@ -1,0 +1,51 @@
+---
+// Ein Ausschnitt aus der App auf einer „Bühne": dezenter Verlauf in den
+// Markenfarben, großzügiger Rand, runde Ecken, weicher Schatten und eine feine
+// Kontur. Hell und dunkel liegen als eigene Dateien vor; angezeigt wird die,
+// die zum Farbschema der Seite passt.
+import type { Screenshot } from '../data/features';
+
+interface Props {
+  shot: Screenshot;
+  eager?: boolean;
+  /** Richtung, aus der das Licht des Verlaufs fällt — für abwechselnde Zeilen. */
+  glow?: 'left' | 'right';
+  class?: string;
+}
+
+const { shot, eager = false, glow = 'right', class: extra = '' } = Astro.props;
+const loading = eager ? 'eager' : 'lazy';
+---
+
+<figure class={`lf-stage lf-stage-${glow} relative rounded-3xl p-4 sm:p-7 lg:p-9 overflow-hidden ${extra}`}>
+  <div class="relative rounded-xl sm:rounded-2xl overflow-hidden ring-1 ring-black/5 dark:ring-white/10 lf-stage-shadow bg-card">
+    <img src={`/screenshots/${shot.file}-light.webp`} alt={shot.caption} width={shot.width} height={shot.height}
+         loading={loading} decoding="async" class="block w-full h-auto dark:hidden" />
+    <img src={`/screenshots/${shot.file}-dark.webp`} alt={shot.caption} width={shot.width} height={shot.height}
+         loading={loading} decoding="async" class="hidden w-full h-auto dark:block" />
+  </div>
+</figure>
+
+<style>
+  .lf-stage {
+    background:
+      radial-gradient(120% 90% at var(--lf-glow-x) 0%, rgb(196 162 101 / .28) 0%, transparent 60%),
+      radial-gradient(90% 80% at calc(100% - var(--lf-glow-x)) 100%, rgb(143 174 107 / .14) 0%, transparent 55%),
+      linear-gradient(160deg, rgb(var(--color-muted) / .9), rgb(var(--color-background)));
+    border: 1px solid rgb(var(--color-border) / .8);
+  }
+  .lf-stage-right { --lf-glow-x: 85%; }
+  .lf-stage-left { --lf-glow-x: 15%; }
+  :global(.dark) .lf-stage {
+    background:
+      radial-gradient(120% 90% at var(--lf-glow-x) 0%, rgb(196 162 101 / .22) 0%, transparent 60%),
+      radial-gradient(90% 80% at calc(100% - var(--lf-glow-x)) 100%, rgb(143 174 107 / .10) 0%, transparent 55%),
+      linear-gradient(160deg, rgb(var(--color-muted) / .6), rgb(var(--color-background)));
+  }
+  .lf-stage-shadow {
+    box-shadow: 0 1px 2px rgb(40 30 10 / .06), 0 12px 32px -8px rgb(60 45 20 / .22);
+  }
+  :global(.dark) .lf-stage-shadow {
+    box-shadow: 0 1px 2px rgb(0 0 0 / .4), 0 16px 40px -10px rgb(0 0 0 / .6);
+  }
+</style>

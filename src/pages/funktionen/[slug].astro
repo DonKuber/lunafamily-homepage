@@ -5,8 +5,9 @@ import SiteFooter from '../../components/SiteFooter.astro';
 import SiteScripts from '../../components/SiteScripts.astro';
 import ScreenshotFrame from '../../components/ScreenshotFrame.astro';
 import FeatureVideo from '../../components/FeatureVideo.astro';
+import ShotStage from '../../components/ShotStage.astro';
 import { IC } from '../../data/icons';
-import { CATEGORIES, STATUS, screenshotsFor, videoFor, type Category } from '../../data/features';
+import { CATEGORIES, STATUS, videoFor, viewsFor, type Category } from '../../data/features';
 
 export function getStaticPaths() {
   return CATEGORIES.map((cat) => ({ params: { slug: cat.slug }, props: { cat } }));
@@ -14,8 +15,13 @@ export function getStaticPaths() {
 
 const { cat } = Astro.props as { cat: Category };
 const st = STATUS[cat.status];
-const shots = screenshotsFor(cat.slug);
-const [leadShot, ...moreShots] = shots;
+// Ausschnitte tragen die Seite, die Vollbilder stehen als Gesamtansicht darunter.
+const views = viewsFor(cat.slug);
+const details = views.flatMap((v) => v.details.map((detail) => ({ detail, context: v.full?.caption })));
+const fulls = views.flatMap((v) => (v.full ? [v.full] : []));
+const leadDetail = details[0]?.detail;
+const leadShot = leadDetail ?? fulls[0];
+const rows = leadDetail ? details.slice(1) : details;
 const video = videoFor(cat.slug);
 const idx = CATEGORIES.findIndex((c) => c.slug === cat.slug);
 const prev = CATEGORIES[(idx - 1 + CATEGORIES.length) % CATEGORIES.length];
@@ -65,7 +71,7 @@ const others = CATEGORIES.filter((c) => c.slug !== cat.slug);
             ))}
           </ul>
         </div>
-        {leadShot && <ScreenshotFrame shot={leadShot} eager />}
+        {leadDetail ? <ShotStage shot={leadDetail} eager /> : leadShot && <ScreenshotFrame shot={leadShot} eager />}
       </div>
     </div>
   </section>
@@ -86,21 +92,51 @@ const others = CATEGORIES.filter((c) => c.slug !== cat.slug);
   </section>
 
   <!-- ─── So sieht's aus ────────────────────────────────────────────────── -->
-  {(video || moreShots.length > 0) && (
+  {(video || rows.length > 0 || fulls.length > 0) && (
     <section class="py-20 px-4 sm:px-6" aria-labelledby="screens-heading">
-      <div class="max-w-5xl mx-auto">
-        <div class="text-center mb-12">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-14">
           <h2 id="screens-heading" class="font-display text-3xl sm:text-4xl font-bold text-foreground mb-3">
             So sieht's <span class="font-script text-accent text-[1.15em]">aus</span>
           </h2>
           <p class="text-muted-foreground">Aufnahmen aus der echten App, mit einer erfundenen Beispielfamilie.</p>
         </div>
-        <div class="space-y-16">
-          {video && <div class="lf-animate"><FeatureVideo src={video.src} poster={video.poster} caption={`${cat.title} in Aktion`} /></div>}
-          {moreShots.map((shot) => (
-            <div class="lf-animate"><ScreenshotFrame shot={shot} /></div>
-          ))}
+
+        {video && (
+          <div class="lf-animate max-w-5xl mx-auto mb-20">
+            <FeatureVideo src={video.src} poster={video.poster} caption={`${cat.title} in Aktion`} />
+          </div>
+        )}
+
+        <div class="space-y-20 lg:space-y-24">
+          {rows.map(({ detail, context }, i) => {
+            // Sehr flache Ausschnitte (z. B. eine Kachelreihe) brauchen die volle
+            // Breite; alle anderen wechseln Bild/Text von Zeile zu Zeile die Seite.
+            const wide = detail.width / detail.height > 3.2;
+            const flip = !wide && i % 2 === 1;
+            const cols = wide ? '' : flip ? 'lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)]' : 'lg:grid-cols-[minmax(0,7fr)_minmax(0,4fr)]';
+            return (
+              <div class={`lf-animate grid gap-8 lg:gap-14 items-center ${cols}`}>
+                <ShotStage shot={detail} glow={flip ? 'right' : 'left'} class={flip ? 'lg:order-2' : ''} />
+                <div class={flip ? 'lg:order-1' : wide ? 'text-center max-w-2xl mx-auto' : ''}>
+                  <h3 class="font-display text-2xl font-semibold text-foreground mb-3 leading-snug">{detail.caption}</h3>
+                  {context && <p class="text-muted-foreground leading-relaxed">{context}.</p>}
+                </div>
+              </div>
+            );
+          })}
         </div>
+
+        {fulls.length > 0 && (
+          <div class="mt-24">
+            <h3 class="font-display text-xl font-semibold text-foreground mb-8 text-center">Die ganze Ansicht</h3>
+            <div class={`grid gap-8 ${fulls.length > 2 ? 'md:grid-cols-2 lg:grid-cols-3' : fulls.length > 1 ? 'md:grid-cols-2' : 'max-w-4xl mx-auto'}`}>
+              {fulls.map((shot) => (
+                <div class="lf-animate"><ScreenshotFrame shot={shot} /></div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   )}

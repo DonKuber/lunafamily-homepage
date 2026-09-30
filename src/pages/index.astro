@@ -5,9 +5,14 @@ import SiteFooter from '../components/SiteFooter.astro';
 import SiteScripts from '../components/SiteScripts.astro';
 import ScreenshotFrame from '../components/ScreenshotFrame.astro';
 import { IC } from '../data/icons';
-import { CATEGORIES, STATUS, screenshotsFor } from '../data/features';
+import { CATEGORIES, STATUS, detailsFor, screenshotsFor } from '../data/features';
 
 const HERO_SHOT = screenshotsFor('hero')[0];
+// Zwei Ausschnitte aus anderen Bereichen schweben vor dem Dashboard und zeigen,
+// dass mehr dahintersteckt als eine Übersichtsseite.
+const allDetails = CATEGORIES.flatMap((c) => detailsFor(c.slug));
+const HERO_FLOAT_RIGHT = allDetails.find((d) => d.file === 'einkauf-liste');
+const HERO_FLOAT_LEFT = allDetails.find((d) => d.file === 'kasse-konten');
 
 const WHY_CARDS = [
   { icon: IC.shield, color: 'text-green-500', title: 'Deine Daten. Deine Regeln.',     text: 'Keine Werbeanzeigen, kein Tracking, kein Datenverkauf. Was in deiner Familie passiert, bleibt in deiner Familie.' },
@@ -52,6 +57,10 @@ const ROADMAP_PLANNED = [
   @keyframes lf-float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(40px,-50px)} }
   @keyframes lf-float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-30px,40px)} }
   @keyframes lf-float3 { 0%,100%{transform:translate(-50%,-50%)} 50%{transform:translate(-50%,calc(-50% - 25px))} }
+  @keyframes lf-hover { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  .lf-float { border-radius: 1rem; box-shadow: 0 2px 4px rgb(40 30 10 / .08), 0 30px 60px -18px rgb(60 45 20 / .45); outline: 1px solid rgb(var(--color-border)); animation: lf-hover 7s ease-in-out infinite; }
+  .dark .lf-float { box-shadow: 0 2px 4px rgb(0 0 0 / .5), 0 30px 60px -18px rgb(0 0 0 / .8); }
+  @media (prefers-reduced-motion: reduce) { .lf-float { animation: none; } }
   @keyframes lf-fadein  { from{opacity:0;transform:translateY(2.5rem)} to{opacity:1;transform:translateY(0)} }
 
   .lf-hero { animation: lf-fadein 1s ease forwards; }
@@ -146,10 +155,27 @@ const ROADMAP_PLANNED = [
 </section>
 
 {HERO_SHOT && (
-  <section class="px-4 sm:px-6 -mt-6 pb-20" aria-label="Einblick in die App">
-    <div class="lf-animate max-w-6xl mx-auto">
-      <ScreenshotFrame shot={HERO_SHOT} />
+  <section class="px-4 sm:px-6 -mt-6 pb-24 lg:pb-32" aria-label="Einblick in die App">
+    <div class="lf-animate relative max-w-6xl mx-auto">
+      <div class="absolute -inset-x-6 -inset-y-10 -z-10 rounded-[3rem] opacity-70" aria-hidden="true"
+           style="background:radial-gradient(60% 60% at 50% 40%, rgb(196 162 101 / .25), transparent 70%)"></div>
+      <div class="lg:mx-16">
+        <ScreenshotFrame shot={HERO_SHOT} eager showCaption={false} />
+      </div>
+      {HERO_FLOAT_RIGHT && (
+        <div class="lf-float hidden lg:block absolute -right-2 top-[18%] w-[27%]" aria-hidden="true">
+          <img src={`/screenshots/${HERO_FLOAT_RIGHT.file}-light.webp`} alt="" width={HERO_FLOAT_RIGHT.width} height={HERO_FLOAT_RIGHT.height} loading="lazy" decoding="async" class="block w-full h-auto rounded-2xl dark:hidden" />
+          <img src={`/screenshots/${HERO_FLOAT_RIGHT.file}-dark.webp`} alt="" width={HERO_FLOAT_RIGHT.width} height={HERO_FLOAT_RIGHT.height} loading="lazy" decoding="async" class="hidden w-full h-auto rounded-2xl dark:block" />
+        </div>
+      )}
+      {HERO_FLOAT_LEFT && (
+        <div class="lf-float hidden lg:block absolute -left-2 -bottom-12 w-[44%]" aria-hidden="true" style="animation-delay:-3s">
+          <img src={`/screenshots/${HERO_FLOAT_LEFT.file}-light.webp`} alt="" width={HERO_FLOAT_LEFT.width} height={HERO_FLOAT_LEFT.height} loading="lazy" decoding="async" class="block w-full h-auto rounded-2xl dark:hidden" />
+          <img src={`/screenshots/${HERO_FLOAT_LEFT.file}-dark.webp`} alt="" width={HERO_FLOAT_LEFT.width} height={HERO_FLOAT_LEFT.height} loading="lazy" decoding="async" class="hidden w-full h-auto rounded-2xl dark:block" />
+        </div>
+      )}
     </div>
+    <p class="mt-20 lg:mt-24 text-center text-sm text-muted-foreground">{HERO_SHOT.caption} – aufgenommen mit einer erfundenen Beispielfamilie.</p>
   </section>
 )}
 
