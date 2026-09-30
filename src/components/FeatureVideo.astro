@@ -3,16 +3,17 @@
 // Bild scrollt (siehe SiteScripts), und respektiert „reduzierte Bewegung".
 interface Props {
   src: string;
+  poster?: string;
   caption: string;
 }
 
-const { src, caption } = Astro.props;
+const { src, poster, caption } = Astro.props;
 ---
 
 <figure>
   <div class="rounded-xl sm:rounded-2xl border border-border bg-card overflow-hidden"
        style="box-shadow:0 24px 60px -20px rgba(60,45,20,.28)">
-    <video data-lf-autoplay muted loop playsinline preload="none" width="1600" height="1000"
+    <video data-lf-autoplay muted loop playsinline preload="none" poster={poster} width="1600" height="1000"
            class="block w-full h-auto" aria-label={caption}>
       <source src={src} type="video/mp4" />
     </video>

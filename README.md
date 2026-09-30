@@ -57,10 +57,16 @@ Aufgenommen wird **ausschließlich** im fiktiven Demo-Mandanten (Familie Muster,
 im LunaFamily-Repo):
 
 ```bash
-npm i --no-save playwright
-LF_APP_URL=http://127.0.0.1:6173 LF_DEMO_EMAIL=demo-social@lunafamily.invalid \
-LF_DEMO_PASSWORD=… node scripts/capture-screenshots.mjs
+npm i --no-save playwright ffmpeg-static
+export LF_APP_URL=http://127.0.0.1:6173 LF_DEMO_EMAIL=demo-social@lunafamily.invalid LF_DEMO_PASSWORD=…
+node scripts/capture-screenshots.mjs   # 17 Ansichten, hell + dunkel → WebP
+node scripts/capture-videos.mjs        # kurze MP4-Loops + Vorschaubild
 ```
+
+Am saubersten wird es mit dem Produktions-Build des Frontends
+(`npx vite build && npx vite preview`), weil dann kein Dev-Hinweis im Bild
+erscheint. Vor einer neuen Aufnahme die Bilder ansehen — ein leerer Zustand
+oder eine Fehlermeldung in der App landet sonst unbemerkt auf der Website.
 
 ## Deployment
 

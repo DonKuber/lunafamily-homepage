@@ -1,10 +1,10 @@
 {
-  "_comment": "Welche App-Ansicht wird für welche Funktionsseite aufgenommen. Gelesen von src/data/features.ts (Anzeige) und scripts/capture-screenshots.mjs (Aufnahme). Bilder liegen als public/screenshots/<file>-light.webp und -dark.webp; fehlt eine Datei, wird der Eintrag auf der Seite einfach ausgelassen.",
+  "_comment": "Welche App-Ansicht wird für welche Funktionsseite aufgenommen. Optional je Eintrag: \"click\" (sichtbarer Text, der vor der Aufnahme angeklickt wird) und \"scrollY\" (Pixel). Gelesen von src/data/features.ts (Anzeige) und scripts/capture-screenshots.mjs (Aufnahme). Bilder liegen als public/screenshots/<file>-light.webp und -dark.webp; fehlt eine Datei, wird der Eintrag auf der Seite einfach ausgelassen.",
   "hero": [
     { "file": "dashboard", "route": "/app/dashboard", "caption": "Das Familien-Dashboard: Termine, Aufgaben und Neuigkeiten auf einen Blick" }
   ],
   "kalender": [
-    { "file": "kalender-monat", "route": "/app/calendar", "caption": "Der Familienkalender mit allen Terminen im Monat" },
+    { "file": "kalender-monat", "route": "/app/calendar", "caption": "Der Familienkalender: jede Person in ihrer Farbe" },
     { "file": "kalender-events", "route": "/app/planning/events", "caption": "Events planen – mit Gästeliste, Budget und To-dos" }
   ],
   "aufgaben": [
@@ -13,16 +13,16 @@
   ],
   "dokumente": [],
   "kueche": [
-    { "file": "kueche-rezepte", "route": "/app/food/recipes", "caption": "Die Rezeptsammlung der Familie" },
     { "file": "kueche-essensplan", "route": "/app/food/meal-plan", "caption": "Der Essensplan für die ganze Woche" },
-    { "file": "kueche-einkauf", "route": "/app/food/shopping-lists", "caption": "Gemeinsame Einkaufslisten – abhaken in Echtzeit" }
+    { "file": "kueche-einkauf", "route": "/app/food/shopping-lists", "click": "Wocheneinkauf", "caption": "Gemeinsame Einkaufslisten – abhaken in Echtzeit" },
+    { "file": "kueche-rezepte", "route": "/app/food/recipes", "caption": "Die Rezeptsammlung der Familie" }
   ],
   "familie": [
     { "file": "familie-mitglieder", "route": "/app/family/members", "caption": "Alle Familienmitglieder mit eigenen Profilen" },
     { "file": "familie-kontakte", "route": "/app/contacts", "caption": "Das Kontaktbuch mit Geburtstagen und Adressen" },
     { "file": "familie-vertraege", "route": "/app/contracts", "caption": "Verträge und Versicherungen mit Kosten und Laufzeiten" },
     { "file": "familie-tagebuch", "route": "/app/diary", "caption": "Das Familientagebuch mit Stimmung und Wetter" },
-    { "file": "familie-erfolge", "route": "/app/success-journal", "caption": "Das Erfolgsjournal – kleine und große Erfolge feiern" }
+    { "file": "familie-erfolge", "route": "/app/success-journal", "click": "Erfolge", "caption": "Das Erfolgsjournal – kleine und große Erfolge feiern" }
   ],
   "haushalt": [
     { "file": "haushalt-aufgaben", "route": "/app/chores", "caption": "Haushaltsaufgaben mit Punkten für jede erledigte Aufgabe" },
@@ -30,13 +30,13 @@
   ],
   "finanzen": [
     { "file": "finanzen-kasse", "route": "/app/finances/cash", "caption": "Bargeld und Haushaltskasse im Überblick" },
-    { "file": "finanzen-ausgaben", "route": "/app/expenses", "caption": "Geteilte Ausgaben – fair abgerechnet, zum Beispiel im Urlaub" }
+    { "file": "finanzen-uebersicht", "route": "/app/finances/overview", "caption": "Die Finanzübersicht: Einnahmen, Ausgaben und Verträge je Familienmitglied" }
   ],
   "kommunikation": [],
   "schule": [],
   "ki": [],
   "mobile": [],
   "statistiken": [
-    { "file": "statistiken", "route": "/app/statistics", "caption": "Statistiken und Auswertungen für die ganze Familie" }
+    { "file": "dashboard", "route": "/app/dashboard", "caption": "Das Dashboard fasst den Tag der Familie zusammen" }
   ]
 }

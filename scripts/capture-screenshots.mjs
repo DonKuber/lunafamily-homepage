@@ -37,7 +37,9 @@ const only = new Set(process.argv.slice(2));
 const shots = Object.entries(manifest)
   .filter(([key]) => !key.startsWith('_'))
   .flatMap(([, list]) => list)
-  .filter((s) => only.size === 0 || only.has(s.file));
+  .filter((s) => only.size === 0 || only.has(s.file))
+  // Dieselbe Datei darf auf mehreren Seiten stehen, aufgenommen wird sie einmal.
+  .filter((s, i, all) => all.findIndex((o) => o.file === s.file) === i);
 const themes = process.env.ONLY_THEME ? [process.env.ONLY_THEME] : ['light', 'dark'];
 
 // Hinweise, die in der Demo-Umgebung stören, auf echten Konten aber nicht
@@ -78,15 +80,34 @@ for (const theme of themes) {
   await page.fill('#password', PASSWORD);
   await page.click('button[type=submit]');
   await page.waitForURL((u) => !u.pathname.startsWith('/login'), { timeout: 20000 });
-  // Das App-Theme folgt einer gespeicherten Wahl vor dem System-Schema.
-  await page.evaluate((t) => {
-    for (const k of ['theme', 'lf-theme', 'vite-ui-theme', 'lunafamily-theme']) localStorage.setItem(k, t);
-    document.documentElement.classList.toggle('dark', t === 'dark');
-  }, theme);
+  // Die App legt die Sitzung erst kurz nach der Weiterleitung ab; ein zu
+  // früher Seitenwechsel landet wieder auf /login.
+  await page.waitForLoadState('networkidle');
+  await page.waitForTimeout(3000);
+  // Das Farbschema über den Knopf in der Kopfzeile setzen — so wie ein Nutzer.
+  await page.waitForSelector('header button[aria-label="Toggle dark mode"]', { timeout: 20000 });
+  const isDark = () => page.evaluate(() => document.documentElement.classList.contains('dark'));
+  if ((await isDark()) !== (theme === 'dark')) {
+    await page.click('header button[aria-label="Toggle dark mode"]');
+    await page.waitForTimeout(800);
+  }
+  if ((await isDark()) !== (theme === 'dark')) throw new Error(`Farbschema ${theme} ließ sich nicht setzen`);
 
   for (const s of shots) {
     await page.goto(`${APP}${s.route}`, { waitUntil: 'networkidle' }).catch(() => {});
+    if (new URL(page.url()).pathname.startsWith('/login')) {
+      throw new Error(`${s.route}: Sitzung verloren (auf /login umgeleitet) — Aufnahme abgebrochen`);
+    }
     await page.waitForTimeout(1500);
+    // Optional je Ansicht: einen Eintrag öffnen (Text) und/oder scrollen.
+    if (s.click) {
+      await page.getByText(s.click, { exact: true }).filter({ visible: true }).first().click({ timeout: 5000 });
+      await page.waitForTimeout(1500);
+    }
+    if (s.scrollY) {
+      await page.evaluate((y) => (document.querySelector('main') ?? document.scrollingElement).scrollBy(0, y), s.scrollY);
+      await page.waitForTimeout(600);
+    }
     await hideNoise(page);
     const png = await page.screenshot({ type: 'png' });
     const file = join(outDir, `${s.file}-${theme}.webp`);

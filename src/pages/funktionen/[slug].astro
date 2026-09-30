@@ -96,7 +96,7 @@ const others = CATEGORIES.filter((c) => c.slug !== cat.slug);
           <p class="text-muted-foreground">Aufnahmen aus der echten App, mit einer erfundenen Beispielfamilie.</p>
         </div>
         <div class="space-y-16">
-          {video && <div class="lf-animate"><FeatureVideo src={video} caption={`${cat.title} in Aktion`} /></div>}
+          {video && <div class="lf-animate"><FeatureVideo src={video.src} poster={video.poster} caption={`${cat.title} in Aktion`} /></div>}
           {moreShots.map((shot) => (
             <div class="lf-animate"><ScreenshotFrame shot={shot} /></div>
           ))}

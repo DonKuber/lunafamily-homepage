@@ -114,10 +114,10 @@ export const CATEGORIES: Category[] = [
     slug: 'finanzen', icon: IC.wallet, gradient: 'from-yellow-500 to-orange-500', status: 'partial',
     title: 'Finanzen', subtitle: 'Volle Kontrolle über das Familienbudget',
     features: ['Open Banking (GoCardless)', 'Ausgaben & Budgets', 'Kredite & Investments', 'Steuerübersicht'],
-    intro: 'Wohin fließt das Geld? Haushaltskasse, Portemonnaie und Sparschwein sind genauso erfasst wie geteilte Ausgaben mit Freunden, etwa beim gemeinsamen Urlaub. Die Anbindung ans Bankkonto per Open Banking ist in Entwicklung.',
+    intro: 'Wohin fließt das Geld? Haushaltskasse, Portemonnaie und Sparschwein sind erfasst, Verträge und Kredite laufen in einer Übersicht je Familienmitglied zusammen. Geteilte Ausgaben und die Anbindung ans Bankkonto per Open Banking sind in Entwicklung.',
     highlights: [
       { title: 'Bargeld & Kassen', text: 'Portemonnaie, Haushaltskasse, Taschengeld: jede Ausgabe mit Kategorie.' },
-      { title: 'Geteilte Ausgaben', text: 'Wer hat was bezahlt, und wer schuldet wem? Faire Abrechnung für Urlaube und WGs.' },
+      { title: 'Übersicht je Person', text: 'Einnahmen, Ausgaben, Verträge und Kredite für jedes Familienmitglied auf einen Blick.' },
       { title: 'Kredite in der Familie', text: 'Das Darlehen an die Tochter für das Fahrrad, mit Tilgungsplan statt Zettel am Kühlschrank.' },
       { title: 'Open Banking', text: 'In Entwicklung: Kontoumsätze sicher über GoCardless abrufen und automatisch kategorisieren.' },
     ],
@@ -198,6 +198,13 @@ export function screenshotsFor(key: string): Screenshot[] {
     .map((s) => ({ file: s.file, caption: s.caption, width: SCREEN_W, height: SCREEN_H }));
 }
 
-export function videoFor(slug: string): string | null {
-  return existsSync(join(publicDir, `${slug}.mp4`)) ? `/screenshots/${slug}.mp4` : null;
+export interface Video {
+  src: string;
+  poster?: string;
+}
+
+export function videoFor(slug: string): Video | null {
+  if (!existsSync(join(publicDir, `${slug}.mp4`))) return null;
+  const poster = existsSync(join(publicDir, `${slug}-poster.jpg`)) ? `/screenshots/${slug}-poster.jpg` : undefined;
+  return { src: `/screenshots/${slug}.mp4`, poster };
 }
