@@ -1,0 +1,34 @@
+---
+// Neutrales Smartphone (kein bestimmtes Herstellermodell) mit einer
+// Handy-Aufnahme der App; hell und dunkel passend zum Farbschema der Seite.
+import type { Screenshot } from '../data/features';
+
+interface Props {
+  shot: Screenshot;
+  class?: string;
+  eager?: boolean;
+}
+const { shot, class: extra = '', eager = false } = Astro.props;
+const loading = eager ? 'eager' : 'lazy';
+// Wer das Handy absolut platziert, gibt `absolute` mit; sonst ist es `relative`.
+const position = /\babsolute\b/.test(extra) ? '' : 'relative';
+---
+
+<div class={`lf-phone ${position} rounded-[2.4rem] p-[3.2%] bg-neutral-900 ${extra}`}>
+  <div class="relative overflow-hidden rounded-[2rem] bg-black aspect-[390/844]">
+    <img src={`/screenshots/${shot.file}-light.webp`} alt={shot.caption} width={shot.width} height={shot.height}
+         loading={loading} decoding="async" class="block w-full h-full object-cover object-top dark:hidden" />
+    <img src={`/screenshots/${shot.file}-dark.webp`} alt={shot.caption} width={shot.width} height={shot.height}
+         loading={loading} decoding="async" class="hidden w-full h-full object-cover object-top dark:block" />
+    <span class="absolute top-[1.4%] left-1/2 -translate-x-1/2 w-[28%] h-[2.6%] rounded-full bg-black" aria-hidden="true"></span>
+  </div>
+</div>
+
+<style>
+  .lf-phone {
+    box-shadow:
+      inset 0 0 0 1.5px rgb(255 255 255 / .12),
+      0 2px 4px rgb(0 0 0 / .15),
+      0 40px 70px -20px rgb(40 30 10 / .55);
+  }
+</style>

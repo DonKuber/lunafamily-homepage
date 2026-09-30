@@ -1,0 +1,72 @@
+---
+// Vorlage für die Teilen-Vorschaubilder (Open Graph, 1200×630). Keine
+// eigentliche Seite: scripts/render-og.mjs fotografiert sie und legt das Bild
+// unter public/og/<slug>.jpg ab. Deshalb noindex und nirgends verlinkt.
+import Base from '../../layouts/Base.astro';
+import PhoneFrame from '../../components/PhoneFrame.astro';
+import { CATEGORIES, shotByFile, screenshotsFor } from '../../data/features';
+
+export function getStaticPaths() {
+  return [
+    { params: { slug: 'start' } },
+    { params: { slug: 'funktionen' } },
+    ...CATEGORIES.map((c) => ({ params: { slug: c.slug } })),
+  ];
+}
+
+const { slug } = Astro.params;
+const cat = CATEGORIES.find((c) => c.slug === slug);
+const eyebrow = cat ? cat.title : slug === 'funktionen' ? 'Alle Funktionen' : 'Das digitale Zuhause für deine Familie';
+const claim = cat
+  ? cat.claim
+  : slug === 'funktionen'
+    ? 'Zwölf Bereiche. Ein System. Für die ganze Familie.'
+    : 'Kalender, Aufgaben, Essen, Finanzen – alles an einem Ort.';
+const visual = cat ? (cat.visual ? shotByFile(cat.visual.detail) : null) : slug === 'funktionen' ? shotByFile('kalender-raster') : screenshotsFor('hero')[0];
+// Hochformatige Ausschnitte (z. B. Aufgabenkarten) schmaler setzen.
+const portrait = visual ? visual.height > visual.width * 0.9 : false;
+const phone = cat?.visual?.phone ? shotByFile(cat.visual.phone) : slug === 'start' ? shotByFile('phone-essensplan') : null;
+---
+
+<Base title={`${eyebrow} – LunaFamily`} noindex>
+  <div id="og" class="relative overflow-hidden" style="width:1200px;height:630px">
+    <div class="absolute inset-0" style="background:linear-gradient(135deg,#fbf7f0 0%,#f3eadb 55%,#eadcc3 100%)"></div>
+    <div class="absolute -top-40 -right-24 w-[620px] h-[620px] rounded-full" style="background:radial-gradient(circle,rgb(196 162 101 / .45),transparent 65%)"></div>
+    <div class="absolute -bottom-48 left-40 w-[520px] h-[520px] rounded-full" style="background:radial-gradient(circle,rgb(143 174 107 / .28),transparent 65%)"></div>
+
+    <div class="absolute left-16 top-14 w-[500px]">
+      <img src="/brand/logo-wordmark.png" alt="LunaFamily" width="1229" height="231" class="h-14 w-auto mb-12" />
+      <p class="text-lg font-semibold uppercase tracking-wider mb-4" style="color:#a8844a">{eyebrow}</p>
+      <p class="font-display font-bold leading-[1.08] text-[#2b2118]" style={`font-size:${claim.length > 45 ? 50 : 58}px`}>{claim}</p>
+    </div>
+    <div class="absolute left-16 bottom-12 flex items-center gap-3 text-[#6b5b48] text-lg">
+      <span class="font-semibold text-[#2b2118]">lunafamily.online</span>
+      <span aria-hidden="true">·</span>
+      <span>Kostenlos in der Beta</span>
+    </div>
+
+    {visual && (
+      <div class={`absolute ${portrait ? 'left-[680px] top-[60px] w-[400px]' : 'left-[610px] top-[70px] w-[680px]'}`} style="transform:perspective(1600px) rotateY(-10deg) rotateX(4deg);transform-origin:left center">
+        <div class="rounded-2xl overflow-hidden ring-1 ring-black/10 bg-white" style="box-shadow:0 40px 80px -20px rgb(60 45 20 / .5)">
+          <img src={`/screenshots/${visual.file}-light.webp`} alt="" width={visual.width} height={visual.height} class="block w-full h-auto" />
+        </div>
+      </div>
+    )}
+    {!visual && cat && (
+      <div class={`absolute right-28 top-[170px] w-72 h-72 rounded-[4rem] bg-gradient-to-br ${cat.gradient} flex items-center justify-center`}
+           style="box-shadow:0 40px 80px -20px rgb(60 45 20 / .45);transform:rotate(-6deg)">
+        <svg class="w-36 h-36 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <Fragment set:html={cat.icon} />
+        </svg>
+      </div>
+    )}
+    {phone && (
+      <PhoneFrame shot={phone} class="absolute right-10 bottom-[-150px] w-[190px]" eager />
+    )}
+  </div>
+</Base>
+
+<style is:global>
+  html, body { margin: 0; background: #fbf7f0 !important; }
+  html.dark img[class*='dark:block'] { display: none; }
+</style>

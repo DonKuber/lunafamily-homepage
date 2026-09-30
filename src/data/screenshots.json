@@ -1,5 +1,5 @@
 {
-  "_comment": "Welche App-Ansicht wird für welche Funktionsseite aufgenommen. Optional je Eintrag: \"click\" (sichtbarer Text, der vor der Aufnahme angeklickt wird) und \"scrollY\" (Pixel). \"crops\": Ausschnitte in CSS-Pixeln der 1440×900-Ansicht, die aus derselben Aufnahme in doppelter Auflösung geschnitten werden. Gelesen von src/data/features.ts (Anzeige) und scripts/capture-screenshots.mjs (Aufnahme). Bilder liegen als public/screenshots/<file>-light.webp und -dark.webp; fehlt eine Datei, wird der Eintrag auf der Seite einfach ausgelassen.",
+  "_comment": "Welche App-Ansicht wird für welche Funktionsseite aufgenommen. Optional je Eintrag: \"click\" (sichtbarer Text, der vor der Aufnahme angeklickt wird), \"clickSelector\" (Playwright-Selektor, z. B. der Pfeil zum nächsten Monat) und \"scrollY\" (Pixel). \"crops\": Ausschnitte in CSS-Pixeln der 1440×900-Ansicht, die aus derselben Aufnahme in doppelter Auflösung geschnitten werden. \"phone\": Aufnahmen im Handyformat (390×844, dreifache Auflösung) für die Smartphone-Mockups. Gelesen von src/data/features.ts (Anzeige) und scripts/capture-screenshots.mjs (Aufnahme). Bilder liegen als public/screenshots/<file>-light.webp und -dark.webp; fehlt eine Datei, wird der Eintrag auf der Seite einfach ausgelassen.",
   "hero": [
     {
       "file": "dashboard",
@@ -29,6 +29,7 @@
     {
       "file": "kalender-monat",
       "route": "/app/calendar",
+      "clickSelector": "xpath=//button[normalize-space()='Heute']/following::button[2]",
       "caption": "Der Familienkalender: jede Person in ihrer Farbe",
       "crops": [
         {
@@ -210,12 +211,32 @@
     {
       "file": "haushalt-aufgaben",
       "route": "/app/chores",
-      "caption": "Haushaltsaufgaben mit Punkten für jede erledigte Aufgabe"
+      "caption": "Haushaltsaufgaben mit Punkten für jede erledigte Aufgabe",
+      "crops": [
+        {
+          "file": "haushalt-karten",
+          "x": 296,
+          "y": 390,
+          "w": 320,
+          "h": 410,
+          "caption": "Jede erledigte Aufgabe bringt Punkte"
+        }
+      ]
     },
     {
       "file": "haushalt-inventar",
       "route": "/app/household/inventory",
-      "caption": "Das Inventar: Was steht wo, und wann läuft die Garantie ab?"
+      "caption": "Das Inventar: Was steht wo, und wann läuft die Garantie ab?",
+      "crops": [
+        {
+          "file": "inventar-raeume",
+          "x": 296,
+          "y": 195,
+          "w": 1104,
+          "h": 700,
+          "caption": "Alles nach Räumen sortiert, mit Gesamtwert"
+        }
+      ]
     }
   ],
   "finanzen": [
@@ -259,6 +280,24 @@
       "file": "dashboard",
       "route": "/app/dashboard",
       "caption": "Das Dashboard fasst den Tag der Familie zusammen"
+    }
+  ],
+  "phone": [
+    {
+      "file": "phone-essensplan",
+      "route": "/app/food/meal-plan",
+      "caption": "Der Essensplan auf dem Handy"
+    },
+    {
+      "file": "phone-dashboard",
+      "route": "/app/dashboard",
+      "scrollY": 260,
+      "caption": "Das Dashboard auf dem Handy"
+    },
+    {
+      "file": "phone-kalender",
+      "route": "/app/calendar",
+      "caption": "Der Kalender auf dem Handy"
     }
   ]
 }

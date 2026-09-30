@@ -1,0 +1,77 @@
+---
+// Marketing-Komposition für einen Funktionsbereich: der Ausschnitt aus der App
+// leicht in den Raum gedreht, dahinter ein warmes Leuchten, davor Hinweis-Chips
+// mit dem Nutzen — und, wo es passt, das Handy mit derselben Funktion.
+// Auf kleinen Bildschirmen ohne Drehung; die Chips stehen dann unter dem Bild.
+import CalloutChip from './Callout.astro';
+import PhoneFrame from './PhoneFrame.astro';
+import { shotByFile, type Visual } from '../data/features';
+
+interface Props {
+  visual: Visual;
+  eager?: boolean;
+}
+const { visual, eager = false } = Astro.props;
+const detail = shotByFile(visual.detail);
+const phone = visual.phone ? shotByFile(visual.phone) : null;
+const loading = eager ? 'eager' : 'lazy';
+const portrait = detail ? detail.height > detail.width : false;
+const tilt = visual.tilt === 'right' ? '-7deg' : '7deg';
+---
+
+{detail && (
+  <div class="lf-mv relative">
+    <div class="absolute -inset-10 -z-10 rounded-[3rem] lf-mv-glow" aria-hidden="true"></div>
+
+    <div class={`relative ${phone ? 'lg:mr-[14%]' : ''} ${portrait ? 'max-w-sm mx-auto' : ''}`}>
+      <div class="lf-mv-window rounded-2xl overflow-hidden ring-1 ring-black/5 dark:ring-white/10 bg-card" style={`--lf-ry:${tilt}`}>
+        <img src={`/screenshots/${detail.file}-light.webp`} alt={detail.caption} width={detail.width} height={detail.height}
+             loading={loading} decoding="async" class="block w-full h-auto dark:hidden" />
+        <img src={`/screenshots/${detail.file}-dark.webp`} alt={detail.caption} width={detail.width} height={detail.height}
+             loading={loading} decoding="async" class="hidden w-full h-auto dark:block" />
+      </div>
+
+      {phone && (
+        <PhoneFrame shot={phone} eager={eager}
+          class="absolute -right-[4%] lg:-right-[22%] -bottom-[14%] w-[30%] lg:w-[27%] lf-mv-float" />
+      )}
+
+      {visual.callouts.map((c, i) => (
+        <CalloutChip callout={c} class="hidden lg:inline-flex absolute z-10 lf-mv-float"
+          style={`left:${c.x}%;top:${c.y}%;animation-delay:${-i * 2.3}s`} />
+      ))}
+    </div>
+
+    <div class={`flex lg:hidden flex-wrap justify-center gap-2 ${phone ? 'mt-16' : 'mt-6'}`}>
+      {visual.callouts.map((c) => <CalloutChip callout={c} />)}
+    </div>
+  </div>
+)}
+
+<style>
+  .lf-mv-glow {
+    background:
+      radial-gradient(55% 60% at 30% 35%, rgb(196 162 101 / .30), transparent 70%),
+      radial-gradient(45% 50% at 80% 80%, rgb(143 174 107 / .18), transparent 70%);
+  }
+  :global(.dark) .lf-mv-glow {
+    background:
+      radial-gradient(55% 60% at 30% 35%, rgb(196 162 101 / .20), transparent 70%),
+      radial-gradient(45% 50% at 80% 80%, rgb(143 174 107 / .10), transparent 70%);
+  }
+  .lf-mv-window {
+    box-shadow: 0 2px 4px rgb(40 30 10 / .08), 0 40px 80px -24px rgb(60 45 20 / .45);
+  }
+  :global(.dark) .lf-mv-window {
+    box-shadow: 0 2px 4px rgb(0 0 0 / .5), 0 40px 80px -24px rgb(0 0 0 / .85);
+  }
+  @media (min-width: 1024px) {
+    .lf-mv-window {
+      transform: perspective(1800px) rotateY(var(--lf-ry)) rotateX(3deg);
+      transform-origin: center;
+    }
+  }
+  @keyframes lf-mv-hover { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  .lf-mv-float { animation: lf-mv-hover 7s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) { .lf-mv-float { animation: none; } }
+</style>

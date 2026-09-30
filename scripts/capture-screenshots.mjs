@@ -35,11 +35,12 @@ if (!EMAIL.endsWith('.invalid') || !PASSWORD) {
 
 const only = new Set(process.argv.slice(2));
 const shots = Object.entries(manifest)
-  .filter(([key]) => !key.startsWith('_'))
+  .filter(([key]) => !key.startsWith('_') && key !== 'phone')
   .flatMap(([, list]) => list)
   .filter((s) => only.size === 0 || only.has(s.file))
   // Dieselbe Datei darf auf mehreren Seiten stehen, aufgenommen wird sie einmal.
   .filter((s, i, all) => all.findIndex((o) => o.file === s.file) === i);
+const phoneShots = (manifest.phone ?? []).filter((s) => only.size === 0 || only.has(s.file));
 const themes = process.env.ONLY_THEME ? [process.env.ONLY_THEME] : ['light', 'dark'];
 
 // Hinweise, die in der Demo-Umgebung stören, auf echten Konten aber nicht
@@ -66,10 +67,13 @@ async function hideNoise(page) {
 mkdirSync(outDir, { recursive: true });
 const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
 
-for (const theme of themes) {
+async function captureSet(theme, list, device) {
+  const phone = device === 'phone';
   const ctx = await browser.newContext({
-    viewport: { width: 1440, height: 900 },
-    deviceScaleFactor: 2,
+    viewport: phone ? { width: 390, height: 844 } : { width: 1440, height: 900 },
+    deviceScaleFactor: phone ? 3 : 2,
+    isMobile: phone,
+    hasTouch: phone,
     locale: 'de-DE',
     timezoneId: 'Europe/Berlin',
     colorScheme: theme,
@@ -86,15 +90,19 @@ for (const theme of themes) {
   await page.waitForLoadState('networkidle');
   await page.waitForTimeout(3000);
   // Das Farbschema über den Knopf in der Kopfzeile setzen — so wie ein Nutzer.
-  await page.waitForSelector('header button[aria-label="Toggle dark mode"]', { timeout: 20000 });
   const isDark = () => page.evaluate(() => document.documentElement.classList.contains('dark'));
   if ((await isDark()) !== (theme === 'dark')) {
+    // Auf dem Handy ist die Kopfzeile verkürzt; das Farbschema wird dann in
+    // einer Desktop-Breite umgeschaltet und bleibt für die Sitzung gespeichert.
+    if (phone) await page.setViewportSize({ width: 1440, height: 900 });
+    await page.waitForSelector('header button[aria-label="Toggle dark mode"]', { timeout: 20000 });
     await page.click('header button[aria-label="Toggle dark mode"]');
     await page.waitForTimeout(800);
+    if (phone) await page.setViewportSize({ width: 390, height: 844 });
   }
   if ((await isDark()) !== (theme === 'dark')) throw new Error(`Farbschema ${theme} ließ sich nicht setzen`);
 
-  for (const s of shots) {
+  for (const s of list) {
     await page.goto(`${APP}${s.route}`, { waitUntil: 'networkidle' }).catch(() => {});
     if (new URL(page.url()).pathname.startsWith('/login')) {
       throw new Error(`${s.route}: Sitzung verloren (auf /login umgeleitet) — Aufnahme abgebrochen`);
@@ -105,6 +113,12 @@ for (const theme of themes) {
       await page.getByText(s.click, { exact: true }).filter({ visible: true }).first().click({ timeout: 5000 });
       await page.waitForTimeout(1500);
     }
+    if (s.clickSelector) {
+      await page.locator(s.clickSelector).first().click({ timeout: 5000 });
+      await page.waitForTimeout(1500);
+    }
+    // Hover-Hervorhebungen nach einem Klick vermeiden.
+    if (s.click || s.clickSelector) await page.mouse.move(2, 2);
     if (s.scrollY) {
       await page.evaluate((y) => (document.querySelector('main') ?? document.scrollingElement).scrollBy(0, y), s.scrollY);
       await page.waitForTimeout(600);
@@ -114,6 +128,11 @@ for (const theme of themes) {
     // Vollbild und die Ausschnitte, die dadurch auch vergrößert scharf bleiben.
     const png = await page.screenshot({ type: 'png' });
     const file = join(outDir, `${s.file}-${theme}.webp`);
+    if (phone) {
+      await sharp(png).resize({ width: 780 }).webp({ quality: 84 }).toFile(file);
+      console.log(`✓ ${s.file}-${theme}.webp  (Handy)`);
+      continue;
+    }
     await sharp(png).resize(1600, 1000, { fit: 'cover', position: 'top' }).webp({ quality: 82 }).toFile(file);
     console.log(`✓ ${s.file}-${theme}.webp  (${s.route} → ${new URL(page.url()).pathname})`);
     for (const c of s.crops ?? []) {
@@ -124,5 +143,10 @@ for (const theme of themes) {
     }
   }
   await ctx.close();
+}
+
+for (const theme of themes) {
+  if (shots.length) await captureSet(theme, shots, 'desktop');
+  if (phoneShots.length) await captureSet(theme, phoneShots, 'phone');
 }
 await browser.close();

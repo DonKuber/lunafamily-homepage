@@ -6,6 +6,7 @@ import SiteScripts from '../../components/SiteScripts.astro';
 import ScreenshotFrame from '../../components/ScreenshotFrame.astro';
 import FeatureVideo from '../../components/FeatureVideo.astro';
 import ShotStage from '../../components/ShotStage.astro';
+import MarketingVisual from '../../components/MarketingVisual.astro';
 import { IC } from '../../data/icons';
 import { CATEGORIES, STATUS, videoFor, viewsFor, type Category } from '../../data/features';
 
@@ -21,7 +22,9 @@ const details = views.flatMap((v) => v.details.map((detail) => ({ detail, contex
 const fulls = views.flatMap((v) => (v.full ? [v.full] : []));
 const leadDetail = details[0]?.detail;
 const leadShot = leadDetail ?? fulls[0];
-const rows = leadDetail ? details.slice(1) : details;
+// Mit Marketing-Komposition oben bleiben alle Ausschnitte für die Zeilen.
+const rows = cat.visual ? details.filter((d) => d.detail.file !== cat.visual?.detail) : leadDetail ? details.slice(1) : details;
+const hasLead = Boolean(cat.visual || leadShot);
 const video = videoFor(cat.slug);
 const idx = CATEGORIES.findIndex((c) => c.slug === cat.slug);
 const prev = CATEGORIES[(idx - 1 + CATEGORIES.length) % CATEGORIES.length];
@@ -29,7 +32,7 @@ const next = CATEGORIES[(idx + 1) % CATEGORIES.length];
 const others = CATEGORIES.filter((c) => c.slug !== cat.slug);
 ---
 
-<Base title={`${cat.title} – LunaFamily`} description={`${cat.subtitle}. ${cat.intro}`}>
+<Base title={`${cat.title}: ${cat.claim.replace(/\.$/, "")} – LunaFamily`} description={`${cat.claim} ${cat.intro}`} ogImage={cat.slug}>
 
 <SiteNav />
 
@@ -47,8 +50,8 @@ const others = CATEGORIES.filter((c) => c.slug !== cat.slug);
         <span class="text-foreground">{cat.title}</span>
       </nav>
 
-      <div class={`grid gap-10 items-center ${leadShot ? 'lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]' : ''}`}>
-        <div class={leadShot ? '' : 'max-w-3xl'}>
+      <div class={`grid gap-12 lg:gap-16 items-center ${hasLead ? 'lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]' : ''}`}>
+        <div class={hasLead ? '' : 'max-w-3xl'}>
           <div class="flex items-center gap-3 mb-6">
             <div class={`p-3 rounded-xl bg-gradient-to-br ${cat.gradient} text-white shadow-sm`}>
               <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -57,8 +60,8 @@ const others = CATEGORIES.filter((c) => c.slug !== cat.slug);
             </div>
             <span class={`px-2.5 py-1 rounded-full text-xs font-semibold border ${st.cls}`}>{st.label}</span>
           </div>
-          <h1 id="feature-heading" class="font-display text-4xl sm:text-5xl font-bold text-foreground mb-4 leading-tight">{cat.title}</h1>
-          <p class="text-xl text-primary font-medium mb-5">{cat.subtitle}</p>
+          <p class="text-sm font-semibold uppercase tracking-wider text-primary mb-3">{cat.title}</p>
+          <h1 id="feature-heading" class="font-display text-4xl sm:text-5xl font-bold text-foreground mb-6 leading-[1.1]">{cat.claim}</h1>
           <p class="text-lg text-muted-foreground leading-relaxed mb-8">{cat.intro}</p>
           <ul class="grid sm:grid-cols-2 gap-x-6 gap-y-2.5">
             {cat.features.map((f) => (
@@ -71,7 +74,9 @@ const others = CATEGORIES.filter((c) => c.slug !== cat.slug);
             ))}
           </ul>
         </div>
-        {leadDetail ? <ShotStage shot={leadDetail} eager /> : leadShot && <ScreenshotFrame shot={leadShot} eager />}
+        {cat.visual
+          ? <MarketingVisual visual={cat.visual} eager />
+          : leadDetail ? <ShotStage shot={leadDetail} eager /> : leadShot && <ScreenshotFrame shot={leadShot} eager />}
       </div>
     </div>
   </section>

@@ -17,6 +17,7 @@ const cards = CATEGORIES.map((cat) => ({
 <Base
   title="Funktionen – LunaFamily"
   description="Kalender, Aufgaben, Dokumente, Küche, Haushalt, Finanzen und mehr: alle Bereiche von LunaFamily im Überblick, mit Einblicken in die App."
+  ogImage="funktionen"
 >
 
 <SiteNav />
@@ -61,7 +62,7 @@ const cards = CATEGORIES.map((cat) => ({
                 <h2 class="font-display font-semibold text-foreground text-lg">{cat.title}</h2>
                 <span class={`px-2.5 py-1 rounded-full text-xs font-semibold border whitespace-nowrap ${st.cls}`}>{st.label}</span>
               </div>
-              <p class="text-sm text-muted-foreground leading-relaxed mb-4 flex-1">{cat.subtitle}</p>
+              <p class="text-sm text-muted-foreground leading-relaxed mb-4 flex-1">{cat.claim}</p>
               <span class="inline-flex items-center gap-1.5 text-sm font-medium text-primary">
                 Mehr erfahren
                 <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={IC.arrowRight} /></svg>

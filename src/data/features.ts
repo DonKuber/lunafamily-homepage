@@ -12,8 +12,27 @@ export interface Highlight {
   text: string;
 }
 
+/** Hinweis-Chip auf dem Marketing-Bild; x/y in Prozent der Bildfläche. */
+export interface Callout {
+  text: string;
+  x: number;
+  y: number;
+  icon?: 'check' | 'star' | 'bell' | 'heart' | 'shield' | 'users';
+}
+
+/** Marketing-Komposition: Ausschnitt, optional Handy, Hinweise. */
+export interface Visual {
+  detail: string;
+  phone?: string;
+  tilt?: 'left' | 'right';
+  callouts: Callout[];
+}
+
 export interface Category {
   slug: string;
+  /** Nutzen in einem Satz — die Schlagzeile der Unterseite. */
+  claim: string;
+  visual?: Visual;
   icon: string;
   gradient: string;
   status: Status;
@@ -39,7 +58,9 @@ export const STATUS: Record<Status, { label: string; cls: string }> = {
 
 export const CATEGORIES: Category[] = [
   {
-    slug: 'kalender', icon: IC.calendar, gradient: 'from-blue-500 to-cyan-500', status: 'available',
+    slug: 'kalender',
+    claim: 'Alle Termine der Familie – auf einen Blick.',
+    visual: { detail: 'kalender-raster', tilt: 'left', callouts: [{ text: 'Jede Person in ihrer Farbe', x: 68, y: -5, icon: 'users' }, { text: 'Training jeden Dienstag – einmal angelegt', x: -5, y: 93, icon: 'check' }] }, icon: IC.calendar, gradient: 'from-blue-500 to-cyan-500', status: 'available',
     title: 'Kalender & Planung', subtitle: 'Nie wieder einen Termin verpassen',
     features: ['Familien-Kalender', 'Wiederkehrende Termine', 'Event-Planung & Abstimmungen', 'Erinnerungen & Push-Benachrichtigungen'],
     intro: 'Fußballtraining, Elternabend, Zahnarzt, Omas Geburtstag: Im Familienkalender stehen alle Termine an einem Ort. Jeder sieht, wer wann wo sein muss, und niemand muss mehr fragen, ob der Termin am Dienstag oder am Mittwoch war.',
@@ -51,7 +72,9 @@ export const CATEGORIES: Category[] = [
     ],
   },
   {
-    slug: 'aufgaben', icon: IC.checkCircle, gradient: 'from-green-500 to-emerald-500', status: 'available',
+    slug: 'aufgaben',
+    claim: 'Nichts rutscht mehr durch.',
+    visual: { detail: 'wiedervorlagen-liste', tilt: 'right', callouts: [{ text: 'Erinnert rechtzeitig an Fristen', x: 62, y: -5, icon: 'bell' }, { text: 'Wichtiges zuerst', x: -5, y: 94, icon: 'star' }] }, icon: IC.checkCircle, gradient: 'from-green-500 to-emerald-500', status: 'available',
     title: 'Aufgaben & Todos', subtitle: 'Gemeinsam mehr erledigen',
     features: ['Aufgabenlisten für alle', 'Subtasks & Prioritäten', 'Kategorien & Tags', 'Fälligkeitsdaten & Zuweisung'],
     intro: '„Wer kümmert sich eigentlich um …?" Diese Frage stellt sich nicht mehr. Aufgaben bekommen einen Zuständigen, eine Frist und eine Priorität, und große Vorhaben lassen sich in kleine Schritte zerlegen.',
@@ -63,7 +86,8 @@ export const CATEGORIES: Category[] = [
     ],
   },
   {
-    slug: 'dokumente', icon: IC.fileText, gradient: 'from-orange-500 to-amber-500', status: 'available',
+    slug: 'dokumente',
+    claim: 'Jedes Dokument in Sekunden wiedergefunden.', icon: IC.fileText, gradient: 'from-orange-500 to-amber-500', status: 'available',
     title: 'Dokumente (Paperless)', subtitle: 'Papierkram endlich digital',
     features: ['Rechnungen & Verträge', 'Automatische OCR-Erkennung', 'Intelligente Kategorisierung', 'Schnelle Volltextsuche'],
     intro: 'Rechnungen, Bescheide, Zeugnisse, Garantiebelege: einscannen, automatisch erkennen lassen und in Sekunden wiederfinden. Die Dokumentenverwaltung baut auf Paperless-ngx auf, einem bewährten Open-Source-System.',
@@ -75,7 +99,9 @@ export const CATEGORIES: Category[] = [
     ],
   },
   {
-    slug: 'kueche', icon: IC.utensils, gradient: 'from-rose-500 to-pink-500', status: 'available',
+    slug: 'kueche',
+    claim: 'Sonntag planen, die ganze Woche entspannt essen.',
+    visual: { detail: 'essensplan-woche', phone: 'phone-essensplan', tilt: 'left', callouts: [{ text: 'Frühstück bis Abendessen geplant', x: -6, y: -6, icon: 'check' }, { text: 'Auch unterwegs griffbereit', x: 44, y: 104, icon: 'heart' }] }, icon: IC.utensils, gradient: 'from-rose-500 to-pink-500', status: 'available',
     title: 'Küche & Ernährung', subtitle: 'Kochen wird wieder Freude',
     features: ['Rezeptsammlung', 'Mahlzeitenplanung', 'Auto-Einkaufslisten', 'Kalorientracking'],
     intro: 'Die tägliche Frage „Was essen wir heute?" beantwortet der Essensplan schon am Sonntag. Rezepte, Wochenplan und Einkaufsliste greifen ineinander, und im Supermarkt hakt jeder gemeinsam auf derselben Liste ab.',
@@ -87,7 +113,9 @@ export const CATEGORIES: Category[] = [
     ],
   },
   {
-    slug: 'familie', icon: IC.users, gradient: 'from-violet-500 to-purple-500', status: 'available',
+    slug: 'familie',
+    claim: 'Alle an Bord – und Kinderdaten bleiben geschützt.',
+    visual: { detail: 'familie-einwilligung', tilt: 'right', callouts: [{ text: 'Einwilligung der Eltern (Art. 8 DSGVO)', x: 52, y: -7, icon: 'shield' }, { text: 'Jeder mit eigenem Zugang', x: -5, y: 97, icon: 'users' }] }, icon: IC.users, gradient: 'from-violet-500 to-purple-500', status: 'available',
     title: 'Familie & Kontakte', subtitle: 'Alle Verbindungen an einem Ort',
     features: ['Familienmitglieder verwalten', 'Stammbaum visualisieren', 'Kontaktbuch mit CRM', 'Firmen & Verträge'],
     intro: 'Jedes Familienmitglied hat ein eigenes Profil mit passenden Rechten, vom Elternteil bis zur Oma mit Lesezugriff. Dazu kommen das Kontaktbuch, Firmen, Verträge, das Familientagebuch und das Erfolgsjournal.',
@@ -99,7 +127,9 @@ export const CATEGORIES: Category[] = [
     ],
   },
   {
-    slug: 'haushalt', icon: IC.home, gradient: 'from-teal-500 to-green-500', status: 'available',
+    slug: 'haushalt',
+    claim: 'Der Haushalt als Teamspiel.',
+    visual: { detail: 'haushalt-karten', tilt: 'left', callouts: [{ text: '15 Punkte für geputzte Fenster', x: 74, y: 22, icon: 'star' }, { text: 'Wiederkehrend – plant sich selbst', x: -38, y: 70, icon: 'check' }] }, icon: IC.home, gradient: 'from-teal-500 to-green-500', status: 'available',
     title: 'Haushalt', subtitle: 'Der Haushalt läuft sich fast von selbst',
     features: ['Haushaltsaufgaben & Gamification', 'Inventar verwalten', 'Bedienungsanleitungen', 'Haushaltsplaner'],
     intro: 'Spülmaschine ausräumen, Müll rausbringen, Pflanzen gießen: Haushaltsaufgaben wiederholen sich automatisch und bringen Punkte. Das motiviert die Kinder und entlastet die Eltern. Das Inventar weiß, was ihr besitzt und wann eine Garantie abläuft.',
@@ -111,7 +141,9 @@ export const CATEGORIES: Category[] = [
     ],
   },
   {
-    slug: 'finanzen', icon: IC.wallet, gradient: 'from-yellow-500 to-orange-500', status: 'partial',
+    slug: 'finanzen',
+    claim: 'Endlich wissen, wohin das Familiengeld fließt.',
+    visual: { detail: 'kasse-konten', tilt: 'right', callouts: [{ text: 'Monatsvergleich automatisch', x: 64, y: -9, icon: 'star' }, { text: 'Taschengeld inklusive', x: -5, y: 96, icon: 'heart' }] }, icon: IC.wallet, gradient: 'from-yellow-500 to-orange-500', status: 'partial',
     title: 'Finanzen', subtitle: 'Volle Kontrolle über das Familienbudget',
     features: ['Open Banking (GoCardless)', 'Ausgaben & Budgets', 'Kredite & Investments', 'Steuerübersicht'],
     intro: 'Wohin fließt das Geld? Haushaltskasse, Portemonnaie und Sparschwein sind erfasst, Verträge und Kredite laufen in einer Übersicht je Familienmitglied zusammen. Geteilte Ausgaben und die Anbindung ans Bankkonto per Open Banking sind in Entwicklung.',
@@ -123,7 +155,8 @@ export const CATEGORIES: Category[] = [
     ],
   },
   {
-    slug: 'kommunikation', icon: IC.mail, gradient: 'from-sky-500 to-blue-500', status: 'partial',
+    slug: 'kommunikation',
+    claim: 'Alles Wichtige, ohne Chat-Chaos.', icon: IC.mail, gradient: 'from-sky-500 to-blue-500', status: 'partial',
     title: 'Kommunikation', subtitle: 'Immer verbunden, egal wo',
     features: ['Familien-Nachrichten', 'Integrierter E-Mail-Client', 'Ankündigungen', 'Anrufverlauf'],
     intro: 'Nachrichten an die Familie, wichtige Ankündigungen und das Postfach für die Familien-E-Mails. Aus einer E-Mail wird mit einem Klick eine Aufgabe oder eine Wiedervorlage.',
@@ -134,7 +167,8 @@ export const CATEGORIES: Category[] = [
     ],
   },
   {
-    slug: 'schule', icon: IC.graduationCap, gradient: 'from-indigo-500 to-violet-500', status: 'partial',
+    slug: 'schule',
+    claim: 'Hausaufgaben, Noten, Termine – gemeinsam im Blick.', icon: IC.graduationCap, gradient: 'from-indigo-500 to-violet-500', status: 'partial',
     title: 'Schule & Bildung', subtitle: 'Lernfortschritt im Blick',
     features: ['Schultermine & Hausaufgaben', 'Noten & Zeugnisse', 'Lernpläne', 'Studienmanagement'],
     intro: 'Stundenplan, Hausaufgaben, Klassenarbeiten und Noten: Eltern und Kinder behalten gemeinsam den Überblick. Die Daten der Kinder sind dabei besonders geschützt.',
@@ -145,7 +179,8 @@ export const CATEGORIES: Category[] = [
     ],
   },
   {
-    slug: 'ki', icon: IC.sparkles, gradient: 'from-pink-500 to-rose-500', status: 'coming',
+    slug: 'ki',
+    claim: 'Die Kleinarbeit erledigt sich von selbst.', icon: IC.sparkles, gradient: 'from-pink-500 to-rose-500', status: 'coming',
     title: 'KI-Assistent', subtitle: 'Intelligente Unterstützung im Alltag',
     features: ['Automatische Kategorisierung', 'Smarte Vorschläge', 'E-Mail-Review & Zusammenfassungen', 'Multi-Provider KI'],
     intro: 'Künstliche Intelligenz soll euch die Kleinarbeit abnehmen: Dokumente einsortieren, Vorschläge für den Essensplan machen, lange E-Mails zusammenfassen. Welcher KI-Anbieter dabei zum Einsatz kommt, entscheidet ihr.',
@@ -156,7 +191,8 @@ export const CATEGORIES: Category[] = [
     ],
   },
   {
-    slug: 'mobile', icon: IC.smartphone, gradient: 'from-slate-500 to-gray-600', status: 'coming',
+    slug: 'mobile',
+    claim: 'Immer dabei – auch ohne Netz.', icon: IC.smartphone, gradient: 'from-slate-500 to-gray-600', status: 'coming',
     title: 'Mobile App (Offline)', subtitle: 'Immer dabei, auch ohne Internet',
     features: ['iOS & Android App', 'Offline-First Architektur', 'Automatische Synchronisation', 'Biometrische Absicherung'],
     intro: 'Einkaufsliste im Funkloch, Kalender im Flugzeug: Die mobile App funktioniert auch ohne Verbindung und gleicht Änderungen automatisch ab, sobald wieder Netz da ist.',
@@ -167,7 +203,9 @@ export const CATEGORIES: Category[] = [
     ],
   },
   {
-    slug: 'statistiken', icon: IC.barChart, gradient: 'from-cyan-500 to-teal-500', status: 'partial',
+    slug: 'statistiken',
+    claim: 'Ein Blick am Morgen, und der Tag ist klar.',
+    visual: { detail: 'dashboard-termine', phone: 'phone-dashboard', tilt: 'left', callouts: [{ text: 'Die nächsten Termine aller', x: -6, y: -6, icon: 'users' }] }, icon: IC.barChart, gradient: 'from-cyan-500 to-teal-500', status: 'partial',
     title: 'Statistiken & Insights', subtitle: 'Daten, die wirklich helfen',
     features: ['Familien-Dashboard', 'Aktivitätsberichte', 'Ausgaben-Trends', 'Produktivitäts-Insights'],
     intro: 'Das Dashboard zeigt morgens, was heute ansteht. Die Statistiken zeigen, wie sich Ausgaben entwickeln, wer im Haushalt am fleißigsten war und welche Aufgaben liegen bleiben.',
@@ -248,4 +286,20 @@ export function videoFor(slug: string): Video | null {
   if (!existsSync(join(publicDir, `${slug}.mp4`))) return null;
   const poster = existsSync(join(publicDir, `${slug}-poster.jpg`)) ? `/screenshots/${slug}-poster.jpg` : undefined;
   return { src: `/screenshots/${slug}.mp4`, poster };
+}
+
+/** Ein Ausschnitt oder eine Handy-Aufnahme per Dateiname, sofern vorhanden. */
+export function shotByFile(file: string): Screenshot | null {
+  for (const list of Object.values(manifest)) {
+    for (const s of list) {
+      if (s.file === file && available(s.file)) {
+        const phone = (manifest.phone ?? []).includes(s);
+        return { file: s.file, caption: s.caption, width: phone ? 780 : SCREEN_W, height: phone ? 1688 : SCREEN_H };
+      }
+      for (const c of s.crops ?? []) {
+        if (c.file === file && available(c.file)) return { file: c.file, caption: c.caption, ...cropSize(c) };
+      }
+    }
+  }
+  return null;
 }

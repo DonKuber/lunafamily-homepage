@@ -71,6 +71,17 @@ auf einer „Bühne" (`ShotStage.astro`: Verlauf in Markenfarben, Rand, Schatten
 Die Vollbilder folgen darunter als Gesamtansicht. Die Videos zoomen beim
 Klick auf die Aktion und führen den Zeiger weich (ease-in-out).
 
+**Marketing-Kompositionen:** Jeder Bereich hat in `src/data/features.ts` eine
+Nutzen-Schlagzeile (`claim`) und optional ein `visual`: Ausschnitt, Handy-
+Aufnahme und Hinweis-Chips (`callouts`, Position in Prozent). Daraus baut
+`MarketingVisual.astro` das Aufmacherbild; die Startseite zeigt Laptop und
+Handy (`LaptopFrame`, `PhoneFrame`, neutrale Geräte ohne Herstellerbezug).
+
+**Teilen-Vorschaubilder** (WhatsApp, Facebook, LinkedIn …): Vorlage
+`src/pages/og-vorlage/[slug].astro`, Bilder unter `public/og/`. Nach
+geänderten Texten oder Screenshots: bauen, `npx astro preview`, dann
+`node scripts/render-og.mjs`, danach erneut bauen.
+
 Am saubersten wird es mit dem Produktions-Build des Frontends
 (`npx vite build && npx vite preview`), weil dann kein Dev-Hinweis im Bild
 erscheint. Vor einer neuen Aufnahme die Bilder ansehen — ein leerer Zustand
