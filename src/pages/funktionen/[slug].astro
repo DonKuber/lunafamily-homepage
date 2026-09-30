@@ -8,10 +8,11 @@ import FeatureVideo from '../../components/FeatureVideo.astro';
 import ShotStage from '../../components/ShotStage.astro';
 import MarketingVisual from '../../components/MarketingVisual.astro';
 import { IC } from '../../data/icons';
-import { CATEGORIES, STATUS, videoFor, viewsFor, type Category } from '../../data/features';
+import { PUBLISHED, STATUS, videoFor, viewsFor, type Category } from '../../data/features';
 
 export function getStaticPaths() {
-  return CATEGORIES.map((cat) => ({ params: { slug: cat.slug }, props: { cat } }));
+  // Nur freigeschaltete Bereiche bekommen eine Seite (siehe data/features.ts).
+  return PUBLISHED.map((cat) => ({ params: { slug: cat.slug }, props: { cat } }));
 }
 
 const { cat } = Astro.props as { cat: Category };
@@ -26,10 +27,10 @@ const leadShot = leadDetail ?? fulls[0];
 const rows = cat.visual ? details.filter((d) => d.detail.file !== cat.visual?.detail) : leadDetail ? details.slice(1) : details;
 const hasLead = Boolean(cat.visual || leadShot);
 const video = videoFor(cat.slug);
-const idx = CATEGORIES.findIndex((c) => c.slug === cat.slug);
-const prev = CATEGORIES[(idx - 1 + CATEGORIES.length) % CATEGORIES.length];
-const next = CATEGORIES[(idx + 1) % CATEGORIES.length];
-const others = CATEGORIES.filter((c) => c.slug !== cat.slug);
+const idx = PUBLISHED.findIndex((c) => c.slug === cat.slug);
+const prev = PUBLISHED[(idx - 1 + PUBLISHED.length) % PUBLISHED.length];
+const next = PUBLISHED[(idx + 1) % PUBLISHED.length];
+const others = PUBLISHED.filter((c) => c.slug !== cat.slug);
 ---
 
 <Base title={`${cat.title}: ${cat.claim.replace(/\.$/, "")} – LunaFamily`} description={`${cat.claim} ${cat.intro}`} ogImage={cat.slug}>

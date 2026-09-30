@@ -41,21 +41,6 @@
           "caption": "Jede Person hat ihre Farbe – so sieht man sofort, wer verplant ist"
         }
       ]
-    },
-    {
-      "file": "kalender-events",
-      "route": "/app/planning/events",
-      "caption": "Events planen – mit Gästeliste, Budget und To-dos",
-      "crops": [
-        {
-          "file": "kalender-eventkarten",
-          "x": 296,
-          "y": 365,
-          "w": 1104,
-          "h": 440,
-          "caption": "Events mit Datum, Ort, Gästen und Budget"
-        }
-      ]
     }
   ],
   "aufgaben": [
@@ -161,21 +146,6 @@
       ]
     },
     {
-      "file": "familie-vertraege",
-      "route": "/app/contracts",
-      "caption": "Verträge und Versicherungen mit Kosten und Laufzeiten",
-      "crops": [
-        {
-          "file": "vertraege-kosten",
-          "x": 272,
-          "y": 196,
-          "w": 1152,
-          "h": 136,
-          "caption": "Alle Vertragskosten im Monat und im Jahr"
-        }
-      ]
-    },
-    {
       "file": "familie-tagebuch",
       "route": "/app/diary",
       "caption": "Das Familientagebuch mit Stimmung und Wetter",
@@ -205,6 +175,32 @@
           "caption": "Erfolge sammeln und gemeinsam feiern"
         }
       ]
+    }
+  ],
+  "vertraege": [
+    {
+      "file": "familie-vertraege",
+      "route": "/app/contracts",
+      "caption": "Verträge und Versicherungen mit Kosten und Laufzeiten",
+      "crops": [
+        {
+          "file": "vertraege-kosten",
+          "x": 272,
+          "y": 64,
+          "w": 1152,
+          "h": 126,
+          "caption": "Alle Vertragskosten im Monat und im Jahr"
+        },
+        {
+          "file": "vertraege-karten",
+          "x": 272,
+          "y": 395,
+          "w": 1152,
+          "h": 408,
+          "caption": "Jeder Vertrag mit Kosten, Laufzeit und Ansprechpartner"
+        }
+      ],
+      "scrollY": 140
     }
   ],
   "haushalt": [
@@ -304,5 +300,26 @@
       "route": "/app/tasks",
       "caption": "Die Aufgaben auf dem Handy"
     }
-  ]
+  ],
+  "events": [
+    {
+      "file": "kalender-events",
+      "route": "/app/planning/events",
+      "caption": "Events planen – mit Gästeliste, Budget und To-dos",
+      "crops": [
+        {
+          "file": "kalender-eventkarten",
+          "x": 296,
+          "y": 365,
+          "w": 1104,
+          "h": 440,
+          "caption": "Events mit Datum, Ort, Gästen und Budget"
+        }
+      ]
+    }
+  ],
+  "paperless": [],
+  "caldav": [],
+  "kfz": [],
+  "haustiere": []
 }

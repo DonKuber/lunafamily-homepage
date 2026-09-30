@@ -120,7 +120,14 @@ async function captureSet(theme, list, device) {
     // Hover-Hervorhebungen nach einem Klick vermeiden.
     if (s.click || s.clickSelector) await page.mouse.move(2, 2);
     if (s.scrollY) {
-      await page.evaluate((y) => (document.querySelector('main') ?? document.scrollingElement).scrollBy(0, y), s.scrollY);
+      // Gescrollt wird der Container, der tatsächlich scrollt — je nach
+      // Layout <main>, ein Vorfahr davon oder die Seite selbst.
+      await page.evaluate((y) => {
+        const scrolls = (el) => el.scrollHeight > el.clientHeight + 1 && /auto|scroll/.test(getComputedStyle(el).overflowY);
+        let el = document.querySelector('main');
+        while (el && !scrolls(el)) el = el.parentElement;
+        (el ?? document.scrollingElement).scrollBy(0, y);
+      }, s.scrollY);
       await page.waitForTimeout(600);
     }
     await hideNoise(page);

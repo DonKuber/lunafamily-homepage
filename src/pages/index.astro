@@ -7,11 +7,11 @@ import LaptopFrame from '../components/LaptopFrame.astro';
 import PhoneFrame from '../components/PhoneFrame.astro';
 import CalloutChip from '../components/Callout.astro';
 import { IC } from '../data/icons';
-import { CATEGORIES, STATUS, screenshotsFor, shotByFile, type Callout } from '../data/features';
+import { CATEGORIES, STATUS, STATUS_ORDER, isPublished, screenshotsFor, shotByFile, type Callout, type Status } from '../data/features';
 
 const HERO_SHOT = screenshotsFor('hero')[0];
 // Laptop und Handy zusammen zeigen: zu Hause am Rechner, unterwegs am Handy.
-const HERO_PHONE = shotByFile('phone-essensplan');
+const HERO_PHONE = shotByFile('phone-kalender');
 const HERO_CALLOUTS: Callout[] = [
   { text: 'Für die ganze Familie', x: -7, y: 22, icon: 'users' },
   { text: 'Termine und Aufgaben auf einen Blick', x: 70, y: -5, icon: 'check' },
@@ -36,25 +36,18 @@ const BETA_CARDS = [
   { icon: IC.zap,         color: 'text-primary',   title: 'Schnelle Bug-Fixes',                    text: 'Wenn etwas nicht stimmt, beheben wir es schnell. Transparente Kommunikation ist uns wichtig.' },
 ];
 
-const ROADMAP_DONE = [
-  'Kalender & Termine', 'Aufgaben & Todos mit Subtasks', 'Dokumente (Paperless-ngx)',
-  'Rezepte, Einkauf & Mahlzeiten', 'Familienmitglieder & Kontakte', 'Haushalt & Inventar',
-  'Familien-Nachrichten', 'Push-Benachrichtigungen', 'Tagebuch & Erfolgsjournal',
-];
-const ROADMAP_WIP = [
-  'Open Banking (GoCardless)', 'E-Mail-Client Integration', 'Schul- & Studienmanagement',
-  'Crypto-Portfolio', 'Statistiken & Reports', 'Event-Planung & Abstimmungen',
-];
-const ROADMAP_PLANNED = [
-  'Mobile App (iOS & Android)', 'KI-Assistent (Multi-Provider)', 'Familien-Foto-Galerie',
-  'Mehrsprachigkeit (EN, FR)', 'Apple/Google Calendar Sync', 'Offline-First Sync Engine',
-];
+// Die Roadmap folgt dem Status der Module in data/features.ts.
+const titlesWith = (...statuses: Status[]) =>
+  CATEGORIES.filter((c) => statuses.includes(c.status)).map((c) => (c.status === 'partial' ? `${c.title} (teilweise)` : c.title));
+const ROADMAP_DONE = titlesWith('available', 'partial');
+const ROADMAP_SOON = titlesWith('soon');
+const ROADMAP_PLANNED = titlesWith('planned');
 
 ---
 
 <Base
   title="LunaFamily – Das digitale Zuhause für deine Familie"
-  description="Kalender, Aufgaben, Dokumente, Finanzen, Rezepte und vieles mehr — alles an einem Ort, für die ganze Familie. Endlich Schluss mit Zettel-Chaos und App-Wirrwarr."
+  description="Kalender, Aufgaben, Dokumente, Verträge, Kontakte und vieles mehr — alles an einem Ort, für die ganze Familie. Endlich Schluss mit Zettel-Chaos und App-Wirrwarr."
 >
 
 <style is:global>
@@ -117,7 +110,7 @@ const ROADMAP_PLANNED = [
     </h1>
 
     <p class="text-lg sm:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
-      Vergessene Termine, verlegte Dokumente, "wer kümmert sich eigentlich um was?" — kennt jede Familie. LunaFamily bringt Kalender, Aufgaben, Dokumente, Finanzen und Rezepte an einen Ort, damit ihr wieder Kopf frei habt für das, was wirklich zählt.
+      Vergessene Termine, verlegte Dokumente, "wer kümmert sich eigentlich um was?" — kennt jede Familie. LunaFamily bringt Kalender, Aufgaben, Dokumente, Verträge und Kontakte an einen Ort, damit ihr wieder Kopf frei habt für das, was wirklich zählt.
     </p>
 
     <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-14">
@@ -188,23 +181,26 @@ const ROADMAP_PLANNED = [
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <Fragment set:html={IC.sparkles} />
         </svg>
-        12 Module, ein System
+        {CATEGORIES.length} Module, ein System
       </div>
       <h2 id="features-heading" class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-5">
         Alles, was deine <span class="font-script text-accent text-[1.15em]">Familie</span> braucht
       </h2>
       <p class="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
-        LunaFamily vereint alle wichtigen Funktionen für den Familienalltag in einer einzigen, sicheren Plattform — statt 12 verschiedene Apps.
+        LunaFamily vereint alle wichtigen Funktionen für den Familienalltag in einer einzigen, sicheren Plattform — statt vieler verschiedener Apps.
       </p>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
       {CATEGORIES.map((cat, i) => {
         const st = STATUS[cat.status];
-        const isComingSoon = cat.status === 'coming';
+        // Noch nicht freigeschaltete Module: Karte ohne Link (siehe data/features.ts).
+        const published = isPublished(cat);
+        const isComingSoon = !published;
+        const Card = published ? 'a' : 'div';
         return (
           <div class="lf-animate" style={`transition-delay:${Math.min(i * 50, 300)}ms`}>
-            <a href={`/funktionen/${cat.slug}`} class={`group flex flex-col h-full border border-border bg-card rounded-2xl p-6 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 ${isComingSoon ? 'opacity-75 hover:opacity-100' : ''}`}>
+            <Card href={published ? `/funktionen/${cat.slug}` : undefined} class={`group flex flex-col h-full border border-border bg-card rounded-2xl p-6 transition-all duration-300 ${published ? 'hover:shadow-md hover:-translate-y-0.5' : 'opacity-75'}`}>
               <div class="flex items-start justify-between mb-4">
                 <div class={`p-3 rounded-xl bg-gradient-to-br ${cat.gradient} text-white shadow-sm`}>
                   <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -229,11 +225,13 @@ const ROADMAP_PLANNED = [
                   </li>
                 ))}
               </ul>
-              <span class="mt-5 pt-4 border-t border-border inline-flex items-center gap-1.5 text-sm font-medium text-primary">
-                Mehr erfahren
-                <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={IC.arrowRight} /></svg>
-              </span>
-            </a>
+              {published && (
+                <span class="mt-5 pt-4 border-t border-border inline-flex items-center gap-1.5 text-sm font-medium text-primary">
+                  Mehr erfahren
+                  <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={IC.arrowRight} /></svg>
+                </span>
+              )}
+            </Card>
           </div>
         );
       })}
@@ -246,16 +244,12 @@ const ROADMAP_PLANNED = [
       </a>
     </div>
 
-    <div class="mt-8 flex flex-wrap items-center justify-center gap-5 text-sm">
-      <span class="flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800/50">
-        <span class="w-2 h-2 rounded-full bg-current" aria-hidden="true"></span>Verfügbar
-      </span>
-      <span class="flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800/50">
-        <span class="w-2 h-2 rounded-full bg-current" aria-hidden="true"></span>In Entwicklung
-      </span>
-      <span class="flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800/40 dark:text-slate-300 dark:border-slate-700/50">
-        <span class="w-2 h-2 rounded-full bg-current" aria-hidden="true"></span>Demnächst
-      </span>
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-5 text-sm">
+      {STATUS_ORDER.map((s) => (
+        <span class={`flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium ${STATUS[s].cls}`}>
+          <span class="w-2 h-2 rounded-full bg-current" aria-hidden="true"></span>{STATUS[s].label}
+        </span>
+      ))}
     </div>
   </div>
 </section>
@@ -268,7 +262,7 @@ const ROADMAP_PLANNED = [
         Warum <span class="font-semibold">Luna</span><span class="font-script text-accent text-[1.15em]">Family</span>?
       </h2>
       <p class="text-muted-foreground text-lg max-w-2xl mx-auto">
-        Statt 12 Apps, 12 Passwörter und 12 Abos — alles an einem Ort, auf das sich deine Familie verlassen kann.
+        Statt einem Dutzend Apps, Passwörtern und Abos — alles an einem Ort, auf das sich deine Familie verlassen kann.
       </p>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -349,9 +343,9 @@ const ROADMAP_PLANNED = [
       </div>
       <div class="lf-animate" style="transition-delay:100ms">
         <div class="h-full rounded-xl border border-primary/30 bg-primary/5 p-6">
-          <h3 class="font-display font-bold text-foreground mb-4 text-base">🔨 In Entwicklung</h3>
+          <h3 class="font-display font-bold text-foreground mb-4 text-base">🔜 Demnächst</h3>
           <ul class="space-y-2.5">
-            {ROADMAP_WIP.map(item => (
+            {ROADMAP_SOON.map(item => (
               <li class="flex items-center gap-2.5 text-sm text-foreground/80">
                 <span class="w-2 h-2 rounded-full bg-primary flex-shrink-0" aria-hidden="true"></span>
                 {item}
@@ -362,7 +356,7 @@ const ROADMAP_PLANNED = [
       </div>
       <div class="lf-animate" style="transition-delay:200ms">
         <div class="h-full rounded-xl border border-border bg-card p-6">
-          <h3 class="font-display font-bold text-foreground mb-4 text-base">🗺 Geplant</h3>
+          <h3 class="font-display font-bold text-foreground mb-4 text-base">🗺 In Planung</h3>
           <ul class="space-y-2.5">
             {ROADMAP_PLANNED.map(item => (
               <li class="flex items-center gap-2.5 text-sm text-foreground/80">

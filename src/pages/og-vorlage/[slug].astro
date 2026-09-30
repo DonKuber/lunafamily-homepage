@@ -4,7 +4,7 @@
 // unter public/og/<slug>.jpg ab. Deshalb noindex und nirgends verlinkt.
 import Base from '../../layouts/Base.astro';
 import PhoneFrame from '../../components/PhoneFrame.astro';
-import { CATEGORIES, shotByFile, screenshotsFor } from '../../data/features';
+import { PUBLISHED as CATEGORIES, shotByFile, screenshotsFor } from '../../data/features';
 
 export function getStaticPaths() {
   return [
@@ -20,12 +20,12 @@ const eyebrow = cat ? cat.title : slug === 'funktionen' ? 'Alle Funktionen' : 'D
 const claim = cat
   ? cat.claim
   : slug === 'funktionen'
-    ? 'Zwölf Bereiche. Ein System. Für die ganze Familie.'
-    : 'Kalender, Aufgaben, Essen, Finanzen – alles an einem Ort.';
+    ? 'Ein System für den ganzen Familienalltag.'
+    : 'Kalender, Aufgaben, Dokumente, Verträge – alles an einem Ort.';
 const visual = cat ? (cat.visual ? shotByFile(cat.visual.detail) : null) : slug === 'funktionen' ? shotByFile('kalender-raster') : screenshotsFor('hero')[0];
 // Hochformatige Ausschnitte (z. B. Aufgabenkarten) schmaler setzen.
 const portrait = visual ? visual.height > visual.width * 0.9 : false;
-const phone = cat?.visual?.phone ? shotByFile(cat.visual.phone) : slug === 'start' ? shotByFile('phone-essensplan') : null;
+const phone = cat?.visual?.phone ? shotByFile(cat.visual.phone) : slug === 'start' ? shotByFile('phone-kalender') : null;
 ---
 
 <Base title={`${eyebrow} – LunaFamily`} noindex>

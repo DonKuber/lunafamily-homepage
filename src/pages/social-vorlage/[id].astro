@@ -11,7 +11,7 @@ import Base from '../../layouts/Base.astro';
 import LaptopFrame from '../../components/LaptopFrame.astro';
 import PhoneFrame from '../../components/PhoneFrame.astro';
 import CalloutChip from '../../components/Callout.astro';
-import { CATEGORIES, screenshotsFor, shotByFile, type Callout } from '../../data/features';
+import { PUBLISHED as CATEGORIES, screenshotsFor, shotByFile, type Callout } from '../../data/features';
 
 const FORMATS = {
   square: { w: 1080, h: 1080 },
@@ -23,7 +23,7 @@ type Format = keyof typeof FORMATS;
 
 export function getStaticPaths() {
   const slugs = ['start', ...CATEGORIES.filter((c) => c.visual).map((c) => c.slug)];
-  const paths = slugs.flatMap((slug) =>
+  const paths: { params: { id: string }; props: { slug: string; format: Format } }[] = slugs.flatMap((slug) =>
     (['square', 'portrait', 'story'] as const).map((format) => ({ params: { id: `${slug}-${format}` }, props: { slug, format } })),
   );
   paths.push({ params: { id: 'start-cover' }, props: { slug: 'start', format: 'cover' } });
@@ -34,10 +34,10 @@ const { slug, format } = Astro.props as { slug: string; format: Format };
 const { w, h } = FORMATS[format];
 const cat = CATEGORIES.find((c) => c.slug === slug);
 const eyebrow = cat ? cat.title : 'Das digitale Zuhause für deine Familie';
-const claim = cat ? cat.claim : 'Kalender, Aufgaben, Essen, Finanzen – alles an einem Ort.';
+const claim = cat ? cat.claim : 'Kalender, Aufgaben, Dokumente, Verträge – alles an einem Ort.';
 const detail = cat?.visual ? shotByFile(cat.visual.detail) : null;
 const laptop = cat ? null : screenshotsFor('hero')[0];
-const phone = cat?.visual?.phone ? shotByFile(cat.visual.phone) : cat ? null : shotByFile('phone-essensplan');
+const phone = cat?.visual?.phone ? shotByFile(cat.visual.phone) : cat ? null : shotByFile('phone-kalender');
 const callouts: Callout[] = cat?.visual?.callouts ?? [
   { text: 'Für die ganze Familie', x: 0, y: 0, icon: 'users' },
   { text: 'Auch unterwegs dabei', x: 0, y: 0, icon: 'heart' },

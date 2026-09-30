@@ -93,6 +93,20 @@ Am saubersten wird es mit dem Produktions-Build des Frontends
 erscheint. Vor einer neuen Aufnahme die Bilder ansehen — ein leerer Zustand
 oder eine Fehlermeldung in der App landet sonst unbemerkt auf der Website.
 
+### Modulstatus und Freischalten
+
+Status und Texte jedes Moduls stehen in `src/data/features.ts`
+(`available` = Verfügbar, `partial` = Teilweise verfügbar, `soon` = Demnächst,
+`planned` = In Planung). Karten, Legende und Roadmap auf der Startseite folgen
+daraus automatisch.
+
+Eine eigene Unterseite, Bilder und einen Link bekommen nur **freigeschaltete**
+Module – das sind automatisch alle mit Status `available` oder `partial`.
+Alle anderen erscheinen nur als Karte mit Status; ihre Screenshots bleiben in
+`public/screenshots/` liegen. Zum Freischalten beim Modul `published: true`
+setzen (oder den Status ändern), danach `npm run build` und
+`node scripts/render-og.mjs` für das Teilen-Vorschaubild.
+
 ## Deployment
 
 Automatisch bei jedem Push auf `main`, `workflow_dispatch` oder eingehendem
