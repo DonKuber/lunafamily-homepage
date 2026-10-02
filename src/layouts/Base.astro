@@ -76,5 +76,11 @@ const ogImageURL = ogFile ? new URL(`/og/${ogFile}.jpg`, Astro.site) : null;
   </head>
   <body class="bg-background text-foreground font-sans antialiased">
     <slot />
+    {/* Cookielose Reichweitenmessung für die Homepage-Statistik im ControlPanel
+        (Site-Key "lunafamily" = productKey des Programms). Setzt keine Cookies und
+        nutzt keinen Speicher im Browser; IDs im Pfad werden vor dem Senden
+        entfernt, von localhost wird nichts gesendet. Code identisch mit dem
+        Snippet unter /statistics/homepage im ControlPanel. */}
+    <script is:inline>(function(){var u="https://control.theraluna.de/api/visit",k="lunafamily",l=location;if(/^(localhost|127\.0\.0\.1|\[::1\])$/.test(l.hostname))return;function id(s){return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s)||/^\d+$/.test(s)||/^[A-Z]{2,4}-\d{3,}$/.test(s)||(s.length>=16&&/\d/.test(s)&&/^[A-Za-z0-9_-]+$/.test(s)&&!/^[a-z]+(?:-[a-z0-9]+)+$/.test(s));}function norm(p){return(p||"/").split("/").map(function(s){return id(s)?":id":s;}).join("/");}var r=document.referrer,p=norm(l.pathname),t=Date.now();function send(){if(!p)return;var d=Math.round((Date.now()-t)/1000),b=JSON.stringify({site:k,page:p,referrer:r||undefined,duration:d>=1?d:undefined});p=null;r="";try{if(navigator.sendBeacon&&navigator.sendBeacon(u,new Blob([b],{type:"application/json"})))return;}catch(e){}try{fetch(u,{method:"POST",headers:{"Content-Type":"application/json"},body:b,keepalive:true}).catch(function(){});}catch(e){}}function nav(){var n=norm(l.pathname);if(n===p)return;send();p=n;t=Date.now();}["pushState","replaceState"].forEach(function(m){var o=history[m];history[m]=function(){var x=o.apply(this,arguments);setTimeout(nav,0);return x;};});addEventListener("popstate",nav);addEventListener("pagehide",send);document.addEventListener("visibilitychange",function(){if(document.visibilityState==="hidden")send();});})();</script>
   </body>
 </html>
