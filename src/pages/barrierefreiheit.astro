@@ -1,0 +1,129 @@
+---
+import Base from '../layouts/Base.astro';
+import { fetchLegalPages } from '../lib/fetchLegal';
+
+// Informationen zur Barrierefreiheit nach § 14 i. V. m. Anlage 3 BFSG
+// (Dienstleistungen im elektronischen Geschäftsverkehr, seit 28.06.2025).
+// Pflichtinhalte: Beschreibung der Dienstleistung, Erläuterungen zur Durchführung,
+// wie die Barrierefreiheitsanforderungen erfüllt werden, zuständige
+// Marktüberwachungsbehörde. Inhalte bei jeder Änderung der App prüfen und STAND erhöhen.
+const STAND = '2. Oktober 2026';
+
+const legal = await fetchLegalPages();
+const company = legal?.companyName ?? 'LunaFamily GmbH';
+const email = legal?.email;
+---
+
+<Base
+  title="Barrierefreiheit – LunaFamily"
+  description="Informationen zur Barrierefreiheit von LunaFamily nach dem Barrierefreiheitsstärkungsgesetz (BFSG)."
+>
+
+<nav class="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <a href="/" class="font-display font-bold text-lg text-foreground hover:text-primary transition-colors">LunaFamily</a>
+    <a href="https://app.lunafamily.online/login" class="text-sm text-muted-foreground hover:text-foreground transition-colors" rel="noopener">Anmelden</a>
+  </div>
+</nav>
+
+<main id="inhalt" class="max-w-3xl mx-auto px-4 sm:px-6 py-14 min-h-[70vh]">
+  <a href="/" class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8">
+    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+    Zurück zur Startseite
+  </a>
+
+  <h1 class="font-display text-3xl sm:text-4xl font-bold text-foreground hyphens-auto break-words mb-2">Barrierefreiheit</h1>
+  <p class="text-muted-foreground mb-10">Informationen nach dem Barrierefreiheitsstärkungsgesetz (§ 14 und Anlage 3 BFSG)</p>
+
+  <div class="prose prose-stone max-w-none [overflow-wrap:anywhere]">
+    <h2>1. Die Dienstleistung</h2>
+    <p>
+      LunaFamily ist eine Anwendung zur Organisation des Familienalltags. Familien verwalten darin gemeinsam
+      Termine, Aufgaben, Kontakte, Dokumente, Verträge, Finanzen und weitere Bereiche. LunaFamily wird von
+      {company} angeboten. Es gibt einen kostenlosen Tarif und kostenpflichtige Abonnements.
+    </p>
+    <p>LunaFamily ist erreichbar</p>
+    <ul>
+      <li>im Webbrowser unter <a href="https://app.lunafamily.online">app.lunafamily.online</a>,</li>
+      <li>über die mobile LunaFamily-App,</li>
+      <li>mit Informationen, Preisen und Rechtstexten auf dieser Website lunafamily.online.</li>
+    </ul>
+
+    <h2>2. So nutzen Sie LunaFamily</h2>
+    <ul>
+      <li><strong>Registrierung:</strong> Sie legen ein Konto mit Name, E-Mail-Adresse und Passwort an und bestätigen Ihre E-Mail-Adresse über einen Link. Die Prüfung, ob eine Registrierung von einem Menschen kommt, läuft ohne Bilderrätsel automatisch im Hintergrund.</li>
+      <li><strong>Nutzung:</strong> Nach der Anmeldung erreichen Sie alle Bereiche über die Navigation. Weitere Familienmitglieder laden Sie per E-Mail ein.</li>
+      <li><strong>Abonnement:</strong> Tarif, Zahlungsart, Kündigung und Datenexport finden Sie nach der Anmeldung unter Einstellungen → Konto. Die Kündigung erfolgt dort über die Schaltfläche „Verträge hier kündigen“.</li>
+      <li><strong>Hilfe:</strong> Bei Fragen erreichen Sie uns per E-Mail{email && <> unter <a href={`mailto:${email}`}>{email}</a></>}.</li>
+    </ul>
+
+    <h2>3. Wie LunaFamily die Anforderungen an die Barrierefreiheit erfüllt</h2>
+    <p>
+      Wir orientieren uns an den Web Content Accessibility Guidelines (WCAG) 2.2 auf Stufe AA, wie sie die
+      harmonisierte Norm EN 301 549 zugrunde legt. Umgesetzt sind insbesondere:
+    </p>
+    <ul>
+      <li><strong>Wahrnehmbar:</strong> Farbschemata mit ausreichenden Kontrasten, ein dunkles Farbschema und eine einstellbare Kontrastverstärkung.</li>
+      <li><strong>Anpassbar:</strong> In den Einstellungen unter Design lassen sich Schriftart, Schriftgröße, Zeilenhöhe, Laufweite und Abstände anpassen. Die Anwendung weist darauf hin, wenn eine gewählte Schriftgröße oder Zeilenhöhe die Empfehlungen der WCAG unterschreitet.</li>
+      <li><strong>Bedienbar:</strong> Die Anwendung ist für die Bedienung mit der Tastatur ausgelegt. Der Tastaturfokus ist deutlich sichtbar; Dicke und Stil des Fokusrahmens lassen sich einstellen, und der fokussierte Bereich wird nicht von anderen Elementen verdeckt.</li>
+      <li><strong>Bewegung:</strong> Ist in Ihrem Betriebssystem „Bewegung reduzieren“ eingestellt, verzichtet die Anwendung auf Animationen.</li>
+      <li><strong>Verständlich:</strong> Formulare haben Beschriftungen und Fehlermeldungen in verständlicher Sprache; wir vermeiden, dass Sie Angaben doppelt eingeben müssen. Die Anwendung ist in einfacher, direkter Sprache gehalten.</li>
+      <li><strong>Robust:</strong> Statusmeldungen werden Screenreadern angesagt, ohne dass sich der Fokus verschiebt. Die Anwendung verwendet semantische Auszeichnung, damit assistive Technologien Überschriften, Listen und Bedienelemente erkennen.</li>
+      <li><strong>Diese Website:</strong> lunafamily.online ist mit semantischen Überschriften aufgebaut, passt sich an die Bildschirmbreite an und lässt sich im Browser vergrößern.</li>
+    </ul>
+
+    <h2>4. Stand der Bewertung und bekannte Einschränkungen</h2>
+    <p>
+      Die Barrierefreiheit von LunaFamily haben wir bisher selbst bewertet; eine Prüfung durch eine unabhängige
+      Stelle steht noch aus. Es ist deshalb möglich, dass einzelne Bereiche die Anforderungen noch nicht vollständig
+      erfüllen. Nicht in unserem Einfluss liegen:
+    </p>
+    <ul>
+      <li>Dokumente und Bilder, die Nutzerinnen und Nutzer selbst hochladen, etwa eingescannte PDF-Dateien,</li>
+      <li>Seiten externer Anbieter, zu denen wir weiterleiten, insbesondere die Zahlungsseiten von PayPal, Stripe und GoCardless.</li>
+    </ul>
+    <p>
+      Wir verbessern die Barrierefreiheit laufend. Wenn Sie auf eine Barriere stoßen, helfen Sie uns mit einem Hinweis.
+    </p>
+
+    <h2>5. Barriere melden</h2>
+    <p>
+      Wenn Sie Inhalte oder Funktionen von LunaFamily nicht oder nur eingeschränkt nutzen können, schreiben Sie uns
+      {email ? <> an <a href={`mailto:${email}`}>{email}</a></> : <> über die im <a href="/impressum">Impressum</a> genannten Kontaktwege</>}.
+      Beschreiben Sie bitte kurz, wo die Barriere auftritt und welche Hilfsmittel Sie verwenden. Wir antworten so
+      schnell wie möglich und nennen Ihnen bei Bedarf eine alternative Möglichkeit, Ihr Anliegen zu erledigen.
+    </p>
+
+    <h2>6. Zuständige Marktüberwachungsbehörde</h2>
+    <p>
+      Wenn Sie der Meinung sind, dass LunaFamily die Anforderungen an die Barrierefreiheit nicht erfüllt, können Sie
+      sich an die zuständige Marktüberwachungsbehörde wenden:
+    </p>
+    <p>
+      Marktüberwachungsstelle der Länder für die Barrierefreiheit von Produkten und Dienstleistungen (MLBF)<br />
+      Carl-Miller-Straße 6<br />
+      39112 Magdeburg<br />
+      E-Mail: <a href="mailto:kontakt@mlbf-barrierefrei.de">kontakt@mlbf-barrierefrei.de</a><br />
+      Website: <a href="https://www.mlbf-barrierefrei.de" rel="noopener">www.mlbf-barrierefrei.de</a>
+    </p>
+  </div>
+
+  <p class="mt-10 text-xs text-muted-foreground">Stand: {STAND}</p>
+</main>
+
+<footer class="border-t border-border py-8 px-4 sm:px-6">
+  <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+    <a href="/" class="font-display font-semibold text-foreground hover:text-primary transition-colors">LunaFamily</a>
+    <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2" aria-label="Footer-Navigation">
+      <a href="/impressum"       class="text-sm text-muted-foreground hover:text-foreground transition-colors">Impressum</a>
+      <a href="/datenschutz"     class="text-sm text-muted-foreground hover:text-foreground transition-colors">Datenschutz</a>
+      <a href="/agb"             class="text-sm text-muted-foreground hover:text-foreground transition-colors">AGB</a>
+      <a href="/barrierefreiheit" class="text-sm text-primary font-medium" aria-current="page">Barrierefreiheit</a>
+      <a href="https://app.lunafamily.online/login"    class="text-sm text-muted-foreground hover:text-foreground transition-colors" rel="noopener">Anmelden</a>
+      <a href="https://app.lunafamily.online/register" class="text-sm text-muted-foreground hover:text-foreground transition-colors" rel="noopener">Registrieren</a>
+    </nav>
+    <p class="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} LunaFamily</p>
+  </div>
+</footer>
+
+</Base>
