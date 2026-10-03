@@ -75,6 +75,60 @@ const ogImageURL = ogFile ? new URL(`/og/${ogFile}.jpg`, Astro.site) : null;
     )}
   </head>
   <body class="bg-background text-foreground font-sans antialiased">
+    <!--
+      Wartungshinweis aus dem ControlPanel (Register-Tab „Wartungsmodus der
+      Homepage“, CP-Vertrag v1 2026-10-02). Öffentliche Route, CORS offen,
+      ohne Zugangsdaten. Fehler oder keine Antwort → Seite normal, kein Banner.
+    -->
+    <div
+      id="lf-wartung"
+      role="status"
+      hidden
+      class="sticky top-0 z-[60] w-full bg-amber-100 text-amber-950 border-b border-amber-300 px-4 py-3 text-sm text-center"
+    ></div>
+    <script is:inline>
+      (function () {
+        var url =
+          'https://control.theraluna.de/api/programs/homepage/v1/dcad9050-69ca-46bd-98e9-31ece3906af1/access-status';
+        var ctrl = 'AbortController' in window ? new AbortController() : null;
+        var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 4000);
+        fetch(url, { credentials: 'omit', signal: ctrl ? ctrl.signal : undefined })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (d) {
+            clearTimeout(timer);
+            var w = d && d.maintenance;
+            if (!w || w.active !== true) return;
+            var box = document.getElementById('lf-wartung');
+            if (!box) return;
+            var titel = document.createElement('strong');
+            titel.textContent = 'Wartungsarbeiten: ';
+            box.appendChild(titel);
+            box.appendChild(
+              document.createTextNode(
+                (w.reason && String(w.reason).trim()) ||
+                  'LunaFamily wird gerade gewartet. Einige Funktionen sind vorübergehend nicht verfügbar.'
+              )
+            );
+            if (w.until) {
+              var bis = new Date(w.until);
+              if (!isNaN(bis.getTime())) {
+                box.appendChild(
+                  document.createTextNode(
+                    ' Voraussichtlich bis ' +
+                      bis.toLocaleString('de-DE', {
+                        timeZone: 'Europe/Berlin',
+                        day: '2-digit', month: '2-digit',
+                        hour: '2-digit', minute: '2-digit',
+                      }) + ' Uhr.'
+                  )
+                );
+              }
+            }
+            box.hidden = false;
+          })
+          .catch(function () { clearTimeout(timer); });
+      })();
+    </script>
     <slot />
   </body>
 </html>
