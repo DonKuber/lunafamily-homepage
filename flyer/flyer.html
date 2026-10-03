@@ -1,0 +1,375 @@
+<!doctype html>
+<!--
+  LunaFamily Verkaufsflyer (Vorder- und Rückseite), DIN A4 und DIN A5.
+  Vorlage für flyer/render.mjs, das daraus druckfertige PDFs mit 3 mm Beschnitt
+  erzeugt. Format über ?format=a4 bzw. ?format=a5. Alle Maße hängen an der
+  Blattbreite (cqw), damit beide Formate aus derselben Vorlage entstehen.
+  Bilder, Logo und Schriften kommen direkt aus ../public.
+-->
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<title>LunaFamily Flyer</title>
+<style>
+  @font-face { font-family: "IBM Plex Sans"; font-weight: 400; src: url("../public/fonts/ibm-plex-sans/woff2/IBMPlexSans-Regular.woff2") format("woff2"); }
+  @font-face { font-family: "IBM Plex Sans"; font-weight: 500; src: url("../public/fonts/ibm-plex-sans/woff2/IBMPlexSans-Medium.woff2") format("woff2"); }
+  @font-face { font-family: "IBM Plex Sans"; font-weight: 600; src: url("../public/fonts/ibm-plex-sans/woff2/IBMPlexSans-SemiBold.woff2") format("woff2"); }
+  @font-face { font-family: "IBM Plex Sans"; font-weight: 700; src: url("../public/fonts/ibm-plex-sans/woff2/IBMPlexSans-Bold.woff2") format("woff2"); }
+  @font-face { font-family: "Fredoka"; font-weight: 600; src: url("../public/fonts/fredoka/Fredoka-SemiBold.woff2") format("woff2"); }
+  @font-face { font-family: "Fredoka"; font-weight: 700; src: url("../public/fonts/fredoka/Fredoka-Bold.woff2") format("woff2"); }
+  @font-face { font-family: "Yellowtail"; font-weight: 400; src: url("../public/fonts/yellowtail/Yellowtail-Regular.woff2") format("woff2"); }
+
+  :root {
+    --gold: #c4a265;
+    --gold-dark: #a8844a;
+    --ink: #2b2118;
+    --ink-soft: #6b5b48;
+    --cream: #f9f5ef;
+    --night: #17120d;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #777; }
+  body { font-family: "IBM Plex Sans", system-ui, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  /* Blatt inkl. 3 mm Beschnitt je Seite */
+  .sheet { position: relative; overflow: hidden; container-type: size; break-after: page; font-size: calc(1.62cqw * var(--t)); line-height: 1.35; }
+  @page { margin: 0; }
+  .a4 .sheet { width: 216mm; height: 303mm; --t: 1; }
+  .a5 .sheet { width: 154mm; height: 216mm; --t: 1.17; }
+  .sheet:last-child { break-after: auto; }
+  @media screen { .sheet { margin: 10mm auto; box-shadow: 0 10px 40px rgb(0 0 0 / .4); } }
+
+  /* Sicherer Bereich: Beschnitt + 8–10 mm Abstand zur Schnittkante */
+  .inner { position: absolute; inset: 7cqw; display: flex; flex-direction: column; }
+
+  .display { font-family: "Fredoka", "IBM Plex Sans", sans-serif; font-weight: 700; letter-spacing: -0.01em; }
+  .script { font-family: "Yellowtail", cursive; font-weight: 400; letter-spacing: 0; }
+  .gold-text { color: #dcbb7c; }
+  svg.i { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+  /* ─── Vorderseite ─────────────────────────────────────────────────────── */
+  .front { background: var(--night); color: #f3ede2; }
+  .front .bg { position: absolute; inset: 0;
+    background:
+      radial-gradient(60cqw 60cqw at 92% 4%, rgb(196 162 101 / .38), transparent 70%),
+      radial-gradient(70cqw 55cqw at 0% 62%, rgb(196 162 101 / .16), transparent 70%),
+      radial-gradient(60cqw 50cqw at 100% 100%, rgb(143 174 107 / .14), transparent 70%),
+      linear-gradient(180deg, #1d1610 0%, #15100b 60%, #120e0a 100%); }
+  .stars { position: absolute; inset: 0; opacity: .7;
+    background-image:
+      radial-gradient(circle at 12% 9%, #f5e6c8 0 .18cqw, transparent .25cqw),
+      radial-gradient(circle at 34% 4%, #f5e6c8 0 .12cqw, transparent .2cqw),
+      radial-gradient(circle at 58% 12%, #f5e6c8 0 .15cqw, transparent .22cqw),
+      radial-gradient(circle at 71% 22%, #f5e6c8 0 .1cqw, transparent .18cqw),
+      radial-gradient(circle at 8% 31%, #f5e6c8 0 .12cqw, transparent .2cqw),
+      radial-gradient(circle at 46% 27%, #f5e6c8 0 .09cqw, transparent .16cqw),
+      radial-gradient(circle at 89% 38%, #f5e6c8 0 .14cqw, transparent .21cqw),
+      radial-gradient(circle at 22% 44%, #f5e6c8 0 .1cqw, transparent .17cqw),
+      radial-gradient(circle at 95% 55%, #f5e6c8 0 .12cqw, transparent .2cqw),
+      radial-gradient(circle at 4% 72%, #f5e6c8 0 .1cqw, transparent .17cqw); }
+  .moon { position: absolute; width: 62cqw; right: -17cqw; top: -10cqw; opacity: .13; transform: rotate(-12deg); }
+
+  .front-head { display: flex; align-items: center; justify-content: space-between; }
+  .front-head img { width: 44cqw; height: auto; display: block; }
+  .pill { display: inline-flex; align-items: center; gap: .5em; padding: .45em 1em; border-radius: 99em; font-weight: 600; font-size: .9em; }
+  .pill-gold { background: rgb(196 162 101 / .14); border: .12cqw solid rgb(196 162 101 / .5); color: #e3c58d; }
+
+  .hero { margin-top: 7cqw; }
+  .eyebrow { text-transform: uppercase; letter-spacing: .14em; font-weight: 600; font-size: .85em; color: #d9bb82; margin-bottom: .9em; }
+  .hero h1 { font-size: 3.85em; line-height: 1.04; }
+  .hero h1 .script { font-size: 1.28em; line-height: .8; display: inline-block; padding-right: .12em; }
+  .hero p { margin-top: 1em; font-size: 1.16em; color: #d2c6b2; max-width: 72cqw; line-height: 1.45; }
+  .hero p strong { color: #f3ede2; font-weight: 600; }
+
+  .stage { position: relative; flex: 1; margin-top: 4cqw; }
+  .laptop { position: absolute; left: 1cqw; top: 3cqw; width: 70cqw; }
+  .laptop-screen { margin: 0 6%; background: #0d0d0d; border-radius: 1.4cqw 1.4cqw 0 0; padding: 1.1% 1.1% 1.4%;
+    box-shadow: inset 0 0 0 .15cqw rgb(255 255 255 / .1), 0 4cqw 8cqw -2cqw rgb(0 0 0 / .8), 0 0 10cqw rgb(196 162 101 / .18); }
+  .laptop-screen img { display: block; width: 100%; height: auto; border-radius: .4cqw; }
+  .laptop-base { height: 1.7cqw; border-radius: 0 0 2cqw 2cqw; background: linear-gradient(180deg, #d9d4cc 0%, #b9b2a7 60%, #8f877b 100%); position: relative; }
+  .laptop-base::after { content: ""; position: absolute; left: 43%; width: 14%; top: 0; height: .6cqw; border-radius: 0 0 .8cqw .8cqw; background: rgb(120 112 100 / .6); }
+
+  .phone { position: absolute; right: 0; top: -1cqw; width: 21cqw; container-type: inline-size; transform: rotate(4deg); }
+  .phone-body { border-radius: 15.5cqw; padding: 1.6cqw; background: linear-gradient(135deg, #e9e2d6 0%, #b9ae9c 18%, #8d8373 38%, #d6cfc3 55%, #9b917f 75%, #cfc6b7 100%);
+    box-shadow: inset 0 0 0 .5cqw rgb(255 255 255 / .35), 0 16cqw 30cqw -8cqw rgb(0 0 0 / .9); }
+  .phone-bezel { border-radius: 14cqw; padding: 2.6cqw; background: #050505; }
+  .phone-screen { border-radius: 11.6cqw; overflow: hidden; background: #fffefa; }
+  .phone-status { height: 11cqw; display: flex; align-items: center; justify-content: space-between; padding: 1.5cqw 8cqw 0; font: 600 4.1cqw/1 "IBM Plex Sans", sans-serif; color: #1c1917; position: relative; }
+  .phone-status::after { content: ""; position: absolute; left: 50%; top: 3.2cqw; width: 4.4cqw; height: 4.4cqw; margin-left: -2.2cqw; border-radius: 50%; background: #000; }
+  .phone-status i { width: 14cqw; height: 3.2cqw; border-radius: 1cqw; background: linear-gradient(90deg, #1c1917 60%, rgb(28 25 23 / .4) 60%); }
+  .phone-app img { display: block; width: 100%; aspect-ratio: 390 / 844; object-fit: cover; object-position: top; }
+  .phone-home { height: 6cqw; display: flex; align-items: center; justify-content: center; }
+  .phone-home::after { content: ""; width: 34%; height: 1.25cqw; border-radius: 1cqw; background: rgb(28 25 23 / .75); }
+
+  .chip { position: absolute; display: inline-flex; align-items: center; gap: .55em; padding: .5em .95em .5em .5em; border-radius: 99em; white-space: nowrap;
+    background: #fffcf6; color: var(--ink); font-weight: 600; font-size: .92em; box-shadow: 0 .3cqw .6cqw rgb(0 0 0 / .25), 0 2cqw 4cqw -1cqw rgb(0 0 0 / .55); }
+  .chip b { display: inline-flex; align-items: center; justify-content: center; width: 1.75em; height: 1.75em; border-radius: 50%; color: #fff; background: linear-gradient(135deg, #c4a265, #a8844a); }
+  .chip b svg { width: 1em; height: 1em; stroke-width: 2.6; }
+
+  .offer { position: relative; display: flex; align-items: center; gap: 4cqw; padding: 3.6cqw 3.6cqw 3.6cqw 4.4cqw; border-radius: 3.4cqw; color: var(--ink);
+    background: linear-gradient(120deg, #ecd3a0 0%, #d4b06f 45%, #c19553 100%); box-shadow: 0 3cqw 7cqw -2cqw rgb(0 0 0 / .7), inset 0 .2cqw 0 rgb(255 255 255 / .45); }
+  .offer-text { flex: 1; }
+  .offer-kicker { font-size: .82em; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #5b4527; }
+  .offer-title { font-size: 2.2em; line-height: 1.05; margin: .2em 0 .45em; }
+  .offer-prices { display: flex; gap: .2em 1.2em; flex-wrap: wrap; }
+  .offer-price { display: flex; align-items: baseline; gap: .35em; font-size: .98em; font-weight: 500; color: #3d2f20; }
+  .offer-price strong { font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 1.45em; color: var(--ink); }
+  .offer-note { margin-top: .7em; font-size: .82em; color: #4a3a27; display: flex; gap: 1.1em; flex-wrap: wrap; }
+  .offer-note span { display: inline-flex; align-items: center; gap: .35em; }
+  .qr { flex: none; background: #fff; border-radius: 2cqw; padding: 1.6cqw; text-align: center; box-shadow: 0 1cqw 3cqw -1cqw rgb(60 40 10 / .6); }
+  .qr img { display: block; width: 19cqw; height: 19cqw; }
+  .qr span { display: block; margin-top: .55em; font-size: .78em; font-weight: 700; color: var(--ink); letter-spacing: .02em; }
+
+  /* ─── Rückseite ───────────────────────────────────────────────────────── */
+  .back { background: var(--cream); color: var(--ink); display: flex; flex-direction: column; }
+  .back .inner { position: relative; inset: auto; flex: 1; padding: 6.4cqw 7cqw 3cqw; }
+  .back .bg { position: absolute; inset: 0;
+    background:
+      radial-gradient(55cqw 45cqw at 100% 0%, rgb(196 162 101 / .28), transparent 70%),
+      radial-gradient(50cqw 40cqw at 0% 45%, rgb(143 174 107 / .14), transparent 70%),
+      linear-gradient(180deg, #fbf7f0 0%, #f6efe3 100%); }
+  .back-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 4cqw; }
+  .back-head h2 { font-size: 2.6em; line-height: 1.05; }
+  .back-head h2 .script { color: var(--gold-dark); font-size: 1.25em; line-height: .8; padding-right: .1em; }
+  .back-head p { margin-top: .6em; color: var(--ink-soft); font-size: 1.05em; max-width: 64cqw; }
+  .back-head img { width: 12cqw; height: auto; flex: none; margin-top: -1cqw; }
+
+  .audiences { display: grid; grid-template-columns: 1fr 1fr; gap: 2.8cqw; margin-top: 3.6cqw; }
+  .aud { border-radius: 2.6cqw; padding: 2.6cqw 3cqw; background: #fffdf9; border: .14cqw solid #e8e0d5; box-shadow: 0 2cqw 5cqw -3cqw rgb(60 45 20 / .35); }
+  .aud-h { display: flex; align-items: center; gap: .6em; margin-bottom: .75em; }
+  .aud-h b { display: inline-flex; align-items: center; justify-content: center; width: 2.1em; height: 2.1em; border-radius: .65em; color: #fff; }
+  .aud-h b svg { width: 1.15em; height: 1.15em; }
+  .aud-h h3 { font-size: 1.32em; line-height: 1.1; }
+  .aud-h small { display: block; font-family: "IBM Plex Sans", sans-serif; font-weight: 500; font-size: .62em; color: var(--ink-soft); letter-spacing: 0; }
+  .aud ul { list-style: none; display: grid; gap: .4em; }
+  .aud li { display: flex; gap: .5em; font-size: .9em; line-height: 1.28; }
+  .aud li svg { color: var(--gold-dark); margin-top: .12em; stroke-width: 2.6; }
+
+  .modules-h { margin-top: 3.4cqw; display: flex; align-items: baseline; justify-content: space-between; gap: 1em; }
+  .modules-h h3 { font-size: 1.35em; }
+  .modules-h span { font-size: .78em; color: var(--ink-soft); }
+  .modules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4cqw; margin-top: 1.5cqw; }
+  .mod { display: flex; gap: .65em; align-items: flex-start; padding: 1.3cqw 1.6cqw; border-radius: 1.8cqw; background: rgb(255 253 249 / .8); border: .12cqw solid #ebe3d7; }
+  .mod b { display: inline-flex; align-items: center; justify-content: center; width: 2.05em; height: 2.05em; border-radius: .6em; color: #fff; flex: none; }
+  .mod b svg { width: 1.1em; height: 1.1em; }
+  .mod h4 { font-family: "Fredoka", sans-serif; font-weight: 600; font-size: .98em; line-height: 1.15; }
+  .mod p { font-size: .76em; color: var(--ink-soft); line-height: 1.3; margin-top: .2em; }
+  .mod sup { color: var(--gold-dark); font-weight: 700; }
+
+  .pricing { display: grid; grid-template-columns: 1fr 1.25fr; gap: 2.8cqw; margin-top: auto; padding-top: 3.6cqw; }
+  .plan { position: relative; border-radius: 2.6cqw; padding: 2.4cqw 3cqw; }
+  .plan-free { background: #fffdf9; border: .14cqw solid #e8e0d5; }
+  .plan-pro { color: #f3ede2; background: linear-gradient(135deg, #2a2017 0%, #1a140e 100%); box-shadow: 0 3cqw 6cqw -3cqw rgb(40 25 5 / .7); }
+  .plan-badge { position: absolute; top: -1.1em; right: 2.6cqw; padding: .35em .9em; border-radius: 99em; font-size: .74em; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink); background: linear-gradient(120deg, #ecd3a0, #c4a265); }
+  .plan-name { font-weight: 700; font-size: .85em; text-transform: uppercase; letter-spacing: .1em; color: var(--gold-dark); }
+  .plan-pro .plan-name { color: #e3c58d; }
+  .plan-price { display: flex; align-items: baseline; gap: .3em; margin: .15em 0 .5em; }
+  .plan-price strong { font-family: "Fredoka", sans-serif; font-size: 2.6em; line-height: 1; }
+  .plan-price span { font-size: .95em; opacity: .8; }
+  .plan ul { list-style: none; display: grid; gap: .35em; }
+  .plan li { display: flex; gap: .45em; font-size: .86em; line-height: 1.3; }
+  .plan li svg { color: var(--gold); margin-top: .12em; stroke-width: 2.6; }
+
+  .trust { display: flex; flex-wrap: wrap; justify-content: center; gap: .6em 1.6em; margin-top: 2.6cqw; font-size: .84em; font-weight: 600; color: #4f4233; }
+  .trust span { display: inline-flex; align-items: center; gap: .4em; }
+  .trust svg { color: #3f9a5a; }
+
+  /* Unterer Balken: reicht bis in den Beschnitt */
+  .cta-band { position: relative; padding: 3.2cqw 7cqw 6.4cqw; color: #f3ede2;
+    background: radial-gradient(60cqw 40cqw at 100% 100%, rgb(196 162 101 / .35), transparent 70%), linear-gradient(135deg, #241b13, #15100b); }
+  .cta-band .row { display: flex; align-items: center; gap: 4cqw; }
+  .cta-band .txt { flex: 1; }
+  .cta-band h3 { font-size: 1.9em; line-height: 1.08; }
+  .cta-band h3 .script { font-size: 1.25em; line-height: .8; padding-right: .1em; }
+  .cta-band p { margin-top: .5em; color: #d2c6b2; font-size: .98em; }
+  .cta-band .url { margin-top: .7em; display: inline-flex; align-items: center; gap: .5em; font-weight: 700; font-size: 1.25em; color: #f3ede2; }
+  .cta-band .url svg { color: var(--gold); }
+  .cta-band .fine { margin-top: 1em; font-size: .68em; color: #a79a85; }
+  .cta-band .qr img { width: 14.5cqw; height: 14.5cqw; }
+  .cta-band .qr { padding: 1.3cqw; }
+
+  /* A5: weniger Inhalt, damit die Schrift lesbar groß bleibt */
+  .a5 .only-a4 { display: none !important; }
+  .a5 .modules { grid-template-columns: repeat(3, 1fr); }
+  .a5 .mod { padding: 1.5cqw 1.5cqw; align-items: center; }
+  .a5 .hero h1 { font-size: 3.6em; }
+  .a5 .aud li:nth-child(n+4) { display: none; }
+  .a5 .back-head p:not(.eyebrow) { display: none; }
+  .a5 .audiences { margin-top: 4.4cqw; }
+  .a5 .cta-band .fine { display: none; }
+</style>
+</head>
+<body>
+  <!-- ═══ Vorderseite ═══════════════════════════════════════════════════════ -->
+  <section class="sheet front">
+    <div class="bg"></div>
+    <div class="stars"></div>
+    <img class="moon" src="../public/brand/logo-icon.png" alt="" />
+    <div class="inner">
+      <div class="front-head">
+        <img src="../public/brand/logo-wordmark-dark.png" alt="LunaFamily" />
+        <span class="pill pill-gold">
+          <svg class="i" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          Für Familien &amp; Singles
+        </span>
+      </div>
+
+      <div class="hero">
+        <p class="eyebrow">Schluss mit Zettel-Chaos und App-Wirrwarr</p>
+        <h1 class="display">Dein digitales <span class="script gold-text">Zuhause</span><br />für den ganzen Alltag.</h1>
+        <p>Termine, Aufgaben, Dokumente, Verträge und Kontakte – <strong>in einem Programm statt in zehn Apps.</strong> Für dich allein oder die ganze Familie. Damit wieder Kopf frei ist für das, was wirklich zählt.</p>
+      </div>
+
+      <div class="stage">
+        <div class="laptop">
+          <div class="laptop-screen"><img src="../public/screenshots/dashboard-light.webp" alt="" /></div>
+          <div class="laptop-base"></div>
+        </div>
+        <div class="phone">
+          <div class="phone-body"><div class="phone-bezel"><div class="phone-screen">
+            <div class="phone-status"><span>9:30</span><i></i></div>
+            <div class="phone-app"><img src="../public/screenshots/phone-kalender-light.webp" alt="" /></div>
+            <div class="phone-home"></div>
+          </div></div></div>
+        </div>
+        <span class="chip" style="left:-1cqw;top:1cqw">
+          <b><svg class="i" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></b>
+          Jeder mit eigenem Profil
+        </span>
+        <span class="chip" style="left:30cqw;bottom:2cqw">
+          <b><svg class="i" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></b>
+          Erinnert vor jeder Frist
+        </span>
+      </div>
+
+      <div class="offer">
+        <div class="offer-text">
+          <p class="offer-kicker">Jetzt in der Beta einsteigen</p>
+          <p class="offer-title display">Kostenlos starten.<br />Alles freischalten für 5&nbsp;€.</p>
+          <div class="offer-prices">
+            <span class="offer-price"><strong>0&nbsp;€</strong> Free Family – dauerhaft</span>
+            <span class="offer-price"><strong>5&nbsp;€</strong>/Monat Beta Supporter</span>
+          </div>
+          <p class="offer-note">
+            <span><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Keine Kreditkarte nötig</span>
+            <span><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>In wenigen Minuten startklar</span>
+          </p>
+        </div>
+        <div class="qr">
+          <img src="qr-lunafamily.svg" alt="QR-Code zu lunafamily.online" />
+          <span>Scannen &amp; loslegen</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Rückseite ═════════════════════════════════════════════════════════ -->
+  <section class="sheet back">
+    <div class="bg"></div>
+    <div class="inner">
+      <div class="back-head">
+        <div>
+          <p class="eyebrow" style="color:var(--gold-dark)">Ein Programm. Alles im Griff.</p>
+          <h2 class="display">Weniger <span class="script">Chaos</span>.<br />Mehr Leben.</h2>
+          <p>Statt zehn Apps, Passwörtern und Abos: LunaFamily bündelt alles an einem Ort – sicher, werbefrei und auf jedem Gerät.</p>
+        </div>
+        <img src="../public/brand/logo-icon.png" alt="" />
+      </div>
+
+      <div class="audiences">
+        <div class="aud">
+          <div class="aud-h">
+            <b style="background:linear-gradient(135deg,#8b5cf6,#a855f7)"><svg class="i" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></b>
+            <h3 class="display">Für Familien<small>Endlich alle auf demselben Stand</small></h3>
+          </div>
+          <ul>
+            <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Gemeinsamer Kalender in Personenfarben</li>
+            <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Aufgaben verteilen – mit Erinnerung</li>
+            <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Eigene Profile, Kinderdaten geschützt</li>
+            <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Tagebuch &amp; Erfolge festhalten</li>
+          </ul>
+        </div>
+        <div class="aud">
+          <div class="aud-h">
+            <b style="background:linear-gradient(135deg,#f59e0b,#ea580c)"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg></b>
+            <h3 class="display">Für dich allein<small>Dein Papierkram, endlich erledigt</small></h3>
+          </div>
+          <ul>
+            <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Verträge &amp; Kündigungsfristen im Blick</li>
+            <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Papierkram digital &amp; durchsuchbar</li>
+            <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Termine synchron auf Handy und PC</li>
+            <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Erinnert an Garantien &amp; Fristen</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="modules-h">
+        <h3 class="display">Das steckt drin</h3>
+        <span>* teilweise verfügbar · laufend kommen neue Module dazu</span>
+      </div>
+      <div class="modules">
+        <div class="mod"><b style="background:linear-gradient(135deg,#3b82f6,#06b6d4)"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></b><div><h4>Kalender</h4><p class="only-a4">Alle Termine auf einen Blick</p></div></div>
+        <div class="mod"><b style="background:linear-gradient(135deg,#22c55e,#10b981)"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></b><div><h4>Aufgaben</h4><p class="only-a4">Nichts rutscht mehr durch</p></div></div>
+        <div class="mod"><b style="background:linear-gradient(135deg,#f97316,#f59e0b)"><svg class="i" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></b><div><h4>Dokumente</h4><p class="only-a4">In Sekunden wiedergefunden</p></div></div>
+        <div class="mod"><b style="background:linear-gradient(135deg,#f59e0b,#ea580c)"><svg class="i" viewBox="0 0 24 24"><path d="M14.364 13.634a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506l4.013-4.009a1 1 0 0 0-3.004-3.004z"/><path d="M14.487 7.858A1 1 0 0 1 14 7V2"/><path d="M20 19.645V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l2.516 2.516"/><path d="M8 18h1"/></svg></b><div><h4>Verträge</h4><p class="only-a4">Keine Frist mehr verpassen</p></div></div>
+        <div class="mod"><b style="background:linear-gradient(135deg,#8b5cf6,#a855f7)"><svg class="i" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></b><div><h4>Familie &amp; Kontakte</h4><p class="only-a4">Alle an Bord, sicher</p></div></div>
+        <div class="mod"><b style="background:linear-gradient(135deg,#84cc16,#16a34a)"><svg class="i" viewBox="0 0 24 24"><path d="M20 10V8a2.4 2.4 0 0 0-.706-1.704l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.35"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M16 14a2 2 0 0 0-2 2"/><path d="M16 22a2 2 0 0 1-2-2"/><path d="M20 14a2 2 0 0 1 2 2"/><path d="M20 22a2 2 0 0 0 2-2"/></svg></b><div><h4>Paperless-ngx</h4><p class="only-a4">Euer Archiv, verbunden</p></div></div>
+        <div class="mod"><b style="background:linear-gradient(135deg,#0ea5e9,#3b82f6)"><svg class="i" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></b><div><h4>Kommunikation<sup>*</sup></h4><p class="only-a4">Ohne Chat-Chaos</p></div></div>
+        <div class="mod"><b style="background:linear-gradient(135deg,#ec4899,#f43f5e)"><svg class="i" viewBox="0 0 24 24"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg></b><div><h4>KI-Assistent<sup>*</sup></h4><p class="only-a4">Kleinarbeit erledigt sich</p></div></div>
+        <div class="mod"><b style="background:linear-gradient(135deg,#6366f1,#3b82f6)"><svg class="i" viewBox="0 0 24 24"><path d="M11 10v4h4"/><path d="m11 14 1.535-1.605a5 5 0 018 1.5"/><path d="M16 2v3"/><path d="m21 18-1.535 1.605a5 5 0 01-8-1.5"/><path d="M21 22v-4h-4"/><path d="M21 8.517V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h3.517"/><path d="M3 9h4"/><path d="M8 2v3"/></svg></b><div><h4>Sync aufs Handy<sup>*</sup></h4><p class="only-a4">CalDAV &amp; CardDAV</p></div></div>
+      </div>
+
+      <div class="pricing">
+        <div class="plan plan-free">
+          <p class="plan-name">Free Family</p>
+          <p class="plan-price"><strong>0&nbsp;€</strong><span>dauerhaft</span></p>
+          <ul>
+            <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Kostenlos – heute und für immer</li>
+            <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Keine Kreditkarte, kein Risiko</li>
+          </ul>
+        </div>
+        <div class="plan plan-pro">
+          <span class="plan-badge">Empfohlen</span>
+          <p class="plan-name">Beta Supporter</p>
+          <p class="plan-price"><strong>5&nbsp;€</strong><span>pro Monat</span></p>
+          <ul>
+            <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Alle Funktionen sofort nutzen</li>
+            <li><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Nach 3 Zahlungen <strong>lebenslang 15&nbsp;% Rabatt</strong></li>
+            <li class="only-a4"><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Direkter Einfluss auf neue Funktionen</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="trust">
+        <span><svg class="i" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>Keine Werbung</span>
+        <span><svg class="i" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>Kein Tracking</span>
+        <span><svg class="i" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>Kein Datenverkauf</span>
+        <span><svg class="i" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Verschlüsselt &amp; virengeprüft</span>
+      </div>
+    </div>
+
+    <div class="cta-band">
+      <div class="row">
+        <div class="txt">
+          <h3 class="display">Jetzt scannen und <span class="script gold-text">loslegen</span>.</h3>
+          <p>Registrieren, Familie einladen – in wenigen Minuten startklar.</p>
+          <p class="url"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>lunafamily.online</p>
+          <p class="fine">Öffentliche Beta: LunaFamily wird aktiv weiterentwickelt, Module werden schrittweise freigeschaltet.</p>
+        </div>
+        <div class="qr">
+          <img src="qr-lunafamily.svg" alt="QR-Code zu lunafamily.online" />
+          <span>lunafamily.online</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const format = new URLSearchParams(location.search).get('format') === 'a5' ? 'a5' : 'a4';
+    document.body.classList.add(format);
+    // Seitengröße fürs PDF: Endformat + 3 mm Beschnitt je Seite
+    const size = format === 'a5' ? '154mm 216mm' : '216mm 303mm';
+    document.head.insertAdjacentHTML('beforeend', `<style>@page { size: ${size}; margin: 0; }</style>`);
+  </script>
+</body>
+</html>

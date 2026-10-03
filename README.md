@@ -107,6 +107,24 @@ Alle anderen erscheinen nur als Karte mit Status; ihre Screenshots bleiben in
 setzen (oder den Status ändern), danach `npm run build` und
 `node scripts/render-og.mjs` für das Teilen-Vorschaubild.
 
+### Verkaufsflyer (Druck)
+
+Unter `flyer/` liegt ein zweiseitiger Verkaufsflyer (Vorderseite dunkel mit
+Laptop/Handy und Angebot, Rückseite mit Zielgruppen, Modulen, Preisen und
+QR-Code zu lunafamily.online) als druckfertige PDFs:
+
+- `flyer/LunaFamily-Flyer-A4.pdf` – 216 × 303 mm (A4 + 3 mm Beschnitt)
+- `flyer/LunaFamily-Flyer-A5.pdf` – 154 × 216 mm (A5 + 3 mm Beschnitt)
+
+TrimBox (Endformat) und BleedBox sind gesetzt, Texte halten ≥ 8 mm Abstand
+zur Schnittkante. Farben sind RGB; die Online-Druckerei wandelt nach CMYK.
+Vorlage ist `flyer/flyer.html` (eine Vorlage für beide Formate), neu erzeugen mit:
+
+```bash
+npm i --no-save playwright qrcode pdf-lib
+node flyer/render.mjs      # optional LF_FLYER_URL (Ziel des QR-Codes), CHROMIUM_PATH
+```
+
 ## Deployment
 
 Automatisch bei jedem Push auf `main`, `workflow_dispatch` oder eingehendem
