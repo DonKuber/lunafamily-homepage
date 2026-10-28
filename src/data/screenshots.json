@@ -75,7 +75,23 @@
       ]
     }
   ],
-  "dokumente": [],
+  "dokumente": [
+    {
+      "file": "dokumente-uebersicht",
+      "route": "/app/documents",
+      "caption": "Alle Dokumente der Familie mit Vorschau",
+      "crops": [
+        {
+          "file": "dokumente-raster",
+          "x": 520,
+          "y": 192,
+          "w": 910,
+          "h": 440,
+          "caption": "Rechnungen, Zeugnisse, Verträge – mit Vorschau auf einen Blick"
+        }
+      ]
+    }
+  ],
   "kueche": [
     {
       "file": "kueche-essensplan",
