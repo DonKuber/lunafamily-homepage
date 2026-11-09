@@ -80,7 +80,7 @@ async function captureSet(theme, list, device) {
   });
   const page = await ctx.newPage();
   await page.goto(`${APP}/login`, { waitUntil: 'networkidle' });
-  await page.getByRole('button', { name: /Nur notwendige|Alle akzeptieren/ }).first().click({ timeout: 3000 }).catch(() => {});
+  await page.getByRole('button', { name: /Verstanden|Nur notwendige|Alle akzeptieren/ }).first().click({ timeout: 3000 }).catch(() => {});
   await page.fill('#identifier', EMAIL);
   await page.fill('#password', PASSWORD);
   await page.click('button[type=submit]');
