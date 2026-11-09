@@ -13,6 +13,20 @@ import screenshots from './screenshots.json';
 
 export type Status = 'available' | 'partial' | 'soon' | 'planned';
 
+/** Bereiche und Farben wie im Programm (seitenstil, 2026-11-09). */
+export type Bereich = 'family' | 'finance' | 'household' | 'business' | 'personal' | 'automation' | 'neutral';
+
+/** Symbol-Kachel je Bereich: helle Fläche, Akzent als Symbolfarbe (volle Klassen für Tailwind). */
+export const BEREICH_KLASSEN: Record<Bereich, string> = {
+  family: 'bg-[var(--lf-flaeche-family)] text-[var(--lf-akzent-family)]',
+  finance: 'bg-[var(--lf-flaeche-finance)] text-[var(--lf-akzent-finance)]',
+  household: 'bg-[var(--lf-flaeche-household)] text-[var(--lf-akzent-household)]',
+  business: 'bg-[var(--lf-flaeche-business)] text-[var(--lf-akzent-business)]',
+  personal: 'bg-[var(--lf-flaeche-personal)] text-[var(--lf-akzent-personal)]',
+  automation: 'bg-[var(--lf-flaeche-automation)] text-[var(--lf-akzent-automation)]',
+  neutral: 'bg-muted text-muted-foreground',
+};
+
 export interface Highlight {
   title: string;
   text: string;
@@ -40,7 +54,8 @@ export interface Category {
   claim: string;
   visual?: Visual;
   icon: string;
-  gradient: string;
+  /** Bereich wie im Programm — bestimmt Fläche und Akzent des Symbols. */
+  bereich: Bereich;
   status: Status;
   /** Unterseite, Bilder und Link freischalten; siehe Kopfkommentar. */
   published?: boolean;
@@ -76,7 +91,7 @@ const ALL: Category[] = [
   {
     slug: 'kalender',
     claim: 'Alle Termine der Familie – auf einen Blick.',
-    visual: { detail: 'kalender-raster', phone: 'phone-kalender', tilt: 'left', callouts: [{ text: 'Jede Person in ihrer Farbe', x: 26, y: -8, icon: 'users' }, { text: 'Training jeden Dienstag – einmal angelegt', x: -5, y: 93, icon: 'check' }] }, icon: IC.calendar, gradient: 'from-blue-500 to-cyan-500', status: 'available',
+    visual: { detail: 'kalender-raster', phone: 'phone-kalender', tilt: 'left', callouts: [{ text: 'Jede Person in ihrer Farbe', x: 26, y: -8, icon: 'users' }, { text: 'Training jeden Dienstag – einmal angelegt', x: -5, y: 93, icon: 'check' }] }, icon: IC.calendar, bereich: 'family', status: 'available',
     title: 'Kalender & Planung', subtitle: 'Nie wieder einen Termin verpassen',
     features: ['Familien-Kalender mit Farben je Person', 'Wiederkehrende Termine', 'Abstimmungen & Terminvorlagen', 'Erinnerungen & Push-Benachrichtigungen'],
     intro: 'Fußballtraining, Elternabend, Zahnarzt, Omas Geburtstag: Im Familienkalender stehen alle Termine an einem Ort. Jeder sieht, wer wann wo sein muss, und niemand muss mehr fragen, ob der Termin am Dienstag oder am Mittwoch war.',
@@ -90,7 +105,7 @@ const ALL: Category[] = [
   {
     slug: 'aufgaben',
     claim: 'Nichts rutscht mehr durch.',
-    visual: { detail: 'wiedervorlagen-liste', phone: 'phone-aufgaben', tilt: 'right', callouts: [{ text: 'Erinnert rechtzeitig an Fristen', x: 24, y: -9, icon: 'bell' }, { text: 'Wichtiges zuerst', x: -5, y: 94, icon: 'star' }] }, icon: IC.checkCircle, gradient: 'from-green-500 to-emerald-500', status: 'available',
+    visual: { detail: 'wiedervorlagen-liste', phone: 'phone-aufgaben', tilt: 'right', callouts: [{ text: 'Erinnert rechtzeitig an Fristen', x: 24, y: -9, icon: 'bell' }, { text: 'Wichtiges zuerst', x: -5, y: 94, icon: 'star' }] }, icon: IC.checkCircle, bereich: 'household', status: 'available',
     title: 'Aufgaben & Todos', subtitle: 'Gemeinsam mehr erledigen',
     features: ['Aufgabenlisten für alle', 'Teilaufgaben & Projekte', 'Prioritäten & Eisenhower-Matrix', 'Wiedervorlagen & wiederkehrende Aufgaben'],
     intro: '„Wer kümmert sich eigentlich um …?" Diese Frage stellt sich nicht mehr. Aufgaben bekommen einen Zuständigen, eine Frist und eine Priorität, und große Vorhaben lassen sich in kleine Schritte zerlegen.',
@@ -103,7 +118,7 @@ const ALL: Category[] = [
   },
   {
     slug: 'dokumente',
-    claim: 'Jedes Dokument in Sekunden wiedergefunden.', icon: IC.fileText, gradient: 'from-orange-500 to-amber-500', status: 'available',
+    claim: 'Jedes Dokument in Sekunden wiedergefunden.', icon: IC.fileText, bereich: 'family', status: 'available',
     title: 'Dokumente', subtitle: 'Papierkram endlich digital',
     features: ['Posteingang & Ordnerstruktur', 'Texterkennung (OCR) & KI-Einordnung', 'Schnelle Volltextsuche', 'Sicher teilen per Link'],
     intro: 'Rechnungen, Bescheide, Zeugnisse, Garantiebelege: hochladen oder direkt vom Scanner einlesen, automatisch erkennen lassen und in Sekunden wiederfinden. Jede Datei wird vor dem Speichern auf Schadsoftware geprüft.',
@@ -116,7 +131,7 @@ const ALL: Category[] = [
   },
   {
     slug: 'paperless',
-    claim: 'Paperless-ngx und LunaFamily arbeiten Hand in Hand.', icon: IC.fileScan, gradient: 'from-lime-500 to-green-600', status: 'available',
+    claim: 'Paperless-ngx und LunaFamily arbeiten Hand in Hand.', icon: IC.fileScan, bereich: 'automation', status: 'available',
     title: 'Paperless-ngx Integration', subtitle: 'Euer Archiv, nahtlos verbunden',
     features: ['Abgleich in beide Richtungen', 'Tags, Dokumenttypen & Felder synchron', 'Aufbewahrungsfristen je Dokumenttyp', 'Vorschau & Download direkt in LunaFamily'],
     intro: 'Ihr nutzt schon Paperless-ngx? Dann verbindet LunaFamily euer bestehendes Archiv, statt es zu ersetzen. Dokumente, Tags und Dokumenttypen bleiben in beiden Systemen auf demselben Stand.',
@@ -130,7 +145,7 @@ const ALL: Category[] = [
   {
     slug: 'familie',
     claim: 'Alle an Bord – und Kinderdaten bleiben geschützt.',
-    visual: { detail: 'familie-einwilligung', tilt: 'right', callouts: [{ text: 'Einwilligung der Eltern (Art. 8 DSGVO)', x: 52, y: -7, icon: 'shield' }, { text: 'Jeder mit eigenem Zugang', x: -5, y: 97, icon: 'users' }] }, icon: IC.users, gradient: 'from-violet-500 to-purple-500', status: 'available',
+    visual: { detail: 'familie-einwilligung', tilt: 'right', callouts: [{ text: 'Einwilligung der Eltern (Art. 8 DSGVO)', x: 52, y: -7, icon: 'shield' }, { text: 'Jeder mit eigenem Zugang', x: -5, y: 97, icon: 'users' }] }, icon: IC.users, bereich: 'family', status: 'available',
     title: 'Familie & Kontakte', subtitle: 'Alle Verbindungen an einem Ort',
     features: ['Familienmitglieder & Rollen', 'Stammbaum visualisieren', 'Kontaktbuch & Firmen', 'Tagebuch & Erfolgsjournal'],
     intro: 'Jedes Familienmitglied hat ein eigenes Profil mit passenden Rechten, vom Elternteil bis zur Oma mit Lesezugriff. Dazu kommen der Stammbaum, das Kontaktbuch, Firmen, das Familientagebuch und das Erfolgsjournal.',
@@ -144,7 +159,7 @@ const ALL: Category[] = [
   {
     slug: 'vertraege',
     claim: 'Nie wieder eine Kündigungsfrist verpassen.',
-    visual: { detail: 'vertraege-karten', tilt: 'left', callouts: [{ text: 'Kosten und Laufzeit auf einen Blick', x: 48, y: -8, icon: 'star' }, { text: 'Erinnert vor Fristende', x: -5, y: 96, icon: 'bell' }] }, icon: IC.fileSignature, gradient: 'from-amber-500 to-orange-600', status: 'available',
+    visual: { detail: 'vertraege-karten', tilt: 'left', callouts: [{ text: 'Kosten und Laufzeit auf einen Blick', x: 48, y: -8, icon: 'star' }, { text: 'Erinnert vor Fristende', x: -5, y: 96, icon: 'bell' }] }, icon: IC.fileSignature, bereich: 'finance', status: 'available',
     title: 'Verträge', subtitle: 'Alle Verträge der Familie im Griff',
     features: ['Kosten, Laufzeiten & Kündigungsfristen', 'Erinnerung vor Fristende', 'Kündigungsschreiben mit berechnetem Termin', 'Dokumente zum Vertrag & CSV-Export'],
     intro: 'Miete, Strom, Handy, Versicherungen, Streaming-Abos: Alle Verträge stehen mit Kosten, Laufzeit und Ansprechpartner an einem Ort. LunaFamily rechnet die Kündigungsfrist aus und erinnert, bevor sich ein Vertrag still verlängert.',
@@ -158,7 +173,7 @@ const ALL: Category[] = [
   // ─── Teilweise verfügbar ──────────────────────────────────────────────────
   {
     slug: 'kommunikation',
-    claim: 'Alles Wichtige, ohne Chat-Chaos.', icon: IC.mail, gradient: 'from-sky-500 to-blue-500', status: 'partial',
+    claim: 'Alles Wichtige, ohne Chat-Chaos.', icon: IC.mail, bereich: 'business', status: 'partial',
     title: 'Kommunikation', subtitle: 'Immer verbunden, egal wo',
     features: ['Familien-Messenger mit Sprachnachrichten', 'Integrierter E-Mail-Client', 'Ankündigungen & Umfragen', 'Anrufliste & Briefe'],
     intro: 'Nachrichten an die Familie, wichtige Ankündigungen und das Postfach für die Familien-E-Mails. Aus einer E-Mail wird mit einem Klick eine Aufgabe oder eine Wiedervorlage. Einige Funktionen sind bereits nutzbar, weitere folgen schrittweise.',
@@ -171,7 +186,7 @@ const ALL: Category[] = [
   },
   {
     slug: 'ki',
-    claim: 'Die Kleinarbeit erledigt sich von selbst.', icon: IC.sparkles, gradient: 'from-pink-500 to-rose-500', status: 'partial',
+    claim: 'Die Kleinarbeit erledigt sich von selbst.', icon: IC.sparkles, bereich: 'automation', status: 'partial',
     title: 'KI-Assistent', subtitle: 'Intelligente Unterstützung im Alltag',
     features: ['Freie Anbieterwahl – auch lokal', 'Dokumente automatisch einordnen', 'E-Mails formulieren lassen', 'Datenfreigabe je Kategorie'],
     intro: 'Künstliche Intelligenz nimmt euch die Kleinarbeit ab: Dokumente einordnen, E-Mails formulieren, Fragen im Assistenten-Chat beantworten. Welcher KI-Anbieter zum Einsatz kommt und welche Daten er sehen darf, entscheidet ihr. Weitere Funktionen folgen schrittweise.',
@@ -184,7 +199,7 @@ const ALL: Category[] = [
   },
   {
     slug: 'caldav',
-    claim: 'Eure Termine und Kontakte auf jedem Gerät.', icon: IC.calendarSync, gradient: 'from-indigo-500 to-blue-500', status: 'partial',
+    claim: 'Eure Termine und Kontakte auf jedem Gerät.', icon: IC.calendarSync, bereich: 'automation', status: 'partial',
     title: 'CalDAV & CardDAV', subtitle: 'Synchron mit Handy, PC und Co.',
     features: ['Kalender & Aufgaben auf Handy und PC', 'Adressbuch-Abgleich (CardDAV)', 'Google-Kalender & externe Server', 'Kalender-Abo, Import & Export (ICS)'],
     intro: 'LunaFamily spricht die offenen Standards CalDAV und CardDAV. Kalender, Aufgaben und Kontakte erscheinen so in den Apps, die ihr ohnehin nutzt – auf dem iPhone, unter Android, in Thunderbird oder Outlook. Einige Anbindungen sind bereits nutzbar, weitere folgen.',
@@ -199,7 +214,7 @@ const ALL: Category[] = [
   {
     slug: 'kueche',
     claim: 'Sonntag planen, die ganze Woche entspannt essen.',
-    visual: { detail: 'essensplan-woche', phone: 'phone-essensplan', tilt: 'left', callouts: [{ text: 'Frühstück bis Abendessen geplant', x: -6, y: -6, icon: 'check' }, { text: 'Auch unterwegs griffbereit', x: 44, y: 104, icon: 'heart' }] }, icon: IC.utensils, gradient: 'from-rose-500 to-pink-500', status: 'soon',
+    visual: { detail: 'essensplan-woche', phone: 'phone-essensplan', tilt: 'left', callouts: [{ text: 'Frühstück bis Abendessen geplant', x: -6, y: -6, icon: 'check' }, { text: 'Auch unterwegs griffbereit', x: 44, y: 104, icon: 'heart' }] }, icon: IC.utensils, bereich: 'household', status: 'soon',
     title: 'Küche & Ernährung', subtitle: 'Kochen wird wieder Freude',
     features: ['Rezeptsammlung', 'Mahlzeitenplanung', 'Auto-Einkaufslisten', 'Kalorientracking'],
     intro: 'Die tägliche Frage „Was essen wir heute?" beantwortet der Essensplan schon am Sonntag. Rezepte, Wochenplan und Einkaufsliste greifen ineinander, und im Supermarkt hakt jeder gemeinsam auf derselben Liste ab.',
@@ -212,7 +227,7 @@ const ALL: Category[] = [
   },
   {
     slug: 'mobile',
-    claim: 'Immer dabei – auch ohne Netz.', icon: IC.smartphone, gradient: 'from-slate-500 to-gray-600', status: 'soon',
+    claim: 'Immer dabei – auch ohne Netz.', icon: IC.smartphone, bereich: 'neutral', status: 'soon',
     title: 'Mobile App', subtitle: 'Immer dabei, auch ohne Internet',
     features: ['iOS & Android App', 'Offline-First Architektur', 'Automatische Synchronisation', 'Biometrische Absicherung'],
     intro: 'Einkaufsliste im Funkloch, Kalender im Flugzeug: Die mobile App funktioniert auch ohne Verbindung und gleicht Änderungen automatisch ab, sobald wieder Netz da ist.',
@@ -226,7 +241,7 @@ const ALL: Category[] = [
   {
     slug: 'haushalt',
     claim: 'Der Haushalt als Teamspiel.',
-    visual: { detail: 'haushalt-karten', tilt: 'left', callouts: [{ text: '15 Punkte für geputzte Fenster', x: 74, y: 22, icon: 'star' }, { text: 'Wiederkehrend – plant sich selbst', x: -38, y: 70, icon: 'check' }] }, icon: IC.home, gradient: 'from-teal-500 to-green-500', status: 'planned',
+    visual: { detail: 'haushalt-karten', tilt: 'left', callouts: [{ text: '15 Punkte für geputzte Fenster', x: 74, y: 22, icon: 'star' }, { text: 'Wiederkehrend – plant sich selbst', x: -38, y: 70, icon: 'check' }] }, icon: IC.home, bereich: 'household', status: 'planned',
     title: 'Haushalt', subtitle: 'Der Haushalt läuft sich fast von selbst',
     features: ['Haushaltsaufgaben mit Punkten', 'Inventar verwalten', 'Bedienungsanleitungen', 'Haushaltsplaner'],
     intro: 'Spülmaschine ausräumen, Müll rausbringen, Pflanzen gießen: Haushaltsaufgaben wiederholen sich automatisch und bringen Punkte. Das motiviert die Kinder und entlastet die Eltern. Das Inventar weiß, was ihr besitzt und wann eine Garantie abläuft.',
@@ -240,7 +255,7 @@ const ALL: Category[] = [
   {
     slug: 'finanzen',
     claim: 'Endlich wissen, wohin das Familiengeld fließt.',
-    visual: { detail: 'kasse-konten', tilt: 'right', callouts: [{ text: 'Monatsvergleich automatisch', x: 64, y: -9, icon: 'star' }, { text: 'Taschengeld inklusive', x: -5, y: 96, icon: 'heart' }] }, icon: IC.wallet, gradient: 'from-yellow-500 to-orange-500', status: 'planned',
+    visual: { detail: 'kasse-konten', tilt: 'right', callouts: [{ text: 'Monatsvergleich automatisch', x: 64, y: -9, icon: 'star' }, { text: 'Taschengeld inklusive', x: -5, y: 96, icon: 'heart' }] }, icon: IC.wallet, bereich: 'finance', status: 'planned',
     title: 'Finanzen', subtitle: 'Volle Kontrolle über das Familienbudget',
     features: ['Bargeld & Haushaltskasse', 'Ausgaben & Budgets', 'Kredite in der Familie', 'Open Banking'],
     intro: 'Wohin fließt das Geld? Haushaltskasse, Portemonnaie und Sparschwein sind erfasst, Verträge und Kredite laufen in einer Übersicht je Familienmitglied zusammen.',
@@ -253,7 +268,7 @@ const ALL: Category[] = [
   },
   {
     slug: 'schule',
-    claim: 'Hausaufgaben, Noten, Termine – gemeinsam im Blick.', icon: IC.graduationCap, gradient: 'from-indigo-500 to-violet-500', status: 'planned',
+    claim: 'Hausaufgaben, Noten, Termine – gemeinsam im Blick.', icon: IC.graduationCap, bereich: 'household', status: 'planned',
     title: 'Schule & Bildung', subtitle: 'Lernfortschritt im Blick',
     features: ['Schultermine & Hausaufgaben', 'Noten & Zeugnisse', 'Lernpläne', 'Studienmanagement'],
     intro: 'Stundenplan, Hausaufgaben, Klassenarbeiten und Noten: Eltern und Kinder behalten gemeinsam den Überblick. Die Daten der Kinder sind dabei besonders geschützt.',
@@ -266,7 +281,7 @@ const ALL: Category[] = [
   {
     slug: 'statistiken',
     claim: 'Ein Blick am Morgen, und der Tag ist klar.',
-    visual: { detail: 'dashboard-termine', phone: 'phone-dashboard', tilt: 'left', callouts: [{ text: 'Die nächsten Termine aller', x: -6, y: -6, icon: 'users' }] }, icon: IC.barChart, gradient: 'from-cyan-500 to-teal-500', status: 'planned',
+    visual: { detail: 'dashboard-termine', phone: 'phone-dashboard', tilt: 'left', callouts: [{ text: 'Die nächsten Termine aller', x: -6, y: -6, icon: 'users' }] }, icon: IC.barChart, bereich: 'automation', status: 'planned',
     title: 'Statistiken & Insights', subtitle: 'Daten, die wirklich helfen',
     features: ['Familien-Dashboard', 'Aktivitätsberichte', 'Ausgaben-Trends', 'Produktivitäts-Insights'],
     intro: 'Das Dashboard zeigt morgens, was heute ansteht. Die Statistiken zeigen, wie sich Ausgaben entwickeln, wer im Haushalt am fleißigsten war und welche Aufgaben liegen bleiben.',
@@ -278,7 +293,7 @@ const ALL: Category[] = [
   },
   {
     slug: 'kfz',
-    claim: 'TÜV, Service und Kosten jedes Autos im Blick.', icon: IC.car, gradient: 'from-zinc-500 to-slate-600', status: 'planned',
+    claim: 'TÜV, Service und Kosten jedes Autos im Blick.', icon: IC.car, bereich: 'household', status: 'planned',
     title: 'Kfz-Verwaltung', subtitle: 'Alle Fahrzeuge der Familie',
     features: ['Fahrzeuge der Familie', 'TÜV- & Service-Termine', 'Tank- & Werkstattkosten', 'Versicherung & Kfz-Steuer'],
     intro: 'Familienauto, Zweitwagen, Roller: Jedes Fahrzeug bekommt ein eigenes Profil mit Hauptuntersuchung, Inspektion, Reifenwechsel und allen Kosten.',
@@ -290,7 +305,7 @@ const ALL: Category[] = [
   },
   {
     slug: 'haustiere',
-    claim: 'Gut versorgt – vom Impfpass bis zum Tierarzttermin.', icon: IC.pawPrint, gradient: 'from-amber-500 to-yellow-500', status: 'planned',
+    claim: 'Gut versorgt – vom Impfpass bis zum Tierarzttermin.', icon: IC.pawPrint, bereich: 'household', status: 'planned',
     title: 'Haustiere', subtitle: 'Auch die Vierbeiner gehören zur Familie',
     features: ['Tierprofile mit Chipnummer', 'Impfungen & Tierarzttermine', 'Medikamente & Parasitenschutz', 'Gewichtsverlauf & Erinnerungen'],
     intro: 'Hund, Katze, Kaninchen: Jedes Tier bekommt ein Profil mit Rasse, Chipnummer und Versicherung. Impfungen, Wurmkuren und Tierarzttermine vergisst niemand mehr.',
@@ -303,7 +318,7 @@ const ALL: Category[] = [
   {
     slug: 'events',
     claim: 'Vom Kindergeburtstag bis zur Hochzeit – entspannt geplant.',
-    visual: { detail: 'kalender-eventkarten', tilt: 'right', callouts: [{ text: 'Gäste, Budget und To-dos an einem Ort', x: 30, y: -8, icon: 'users' }] }, icon: IC.partyPopper, gradient: 'from-fuchsia-500 to-pink-500', status: 'planned',
+    visual: { detail: 'kalender-eventkarten', tilt: 'right', callouts: [{ text: 'Gäste, Budget und To-dos an einem Ort', x: 30, y: -8, icon: 'users' }] }, icon: IC.partyPopper, bereich: 'family', status: 'planned',
     title: 'Events', subtitle: 'Feste feiern statt Listen jonglieren',
     features: ['Gästeliste mit Zu- und Absagen', 'Budget & Ausgaben', 'Checklisten & To-dos', 'Geschenkideen'],
     intro: 'Kindergeburtstag, Einschulung, Sommerfest: Gästeliste, Budget, To-dos und Geschenkideen stehen für jedes Event an einem Ort.',

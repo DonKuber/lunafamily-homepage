@@ -33,6 +33,43 @@
   --color-accent-foreground: 254 252 250;
 }
 
+/* ============================================================================
+   Seitenstil des Programms (aus frontend/src/styles/seitenstil.css, erzeugt aus
+   packages/seitenstil im LunaFamily-Repo). Bereichsfarben (Fläche + Akzent)
+   und die tintenschwarz-goldene Heldenkarte — gleiche Werte wie in der App.
+   ============================================================================ */
+:root {
+  --lf-flaeche-family: #F3E4C4;
+  --lf-akzent-family: #A37734;
+  --lf-flaeche-finance: #DCEBD9;
+  --lf-akzent-finance: #58905A;
+  --lf-flaeche-household: #F4DDCB;
+  --lf-akzent-household: #AE6F42;
+  --lf-flaeche-business: #D9E7F2;
+  --lf-akzent-business: #4381AA;
+  --lf-flaeche-personal: #F5DCD8;
+  --lf-akzent-personal: #B4685F;
+  --lf-flaeche-automation: #E6E0F3;
+  --lf-akzent-automation: #826EA8;
+  --lf-held-flaeche: #2A2318;
+  --lf-held-rand: transparent;
+  --lf-held-linie: #4A3C1E;
+  --lf-held-text: #F7F1E3;
+  --lf-held-text-leise: #BFB49C;
+  --lf-held-gold: #E2BC45;
+}
+
+:root.dark {
+  --lf-flaeche-family: #2E2513;
+  --lf-flaeche-finance: #1A2A1C;
+  --lf-flaeche-household: #2F2016;
+  --lf-flaeche-business: #16232F;
+  --lf-flaeche-personal: #2F1D1B;
+  --lf-flaeche-automation: #221E30;
+  --lf-held-flaeche: #211B10;
+  --lf-held-rand: #4A3C1E;
+}
+
 /* Gemeinsam für Startseite und Unterseiten */
 .lf-animate {
   opacity: 0;

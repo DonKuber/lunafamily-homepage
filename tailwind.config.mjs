@@ -25,9 +25,15 @@ export default {
         },
         border: 'rgb(var(--color-border) / <alpha-value>)',
       },
+      borderRadius: {
+        // Rundungen wie im Programm (seitenstil-Tokens)
+        held: '28px',
+        karte: '24px',
+        kachel: '20px',
+      },
       fontFamily: {
         sans: ['"IBM Plex Sans"', 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['"Fredoka"', '"IBM Plex Sans"', 'system-ui', 'sans-serif'],
+        display: ['"Bricolage Grotesque"', '"IBM Plex Sans"', 'system-ui', 'sans-serif'],
         script: ['"Yellowtail"', 'cursive'],
       },
     },

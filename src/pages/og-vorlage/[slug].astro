@@ -4,7 +4,7 @@
 // unter public/og/<slug>.jpg ab. Deshalb noindex und nirgends verlinkt.
 import Base from '../../layouts/Base.astro';
 import PhoneFrame from '../../components/PhoneFrame.astro';
-import { PUBLISHED as CATEGORIES, shotByFile, screenshotsFor } from '../../data/features';
+import { BEREICH_KLASSEN, PUBLISHED as CATEGORIES, shotByFile, screenshotsFor } from '../../data/features';
 
 export function getStaticPaths() {
   return [
@@ -53,9 +53,9 @@ const phone = cat?.visual?.phone ? shotByFile(cat.visual.phone) : slug === 'star
       </div>
     )}
     {!visual && cat && (
-      <div class={`absolute right-28 top-[170px] w-72 h-72 rounded-[4rem] bg-gradient-to-br ${cat.gradient} flex items-center justify-center`}
+      <div class={`absolute right-28 top-[170px] w-72 h-72 rounded-[4rem] ${BEREICH_KLASSEN[cat.bereich]} flex items-center justify-center`}
            style="box-shadow:0 40px 80px -20px rgb(60 45 20 / .45);transform:rotate(-6deg)">
-        <svg class="w-36 h-36 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <svg class="w-36 h-36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <Fragment set:html={cat.icon} />
         </svg>
       </div>

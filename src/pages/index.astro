@@ -7,7 +7,7 @@ import LaptopFrame from '../components/LaptopFrame.astro';
 import PhoneFrame from '../components/PhoneFrame.astro';
 import CalloutChip from '../components/Callout.astro';
 import { IC } from '../data/icons';
-import { CATEGORIES, STATUS, STATUS_ORDER, isPublished, screenshotsFor, shotByFile, type Callout, type Status } from '../data/features';
+import { BEREICH_KLASSEN, CATEGORIES, STATUS, STATUS_ORDER, isPublished, screenshotsFor, shotByFile, type Callout, type Status } from '../data/features';
 
 const HERO_SHOT = screenshotsFor('hero')[0];
 // Laptop und Handy zusammen zeigen: zu Hause am Rechner, unterwegs am Handy.
@@ -200,9 +200,9 @@ const ROADMAP_PLANNED = titlesWith('planned');
         const Card = published ? 'a' : 'div';
         return (
           <div class="lf-animate" style={`transition-delay:${Math.min(i * 50, 300)}ms`}>
-            <Card href={published ? `/funktionen/${cat.slug}` : undefined} class={`group flex flex-col h-full border border-border bg-card rounded-2xl p-6 transition-all duration-300 ${published ? 'hover:shadow-md hover:-translate-y-0.5' : 'opacity-75'}`}>
+            <Card href={published ? `/funktionen/${cat.slug}` : undefined} class={`group flex flex-col h-full border border-border bg-card rounded-karte p-6 transition-all duration-300 ${published ? 'hover:shadow-md hover:-translate-y-0.5' : 'opacity-75'}`}>
               <div class="flex items-start justify-between mb-4">
-                <div class={`p-3 rounded-xl bg-gradient-to-br ${cat.gradient} text-white shadow-sm`}>
+                <div class={`p-3 rounded-kachel ${BEREICH_KLASSEN[cat.bereich]}`}>
                   <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <Fragment set:html={cat.icon} />
                   </svg>
@@ -369,38 +369,38 @@ const ROADMAP_PLANNED = titlesWith('planned');
 <section class="py-24 px-4 sm:px-6 bg-muted/20" aria-labelledby="cta-heading">
   <div class="max-w-3xl mx-auto text-center">
     <div class="lf-animate">
-      <div class="relative rounded-3xl p-10 sm:p-16 overflow-hidden border border-primary/30"
-           style="background:linear-gradient(135deg,rgba(196,162,101,.10),rgba(192,149,86,.05),rgb(var(--color-background)))">
-        <div class="absolute inset-0 -z-10 opacity-25"
-             style="background:radial-gradient(ellipse at 50% 0%,#c4a265 0%,transparent 60%)" aria-hidden="true"></div>
+      <!-- Heldenkarte wie im Programm: tintenschwarz mit Gold (seitenstil) -->
+      <div class="relative rounded-held p-10 sm:p-16 overflow-hidden border"
+           style="background:var(--lf-held-flaeche);border-color:var(--lf-held-rand);box-shadow:0 30px 60px -25px rgb(42 35 24 / .55)">
+        <div class="absolute inset-x-10 top-0 h-px" style="background:var(--lf-held-linie)" aria-hidden="true"></div>
 
-        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/30 text-sm font-medium mb-6"
-             style="background:rgba(249,245,239,.7);color:#c4a265">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm font-medium mb-6"
+             style="border-color:var(--lf-held-linie);color:var(--lf-held-gold)">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <Fragment set:html={IC.flask} />
           </svg>
           Kostenloser Beta-Zugang
         </div>
 
-        <h2 id="cta-heading" class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-5 leading-tight">
-          Bring Ordnung in deinen <span class="font-script text-accent text-[1.15em]">Familienalltag</span>.
+        <h2 id="cta-heading" class="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-5 leading-tight tracking-tight" style="color:var(--lf-held-text)">
+          Bring Ordnung in deinen <span class="font-script text-[1.15em] font-normal" style="color:var(--lf-held-gold)">Familienalltag</span>.
         </h2>
-        <p class="text-muted-foreground text-lg mb-10 max-w-xl mx-auto leading-relaxed">
+        <p class="text-lg mb-10 max-w-xl mx-auto leading-relaxed" style="color:var(--lf-held-text-leise)">
           Registriere dich jetzt kostenlos und erlebe, wie LunaFamily deinen Alltag einfacher macht — noch heute. Keine Kreditkarte, kein Abo, kein Risiko.
         </p>
 
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <a href="https://app.lunafamily.online/register"
-             class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-12 py-4 text-base rounded-xl transition-colors"
-             style="box-shadow:0 20px 40px rgba(196,162,101,.30)" rel="noopener">
+             class="inline-flex items-center justify-center gap-2 font-semibold px-12 py-4 text-base rounded-full transition-transform hover:-translate-y-0.5"
+             style="background:var(--lf-held-gold);color:var(--lf-held-flaeche)" rel="noopener">
             Jetzt kostenlos starten
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <Fragment set:html={IC.chevronRight} />
             </svg>
           </a>
           <a href="https://app.lunafamily.online/login"
-             class="inline-flex items-center justify-center border border-border bg-card/60 text-foreground font-semibold px-12 py-4 text-base rounded-xl hover:bg-muted transition-colors"
-             rel="noopener">
+             class="inline-flex items-center justify-center border font-semibold px-12 py-4 text-base rounded-full transition-colors hover:bg-white/5"
+             style="border-color:var(--lf-held-linie);color:var(--lf-held-text)" rel="noopener">
             Bereits dabei? Anmelden
           </a>
         </div>

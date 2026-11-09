@@ -1,6 +1,6 @@
 ---
 import { IC } from '../data/icons';
-import { CATEGORIES, PUBLISHED, STATUS } from '../data/features';
+import { BEREICH_KLASSEN, CATEGORIES, PUBLISHED, STATUS } from '../data/features';
 
 // „Funktionen" öffnet ein Menü mit allen freigeschalteten Bereichen (je mit
 // Symbol und Nutzen-Satz) und dem, was als Nächstes kommt. Eine eigene
@@ -50,7 +50,7 @@ const inFeatures = current.startsWith('/funktionen/');
                         <li>
                           <a href={`/funktionen/${cat.slug}`} aria-current={active ? 'page' : undefined}
                              class={`group flex items-start gap-3 rounded-xl p-3 transition-colors ${active ? 'bg-muted' : 'hover:bg-muted'}`}>
-                            <span class={`flex-shrink-0 p-2 rounded-lg bg-gradient-to-br ${cat.gradient} text-white shadow-sm transition-transform group-hover:scale-105`}>
+                            <span class={`flex-shrink-0 p-2 rounded-lg ${BEREICH_KLASSEN[cat.bereich]} transition-transform group-hover:scale-105`}>
                               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={cat.icon} /></svg>
                             </span>
                             <span class="min-w-0">
