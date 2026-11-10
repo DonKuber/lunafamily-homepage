@@ -28,8 +28,11 @@ const manifest = JSON.parse(readFileSync(join(root, 'src', 'data', 'screenshots.
 const APP = (process.env.LF_APP_URL || 'http://127.0.0.1:6173').replace(/\/$/, '');
 const EMAIL = process.env.LF_DEMO_EMAIL || '';
 const PASSWORD = process.env.LF_DEMO_PASSWORD || '';
-if (!EMAIL.endsWith('.invalid') || !PASSWORD) {
-  console.error('LF_DEMO_EMAIL (…@….invalid) und LF_DEMO_PASSWORD setzen — nur der Demo-Mandant ist erlaubt.');
+// Seit 2026-11-10 lebt der Demo-Haushalt „Familie Muster“ auf Prod, angelegt über
+// die normale Registrierung mit dem Test-Postfach (lunafamilyai+demo-…@gmail.com).
+const istDemo = EMAIL.endsWith('.invalid') || /^lunafamilyai\+demo-[a-z0-9-]+@gmail\.com$/.test(EMAIL);
+if (!istDemo || !PASSWORD) {
+  console.error('LF_DEMO_EMAIL (Demo-Haushalt: …@….invalid oder lunafamilyai+demo-…@gmail.com) und LF_DEMO_PASSWORD setzen — nur der Demo-Mandant ist erlaubt.');
   process.exit(1);
 }
 
@@ -60,6 +63,14 @@ async function hideNoise(page) {
         const box = el.closest('[class*="fixed"], [role="alert"], [class*="banner"], div');
         (box ?? el).style.display = 'none';
       }
+      // Hinweis auf die Testphase des Demo-Haushalts gehört nicht ins Werbebild.
+      if (el.children.length < 3 && t.startsWith('Testphase:')) {
+        (el.closest('a, button, [role="button"], [role="status"]') ?? el).style.display = 'none';
+      }
+    }
+    // Die Anmelde-Adresse des Demo-Haushalts (Test-Postfach) nicht zeigen.
+    for (const el of document.querySelectorAll('header *')) {
+      if (el.children.length === 0 && /@/.test(el.textContent ?? '')) el.textContent = 'Familie Muster';
     }
   });
 }
@@ -95,8 +106,8 @@ async function captureSet(theme, list, device) {
     // Auf dem Handy ist die Kopfzeile verkürzt; das Farbschema wird dann in
     // einer Desktop-Breite umgeschaltet und bleibt für die Sitzung gespeichert.
     if (phone) await page.setViewportSize({ width: 1440, height: 900 });
-    await page.waitForSelector('header button[aria-label="Toggle dark mode"]', { timeout: 20000 });
-    await page.click('header button[aria-label="Toggle dark mode"]');
+    await page.waitForSelector('header button[aria-label="Hell/Dunkel umschalten"], header button[aria-label="Toggle dark mode"]', { timeout: 20000 });
+    await page.click('header button[aria-label="Hell/Dunkel umschalten"], header button[aria-label="Toggle dark mode"]');
     await page.waitForTimeout(800);
     if (phone) await page.setViewportSize({ width: 390, height: 844 });
   }
@@ -131,6 +142,9 @@ async function captureSet(theme, list, device) {
       await page.waitForTimeout(600);
     }
     await hideNoise(page);
+    // Kein Hover-Zustand im Bild (Zeiger aus der Seite nehmen).
+    await page.mouse.move(1, 1);
+    await page.waitForTimeout(300);
     // Eine Aufnahme in doppelter Auflösung (2880×1800); daraus entstehen das
     // Vollbild und die Ausschnitte, die dadurch auch vergrößert scharf bleiben.
     const png = await page.screenshot({ type: 'png' });

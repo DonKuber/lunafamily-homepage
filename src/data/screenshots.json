@@ -4,23 +4,23 @@
     {
       "file": "dashboard",
       "route": "/app/dashboard",
-      "caption": "Das Familien-Dashboard: Termine, Aufgaben und Neuigkeiten auf einen Blick",
+      "caption": "Das Familien-Dashboard: der Tag, die Woche und offene Aufgaben auf einen Blick",
       "crops": [
         {
           "file": "dashboard-aufgaben",
-          "x": 850,
-          "y": 205,
-          "w": 545,
-          "h": 285,
-          "caption": "Offene Aufgaben mit Priorität – direkt auf dem Dashboard"
+          "x": 296,
+          "y": 290,
+          "w": 1104,
+          "h": 296,
+          "caption": "Heute auf einen Blick: der nächste Termin und die offenen Aufgaben"
         },
         {
           "file": "dashboard-termine",
-          "x": 580,
-          "y": 500,
-          "w": 540,
-          "h": 360,
-          "caption": "Die nächsten Termine der ganzen Familie"
+          "x": 296,
+          "y": 588,
+          "w": 1104,
+          "h": 236,
+          "caption": "Die Woche der ganzen Familie – wie viele Termine an welchem Tag"
         }
       ]
     }
@@ -29,16 +29,15 @@
     {
       "file": "kalender-monat",
       "route": "/app/calendar",
-      "clickSelector": "xpath=//button[normalize-space()='Heute']/following::button[2]",
-      "caption": "Der Familienkalender: jede Person in ihrer Farbe",
+      "caption": "Der Familienkalender: alle Termine der Familie in einem Kalender",
       "crops": [
         {
           "file": "kalender-raster",
-          "x": 276,
-          "y": 95,
-          "w": 1164,
-          "h": 560,
-          "caption": "Jede Person hat ihre Farbe – so sieht man sofort, wer verplant ist"
+          "x": 256,
+          "y": 150,
+          "w": 1184,
+          "h": 420,
+          "caption": "Elternabend, Training, Zahnarzt – die ganze Woche im Blick"
         }
       ]
     }
@@ -52,10 +51,10 @@
         {
           "file": "aufgaben-kennzahlen",
           "x": 296,
-          "y": 315,
+          "y": 330,
           "w": 1104,
-          "h": 240,
-          "caption": "Offen, erledigt, überfällig: der Stand auf einen Blick"
+          "h": 310,
+          "caption": "Offen, in Arbeit, heute fällig, erledigt: der Stand auf einen Blick"
         }
       ]
     },
@@ -67,10 +66,10 @@
         {
           "file": "wiedervorlagen-liste",
           "x": 296,
-          "y": 160,
+          "y": 100,
           "w": 1104,
-          "h": 500,
-          "caption": "Fristen, Garantien und Kündigungstermine mit Priorität"
+          "h": 370,
+          "caption": "Fristen und Kündigungstermine mit Priorität – rechtzeitig erinnert"
         }
       ]
     }
@@ -84,10 +83,10 @@
         {
           "file": "dokumente-raster",
           "x": 520,
-          "y": 192,
+          "y": 340,
           "w": 910,
-          "h": 440,
-          "caption": "Rechnungen, Zeugnisse, Verträge – mit Vorschau auf einen Blick"
+          "h": 450,
+          "caption": "Abrechnungen, Versicherungsscheine, Garantien – mit Vorschau"
         }
       ]
     }
@@ -138,10 +137,10 @@
       "crops": [
         {
           "file": "familie-einwilligung",
-          "x": 272,
+          "x": 280,
           "y": 175,
-          "w": 1152,
-          "h": 540,
+          "w": 1136,
+          "h": 250,
           "caption": "Kinderdaten nur mit Einwilligung der Eltern (Art. 8 DSGVO)"
         }
       ]
@@ -153,42 +152,11 @@
       "crops": [
         {
           "file": "kontakte-tabelle",
-          "x": 272,
-          "y": 440,
-          "w": 1152,
-          "h": 420,
+          "x": 280,
+          "y": 480,
+          "w": 1136,
+          "h": 400,
           "caption": "Kontakte mit Typ, Telefon, E-Mail und Adresse"
-        }
-      ]
-    },
-    {
-      "file": "familie-tagebuch",
-      "route": "/app/diary",
-      "caption": "Das Familientagebuch mit Stimmung und Wetter",
-      "crops": [
-        {
-          "file": "tagebuch-eintraege",
-          "x": 568,
-          "y": 235,
-          "w": 840,
-          "h": 445,
-          "caption": "Einträge mit Stimmung, Wetter und Sichtbarkeit"
-        }
-      ]
-    },
-    {
-      "file": "familie-erfolge",
-      "route": "/app/success-journal",
-      "click": "Erfolge",
-      "caption": "Das Erfolgsjournal – kleine und große Erfolge feiern",
-      "crops": [
-        {
-          "file": "erfolge-karten",
-          "x": 288,
-          "y": 300,
-          "w": 1120,
-          "h": 490,
-          "caption": "Erfolge sammeln und gemeinsam feiern"
         }
       ]
     }
@@ -201,22 +169,21 @@
       "crops": [
         {
           "file": "vertraege-kosten",
-          "x": 272,
-          "y": 64,
-          "w": 1152,
-          "h": 126,
+          "x": 280,
+          "y": 178,
+          "w": 1136,
+          "h": 166,
           "caption": "Alle Vertragskosten im Monat und im Jahr"
         },
         {
           "file": "vertraege-karten",
-          "x": 272,
-          "y": 395,
-          "w": 1152,
-          "h": 408,
-          "caption": "Jeder Vertrag mit Kosten, Laufzeit und Ansprechpartner"
+          "x": 296,
+          "y": 558,
+          "w": 1110,
+          "h": 300,
+          "caption": "Jeder Vertrag mit Kosten, Laufzeit und Anbieter"
         }
-      ],
-      "scrollY": 140
+      ]
     }
   ],
   "haushalt": [
@@ -303,7 +270,6 @@
     {
       "file": "phone-dashboard",
       "route": "/app/dashboard",
-      "scrollY": 260,
       "caption": "Das Dashboard auf dem Handy"
     },
     {
