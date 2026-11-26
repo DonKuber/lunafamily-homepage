@@ -59,6 +59,10 @@ export interface Category {
   status: Status;
   /** Unterseite, Bilder und Link freischalten; siehe Kopfkommentar. */
   published?: boolean;
+  /** Ganzer Bereich nur in der On-Premise-Version (eigener Server), nicht in der Cloud. */
+  onpremOnly?: boolean;
+  /** Einzelne Stichpunkte aus `features`, die nur On-Premise nutzbar sind. */
+  onpremFeatures?: string[];
   title: string;
   subtitle: string;
   features: string[];
@@ -81,6 +85,23 @@ export const STATUS: Record<Status, { label: string; cls: string; dot: string }>
 };
 
 export const STATUS_ORDER: Status[] = ['available', 'partial', 'soon', 'planned'];
+
+/**
+ * Kennzeichnung für Bereiche und Funktionen, die nur in der On-Premise-Version
+ * nutzbar sind (Betreiber 2026-11-26): Gesundheit, Kalorientracking und Schule
+ * sind in der Cloud gesperrt, damit dort keine Gesundheits- und Schuldaten von
+ * Kindern verarbeitet werden.
+ */
+export const ONPREM = {
+  label: 'Nur On-Premise',
+  hint: 'Nur in der On-Premise-Version auf eurem eigenen Server nutzbar, nicht in der Cloud.',
+  cls: 'bg-stone-100 text-stone-700 border-stone-300 dark:bg-stone-800/50 dark:text-stone-200 dark:border-stone-600/60',
+};
+
+export function nurOnprem(cat: Category, feature?: string): boolean {
+  if (cat.onpremOnly) return feature === undefined;
+  return feature !== undefined && (cat.onpremFeatures ?? []).includes(feature);
+}
 
 export function isPublished(cat: Category): boolean {
   return cat.published ?? (cat.status === 'available' || cat.status === 'partial');
@@ -217,6 +238,7 @@ const ALL: Category[] = [
     visual: { detail: 'essensplan-woche', phone: 'phone-essensplan', tilt: 'left', callouts: [{ text: 'Frühstück bis Abendessen geplant', x: -6, y: -6, icon: 'check' }, { text: 'Auch unterwegs griffbereit', x: 44, y: 104, icon: 'heart' }] }, icon: IC.utensils, bereich: 'household', status: 'soon',
     title: 'Küche & Ernährung', subtitle: 'Kochen wird wieder Freude',
     features: ['Rezeptsammlung', 'Mahlzeitenplanung', 'Auto-Einkaufslisten', 'Kalorientracking'],
+    onpremFeatures: ['Kalorientracking'],
     intro: 'Die tägliche Frage „Was essen wir heute?" beantwortet der Essensplan schon am Sonntag. Rezepte, Wochenplan und Einkaufsliste greifen ineinander, und im Supermarkt hakt jeder gemeinsam auf derselben Liste ab.',
     highlights: [
       { title: 'Rezeptsammlung', text: 'Familienlieblinge mit Zutaten, Schritten, Zubereitungszeit und Bewertungen, alles an einem Ort statt verstreut auf Zetteln.' },
@@ -268,7 +290,7 @@ const ALL: Category[] = [
   },
   {
     slug: 'schule',
-    claim: 'Hausaufgaben, Noten, Termine – gemeinsam im Blick.', icon: IC.graduationCap, bereich: 'household', status: 'planned',
+    claim: 'Hausaufgaben, Noten, Termine – gemeinsam im Blick.', icon: IC.graduationCap, bereich: 'household', status: 'planned', onpremOnly: true,
     title: 'Schule & Bildung', subtitle: 'Lernfortschritt im Blick',
     features: ['Schultermine & Hausaufgaben', 'Noten & Zeugnisse', 'Lernpläne', 'Studienmanagement'],
     intro: 'Stundenplan, Hausaufgaben, Klassenarbeiten und Noten: Eltern und Kinder behalten gemeinsam den Überblick. Die Daten der Kinder sind dabei besonders geschützt.',

@@ -8,7 +8,7 @@ import FeatureVideo from '../../components/FeatureVideo.astro';
 import ShotStage from '../../components/ShotStage.astro';
 import MarketingVisual from '../../components/MarketingVisual.astro';
 import { IC } from '../../data/icons';
-import { BEREICH_KLASSEN, PUBLISHED, STATUS, videoFor, viewsFor, type Category } from '../../data/features';
+import { BEREICH_KLASSEN, ONPREM, PUBLISHED, STATUS, nurOnprem, videoFor, viewsFor, type Category } from '../../data/features';
 
 export function getStaticPaths() {
   // Nur freigeschaltete Bereiche bekommen eine Seite (siehe data/features.ts).
@@ -60,7 +60,9 @@ const others = PUBLISHED.filter((c) => c.slug !== cat.slug);
               </svg>
             </div>
             <span class={`px-2.5 py-1 rounded-full text-xs font-semibold border ${st.cls}`}>{st.label}</span>
+            {nurOnprem(cat) && <span class={`px-2.5 py-1 rounded-full text-xs font-semibold border ${ONPREM.cls}`} title={ONPREM.hint}>{ONPREM.label}</span>}
           </div>
+          {nurOnprem(cat) && <p class="text-sm text-muted-foreground mb-4">{ONPREM.hint}</p>}
           <p class="text-sm font-semibold uppercase tracking-wider text-primary mb-3">{cat.title}</p>
           <h1 id="feature-heading" class="font-display text-4xl sm:text-5xl font-bold text-foreground mb-6 leading-[1.1]">{cat.claim}</h1>
           <p class="text-lg text-muted-foreground leading-relaxed mb-8">{cat.intro}</p>
@@ -71,6 +73,7 @@ const others = PUBLISHED.filter((c) => c.slug !== cat.slug);
                   <Fragment set:html={IC.checkCheck} />
                 </svg>
                 {f}
+                {nurOnprem(cat, f) && <span class={`px-1.5 py-0.5 rounded-full border text-[10px] font-semibold whitespace-nowrap ${ONPREM.cls}`} title={ONPREM.hint}>On-Premise</span>}
               </li>
             ))}
           </ul>

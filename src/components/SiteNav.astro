@@ -1,6 +1,6 @@
 ---
 import { IC } from '../data/icons';
-import { BEREICH_KLASSEN, CATEGORIES, PUBLISHED, STATUS } from '../data/features';
+import { BEREICH_KLASSEN, CATEGORIES, ONPREM, PUBLISHED, STATUS, nurOnprem } from '../data/features';
 
 // „Funktionen" öffnet ein Menü mit allen freigeschalteten Bereichen (je mit
 // Symbol und Nutzen-Satz) und dem, was als Nächstes kommt. Eine eigene
@@ -88,7 +88,7 @@ const inFeatures = current.startsWith('/funktionen/');
                             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><Fragment set:html={cat.icon} /></svg>
                           </span>
                           <span class="min-w-0 truncate">{cat.title}</span>
-                          <span class="ml-auto flex-shrink-0 text-[11px] text-muted-foreground">{STATUS[cat.status].label}</span>
+                          <span class="ml-auto flex-shrink-0 text-[11px] text-muted-foreground">{STATUS[cat.status].label}{nurOnprem(cat) && <span title={ONPREM.hint}> · On-Premise</span>}</span>
                         </li>
                       ))}
                     </ul>

@@ -7,7 +7,7 @@ import LaptopFrame from '../components/LaptopFrame.astro';
 import PhoneFrame from '../components/PhoneFrame.astro';
 import CalloutChip from '../components/Callout.astro';
 import { IC } from '../data/icons';
-import { BEREICH_KLASSEN, CATEGORIES, STATUS, STATUS_ORDER, isPublished, screenshotsFor, shotByFile, type Callout, type Status } from '../data/features';
+import { BEREICH_KLASSEN, CATEGORIES, ONPREM, STATUS, STATUS_ORDER, isPublished, nurOnprem, screenshotsFor, shotByFile, type Callout, type Status } from '../data/features';
 
 const HERO_SHOT = screenshotsFor('hero')[0];
 // Laptop und Handy zusammen zeigen: zu Hause am Rechner, unterwegs am Handy.
@@ -38,7 +38,10 @@ const BETA_CARDS = [
 
 // Die Roadmap folgt dem Status der Module in data/features.ts.
 const titlesWith = (...statuses: Status[]) =>
-  CATEGORIES.filter((c) => statuses.includes(c.status)).map((c) => (c.status === 'partial' ? `${c.title} (teilweise)` : c.title));
+  CATEGORIES.filter((c) => statuses.includes(c.status)).map((c) => {
+    const zusatz = [c.status === 'partial' ? 'teilweise' : '', nurOnprem(c) ? 'nur On-Premise' : ''].filter(Boolean);
+    return zusatz.length ? `${c.title} (${zusatz.join(', ')})` : c.title;
+  });
 const ROADMAP_DONE = titlesWith('available', 'partial');
 const ROADMAP_SOON = titlesWith('soon');
 const ROADMAP_PLANNED = titlesWith('planned');
@@ -207,9 +210,16 @@ const ROADMAP_PLANNED = titlesWith('planned');
                     <Fragment set:html={cat.icon} />
                   </svg>
                 </div>
-                <span class={`px-2.5 py-1 rounded-full text-xs font-semibold border ${st.cls}`}>
-                  {st.label}
-                </span>
+                <div class="flex flex-col items-end gap-1.5">
+                  <span class={`px-2.5 py-1 rounded-full text-xs font-semibold border ${st.cls}`}>
+                    {st.label}
+                  </span>
+                  {nurOnprem(cat) && (
+                    <span class={`px-2.5 py-1 rounded-full text-xs font-semibold border ${ONPREM.cls}`} title={ONPREM.hint}>
+                      {ONPREM.label}
+                    </span>
+                  )}
+                </div>
               </div>
               <h3 class="font-display font-semibold text-foreground text-lg mb-1">{cat.title}</h3>
               <p class="text-muted-foreground text-sm mb-4 leading-relaxed">{cat.claim}</p>
@@ -222,6 +232,7 @@ const ROADMAP_PLANNED = titlesWith('planned');
                       <Fragment set:html={IC.checkCheck} />
                     </svg>
                     {f}
+                    {nurOnprem(cat, f) && <span class={`px-1.5 py-0.5 rounded-full border text-[10px] font-semibold whitespace-nowrap ${ONPREM.cls}`} title={ONPREM.hint}>On-Premise</span>}
                   </li>
                 ))}
               </ul>
@@ -244,7 +255,11 @@ const ROADMAP_PLANNED = titlesWith('planned');
           <span class="w-2 h-2 rounded-full bg-current" aria-hidden="true"></span>{STATUS[s].label}
         </span>
       ))}
+      <span class={`flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium ${ONPREM.cls}`}>
+        <span class="w-2 h-2 rounded-full bg-current" aria-hidden="true"></span>{ONPREM.label}
+      </span>
     </div>
+    <p class="mt-3 text-center text-xs text-muted-foreground">{ONPREM.label}: {ONPREM.hint}</p>
   </div>
 </section>
 
