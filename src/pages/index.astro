@@ -36,6 +36,38 @@ const BETA_CARDS = [
   { icon: IC.zap,         color: 'text-primary',   title: 'Schnelle Bug-Fixes',                    text: 'Wenn etwas nicht stimmt, beheben wir es schnell. Transparente Kommunikation ist uns wichtig.' },
 ];
 
+// Zwei Betriebsarten (Betreiber 2026-11-26). Module, die nur On-Premise
+// nutzbar sind, kommen aus data/features.ts (onpremOnly/onpremFeatures).
+const ONPREM_NAMEN = CATEGORIES.flatMap((c) => [
+  ...(c.onpremOnly ? [c.title] : []),
+  ...(c.onpremFeatures ?? []),
+]);
+const VARIANTEN = [
+  {
+    icon: IC.cloud,
+    titel: 'LunaFamily Cloud',
+    satz: 'Anmelden und loslegen – wir kümmern uns um den Rest.',
+    punkte: [
+      'Keine Technik nötig: Betrieb, Updates und Sicherungen übernehmen wir',
+      'Server in der EU, Daten jeder Familie in einer eigenen Datenbank',
+      'Web und App, auf allen Geräten',
+      `Ohne ${ONPREM_NAMEN.join(', ')}`,
+    ],
+  },
+  {
+    icon: IC.server,
+    titel: 'LunaFamily On-Premise',
+    satz: 'Auf eurem eigenen Server – eure Daten bleiben bei euch zu Hause.',
+    punkte: [
+      'Läuft auf eurem Heimserver oder NAS mit Docker',
+      'Wir haben keinen Zugriff auf eure Inhalte',
+      'Web und App, auch unterwegs',
+      `Alle Module – auch ${ONPREM_NAMEN.join(', ')}`,
+      'Für private Haushalte',
+    ],
+  },
+];
+
 // Die Roadmap folgt dem Status der Module in data/features.ts.
 const titlesWith = (...statuses: Status[]) =>
   CATEGORIES.filter((c) => statuses.includes(c.status)).map((c) => {
@@ -117,7 +149,7 @@ const ROADMAP_PLANNED = titlesWith('planned');
     </p>
 
     <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-14">
-      <a href="https://app.lunafamily.online/register"
+      <a href="https://app.lunafamily.eu/register"
          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-10 py-4 text-base rounded-xl transition-colors"
          style="box-shadow:0 20px 40px rgba(196,162,101,.25)" rel="noopener">
         Jetzt kostenlos registrieren
@@ -125,7 +157,7 @@ const ROADMAP_PLANNED = titlesWith('planned');
           <Fragment set:html={IC.arrowRight} />
         </svg>
       </a>
-      <a href="https://app.lunafamily.online/login"
+      <a href="https://app.lunafamily.eu/login"
          class="w-full sm:w-auto inline-flex items-center justify-center border border-border bg-card text-foreground font-semibold px-10 py-4 text-base rounded-xl hover:bg-muted transition-colors"
          rel="noopener">
         Bereits registriert? Anmelden
@@ -294,6 +326,47 @@ const ROADMAP_PLANNED = titlesWith('planned');
   </div>
 </section>
 
+<!-- ─── Cloud oder On-Premise ─────────────────────────────────────────────── -->
+<section id="varianten" class="scroll-mt-16 py-24 px-4 sm:px-6 bg-muted/20" aria-labelledby="varianten-heading">
+  <div class="max-w-5xl mx-auto">
+    <div class="lf-animate text-center mb-14">
+      <h2 id="varianten-heading" class="font-display text-3xl sm:text-4xl font-bold text-foreground hyphens-auto break-words mb-4">
+        In der Cloud oder auf eurem eigenen Server
+      </h2>
+      <p class="text-muted-foreground text-lg max-w-2xl mx-auto">
+        LunaFamily gibt es in zwei Varianten. Ihr entscheidet, wo eure Familiendaten liegen.
+      </p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {VARIANTEN.map((v, i) => (
+        <div class="lf-animate h-full" style={`transition-delay:${i * 80}ms`}>
+          <div class="h-full flex flex-col p-6 rounded-karte border border-border bg-card">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="p-2.5 rounded-lg bg-muted flex-shrink-0">
+                <svg class="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <Fragment set:html={v.icon} />
+                </svg>
+              </div>
+              <h3 class="font-display font-semibold text-foreground text-lg">{v.titel}</h3>
+            </div>
+            <p class="text-muted-foreground text-sm mb-4 leading-relaxed">{v.satz}</p>
+            <ul class="space-y-2">
+              {v.punkte.map((p) => (
+                <li class="flex items-start gap-2.5 text-sm text-foreground/90">
+                  <svg class="w-4 h-4 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="#c4a265" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <Fragment set:html={IC.checkCheck} />
+                  </svg>
+                  {p}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
 <!-- ─── Beta Transparency ──────────────────────────────────────────────────── -->
 <section class="py-20 px-4 sm:px-6 bg-muted/30" aria-labelledby="beta-heading">
   <div class="max-w-4xl mx-auto">
@@ -405,7 +478,7 @@ const ROADMAP_PLANNED = titlesWith('planned');
         </p>
 
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="https://app.lunafamily.online/register"
+          <a href="https://app.lunafamily.eu/register"
              class="inline-flex items-center justify-center gap-2 font-semibold px-12 py-4 text-base rounded-full transition-transform hover:-translate-y-0.5"
              style="background:var(--lf-held-gold);color:var(--lf-held-flaeche)" rel="noopener">
             Jetzt kostenlos starten
@@ -413,7 +486,7 @@ const ROADMAP_PLANNED = titlesWith('planned');
               <Fragment set:html={IC.chevronRight} />
             </svg>
           </a>
-          <a href="https://app.lunafamily.online/login"
+          <a href="https://app.lunafamily.eu/login"
              class="inline-flex items-center justify-center border font-semibold px-12 py-4 text-base rounded-full transition-colors hover:bg-white/5"
              style="border-color:var(--lf-held-linie);color:var(--lf-held-text)" rel="noopener">
             Bereits dabei? Anmelden

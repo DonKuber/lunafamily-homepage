@@ -62,7 +62,7 @@ const claimSize = format === 'story' ? (claim.length > 45 ? 78 : 88) : format ==
         <img src="/brand/logo-wordmark.png" alt="LunaFamily" width="1229" height="231" class="h-14 w-auto self-start mb-8 dark:hidden" />
         <img src="/brand/logo-wordmark-dark.png" alt="LunaFamily" width="1222" height="231" class="h-14 w-auto self-start mb-8 hidden dark:block" />
         <p class="font-display font-bold leading-[1.08]" style={`font-size:${claimSize}px`}>{claim}</p>
-        <p class="mt-6 text-2xl text-muted-foreground">lunafamily.online · Kostenlos in der Beta</p>
+        <p class="mt-6 text-2xl text-muted-foreground">lunafamily.eu · Kostenlos in der Beta</p>
       </div>
       {laptop && (
         <div class="absolute left-[830px] top-[70px] w-[620px]">
@@ -132,10 +132,10 @@ const claimSize = format === 'story' ? (claim.length > 45 ? 78 : 88) : format ==
         {/* Fuß */}
         <div class={`flex items-center ${format === 'story' ? 'justify-center mt-10' : 'justify-between mt-8'}`}>
           {format === 'story' ? (
-            <span class="lf-cta px-10 py-5 rounded-full text-3xl font-semibold text-white">Link in Bio · lunafamily.online</span>
+            <span class="lf-cta px-10 py-5 rounded-full text-3xl font-semibold text-white">Link in Bio · lunafamily.eu</span>
           ) : (
             <>
-              <span class="text-2xl font-semibold">lunafamily.online</span>
+              <span class="text-2xl font-semibold">lunafamily.eu</span>
               <span class="lf-cta px-7 py-3 rounded-full text-xl font-semibold text-white">Kostenlos in der Beta</span>
             </>
           )}
