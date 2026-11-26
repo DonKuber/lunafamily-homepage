@@ -191,6 +191,19 @@ const ALL: Category[] = [
       { title: 'Alles beisammen', text: 'Vertragsunterlagen hängen direkt am Vertrag. Per CSV lassen sich Verträge importieren und exportieren.' },
     ],
   },
+  {
+    slug: 'gesundheit',
+    claim: 'Arzttermine, Medikamente und Impfungen der Familie an einem Ort.', icon: IC.heart, bereich: 'personal', status: 'available', onpremOnly: true,
+    title: 'Gesundheit', subtitle: 'Gut organisiert, sicher verwahrt',
+    features: ['Arzttermine', 'Medikamente & Erinnerungen', 'Impfungen', 'Allergien & Notfallkontakte'],
+    intro: 'Wann ist die nächste Vorsorge, welches Medikament nimmt wer, wann steht die Auffrischimpfung an? LunaFamily hält es für die ganze Familie fest. Gesundheitsdaten sind besonders schützenswert: Sie werden nur mit eurer ausdrücklichen Einwilligung erfasst und verschlüsselt gespeichert – und nur in der On-Premise-Version auf eurem eigenen Server.',
+    highlights: [
+      { title: 'Arzttermine', text: 'Termine bei Ärztinnen und Ärzten für jedes Familienmitglied, mit Notizen zum Besuch.' },
+      { title: 'Medikamente im Blick', text: 'Was wird wann eingenommen? Erinnerungen helfen, nichts zu vergessen.' },
+      { title: 'Impfungen', text: 'Alle Impfungen mit Datum – und rechtzeitig erinnert, wenn eine Auffrischung ansteht.' },
+      { title: 'Für den Notfall', text: 'Allergien und Notfallkontakte schnell zur Hand, wenn es darauf ankommt.' },
+    ],
+  },
   // ─── Teilweise verfügbar ──────────────────────────────────────────────────
   {
     slug: 'kommunikation',
