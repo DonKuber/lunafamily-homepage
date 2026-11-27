@@ -166,7 +166,7 @@ const ALL: Category[] = [
   {
     slug: 'familie',
     claim: 'Alle an Bord – und Kinderdaten bleiben geschützt.',
-    visual: { detail: 'familie-einwilligung', tilt: 'right', callouts: [{ text: 'Einwilligung der Eltern (Art. 8 DSGVO)', x: 52, y: -7, icon: 'shield' }, { text: 'Jeder mit eigenem Zugang', x: -5, y: 97, icon: 'users' }] }, icon: IC.users, bereich: 'family', status: 'available',
+    visual: { detail: 'familie-einwilligung', tilt: 'right', callouts: [{ text: 'Kinder ohne eigenen Zugang – die Eltern entscheiden', x: 52, y: -7, icon: 'shield' }, { text: 'Erwachsene mit eigenem Zugang', x: -5, y: 97, icon: 'users' }] }, icon: IC.users, bereich: 'family', status: 'available',
     title: 'Familie & Kontakte', subtitle: 'Alle Verbindungen an einem Ort',
     features: ['Familienmitglieder & Rollen', 'Stammbaum visualisieren', 'Kontaktbuch & Firmen', 'Tagebuch & Erfolgsjournal'],
     intro: 'Jedes Familienmitglied hat ein eigenes Profil mit passenden Rechten, vom Elternteil bis zur Oma mit Lesezugriff. Dazu kommen der Stammbaum, das Kontaktbuch, Firmen, das Familientagebuch und das Erfolgsjournal.',
