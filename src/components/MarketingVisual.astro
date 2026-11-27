@@ -37,7 +37,7 @@ const tilt = visual.tilt === 'right' ? '-7deg' : '7deg';
       )}
 
       {visual.callouts.map((c, i) => (
-        <CalloutChip callout={c} class="hidden lg:inline-flex absolute z-10 lf-mv-float"
+        <CalloutChip callout={c} class="hidden lg:inline-flex absolute z-10 lf-mv-float whitespace-nowrap"
           style={`left:${c.x}%;top:${c.y}%;animation-delay:${-i * 2.3}s`} />
       ))}
     </div>

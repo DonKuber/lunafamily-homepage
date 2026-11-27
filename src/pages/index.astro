@@ -196,7 +196,7 @@ const ROADMAP_PLANNED = titlesWith('planned');
           <PhoneFrame shot={HERO_PHONE} class="absolute -right-[2%] lg:-right-[13%] -bottom-[8%] w-[27%] lg:w-[23%] lf-float" />
         )}
         {HERO_CALLOUTS.map((c, i) => (
-          <CalloutChip callout={c} class="hidden lg:inline-flex absolute z-10 lf-float" style={`left:${c.x}%;top:${c.y}%;animation-delay:${-i * 2.5}s`} />
+          <CalloutChip callout={c} class="hidden lg:inline-flex absolute z-10 lf-float whitespace-nowrap" style={`left:${c.x}%;top:${c.y}%;animation-delay:${-i * 2.5}s`} />
         ))}
       </div>
       <div class="flex lg:hidden flex-wrap justify-center gap-2 mt-16">
